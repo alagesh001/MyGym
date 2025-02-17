@@ -5,6 +5,100 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.Login">
+    tools:context=".activity.Login"
+    android:background="@color/black">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:src="@drawable/lscreenbg"
+    android:scaleType="centerCrop"
+    android:alpha="0.8"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
 
+    />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        app:cardBackgroundColor="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80FFFFFF"
+        android:elevation="5dp"
+        android:radius="@dimen/_25sdp"
+        android:padding="16dp"
+        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+android:paddingHorizontal="@dimen/_30sdp"
+            android:elevation="8dp"
+            android:paddingVertical="@dimen/_60sdp"
+            >
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/blur_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/bg_glass"
+               >
+
+                <EditText
+                    android:id="@+id/et_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Mobile"
+                    android:background="@android:color/transparent"
+                    android:textColor="#1B1B1B"
+                    android:textSize="16sp"
+                    android:drawableLeft="@drawable/phone_icn"
+                    android:inputType="number"
+                    android:drawablePadding="15dp"
+                    android:paddingStart="40dp"/>
+            </eightbitlab.com.blurview.BlurView>
+
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/blur_password"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_glass"
+              >
+
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Password"
+                    android:background="@android:color/transparent"
+                    android:textColor="#1B1B1B"
+                    android:textSize="16sp"
+                    android:inputType="textPassword"
+                    android:drawableLeft="@drawable/baseline_password_24"
+                    android:drawablePadding="15dp"
+                    android:paddingStart="40dp"/>
+            </eightbitlab.com.blurview.BlurView>
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="match_parent"
+                    android:text="LOGIN"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:textSize="@dimen/_13ssp"
+                    android:layout_gravity="center_horizontal"
+                    android:backgroundTint="#E002727C"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/item_ll"
+
+    android:layout_width="match_parent"
+android:orientation="vertical"
+    android:layout_height="wrap_content"
+android:layout_marginHorizontal="@dimen/_30sdp"
+    android:layout_marginVertical="@dimen/_20sdp"
+    android:padding="16dp"
+    android:background="#FFCCC2"
+
+    android:textSize="18sp" >
+
+    <TextView
+        android:id="@+id/gymname_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gym Name"
+        />
+
+
+    <TextView
+        android:id="@+id/gymloc_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        />
+
+
+</LinearLayout>

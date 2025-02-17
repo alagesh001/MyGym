@@ -5,12 +5,14 @@ plugins {
 
 android {
     namespace = "com.oxad.mygym"
-    compileSdk = 34
-
+    compileSdk = 35
+    viewBinding{
+        enable = true
+    }
     defaultConfig {
         applicationId = "com.oxad.mygym"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -36,7 +38,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.github.Dimezis:BlurView:version-2.0.6")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -45,4 +47,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation (libs.sdp.android)
+    implementation ("com.intuit.ssp:ssp-android:1.1.1")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.5")
 }
