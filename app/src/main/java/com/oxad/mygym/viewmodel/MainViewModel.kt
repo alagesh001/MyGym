@@ -8,4 +8,5 @@ class MainViewModel : ViewModel() {
     var gymResult: ArrayList<LoginResult> = ArrayList()
     var currentGymSelected: Int = 0
 
+
 }

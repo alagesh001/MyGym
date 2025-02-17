@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.GymSelectFragment"
+    android:background="@color/white"
     android:padding="@dimen/_10sdp"
     >
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,18 +20,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />-->
-    <TextView
-        android:id="@+id/product_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select your gym"
-        android:textStyle="normal"
-        android:textSize="@dimen/_30ssp"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+
+
   <androidx.recyclerview.widget.RecyclerView
 
       android:id="@+id/recycler_view"
@@ -39,6 +30,8 @@ app:layout_constraintTop_toTopOf="parent"
       android:layout_width="match_parent"
 app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
+      tools:listitem="@layout/item_gym"
+      tools:itemCount="4"
       android:layout_height="wrap_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

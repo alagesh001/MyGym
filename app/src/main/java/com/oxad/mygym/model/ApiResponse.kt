@@ -2,13 +2,28 @@ package com.oxad.mygym.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
 data class ApiResponse(val s:String)
 data class UserRegisterModel(
     val success: Boolean,
     val message: String,
     val isAdmin: Int
+
+)
+data class MyMemberListModel(
+
+    val success: Boolean,
+
+    val message: String,
+
+    var result: ArrayList<MyClient>
+
+)
+data class MyClient(
+
+    val name: String,
+    val mobile: Long,
+    val renewal_date: String
 
 )
 data class AdminLoginModel(
@@ -76,58 +91,38 @@ data class LoginResult(
 
     val Location: String,
 
-    val GymId: Int
+    val GymId: Int,
+    val membercount: Int
 
-) : Parcelable {
-
+) :Parcelable {
     constructor(parcel: Parcel) : this(
-
         parcel.readInt(),
-
         parcel.readString() ?: "",
-
         parcel.readString() ?: "",
-
+        parcel.readInt(),
         parcel.readInt()
-
-    )
-
+    ) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-
         parcel.writeInt(Id)
-
         parcel.writeString(GymName)
-
         parcel.writeString(Location)
-
         parcel.writeInt(GymId)
-
+        parcel.writeInt(membercount)
     }
-
 
     override fun describeContents(): Int {
-
         return 0
-
     }
-
 
     companion object CREATOR : Parcelable.Creator<LoginResult> {
-
         override fun createFromParcel(parcel: Parcel): LoginResult {
-
             return LoginResult(parcel)
-
         }
-
 
         override fun newArray(size: Int): Array<LoginResult?> {
-
             return arrayOfNulls(size)
-
         }
-
     }
-
 }

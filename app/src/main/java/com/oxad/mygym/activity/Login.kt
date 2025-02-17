@@ -54,12 +54,16 @@ initUI()
         }
     }
     private fun login(){
-        if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
+        apiManager.loginAdmin( 8148602102,"ags123")
+      /*  if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
 
-            apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString())
+           // apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString())
+             apiManager.loginAdmin( 8148602102,"ags123")
+
+
         }else{
             Utils.showToast(this,"Fill all fields.")
-        }
+        }*/
     }
     private fun registerSuccess(response: Any){
         val adminLoginModel =  response as AdminLoginModel

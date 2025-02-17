@@ -2,6 +2,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oxad.mygym.R
@@ -21,6 +22,7 @@ class GymselectAdapter(gmyListIs: List<LoginResult>,private val listener: OnItem
         val gymListItem: LoginResult = gymList[position]
         holder.gymName.text = gymListItem.GymName
         holder.gymLoc.text = gymListItem.Location
+        holder.gymmembCount.text = gymListItem.membercount.toString()
 
         holder.item_ll.setOnClickListener {
             listener.onItemSelected(position)
@@ -32,9 +34,10 @@ class GymselectAdapter(gmyListIs: List<LoginResult>,private val listener: OnItem
     }
 
     class GymListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var item_ll: LinearLayout = itemView.findViewById(R.id.item_ll)
+        var item_ll: RelativeLayout = itemView.findViewById(R.id.item_ll)
         var gymName: TextView = itemView.findViewById<TextView>(R.id.gymname_tv)
         var gymLoc: TextView = itemView.findViewById<TextView>(R.id.gymloc_tv)
+        var gymmembCount: TextView = itemView.findViewById<TextView>(R.id.memberCount)
 
     }
     interface OnItemSelectedListener {

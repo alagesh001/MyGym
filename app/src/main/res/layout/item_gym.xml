@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:id="@+id/item_ll"
 
@@ -10,15 +10,25 @@ android:orientation="vertical"
 android:layout_marginHorizontal="@dimen/_30sdp"
     android:layout_marginVertical="@dimen/_20sdp"
     android:padding="16dp"
-    android:background="#FFCCC2"
+    android:background="@drawable/roun_rad_rect"
 
     android:textSize="18sp" >
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+android:orientation="vertical"
+    android:layout_centerVertical="true"
+    >
 
     <TextView
         android:id="@+id/gymname_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gym Name"
+        android:textStyle="normal"
+
+        android:textSize="@dimen/_13ssp"
+        android:textColor="@color/white"
         />
 
 
@@ -27,7 +37,23 @@ android:layout_marginHorizontal="@dimen/_30sdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location"
+        android:layout_below="@+id/gymname_tv"
+        android:textColor="@color/white"
+android:textStyle="italic"
+        />
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/memberCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="23"
+        android:textSize="@dimen/_40ssp"
+        android:textStyle="bold"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+
         />
 
-
-</LinearLayout>
+</RelativeLayout>

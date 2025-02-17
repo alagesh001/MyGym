@@ -58,13 +58,13 @@ class HomeFragment : Fragment(),OnClickListener {
         binding.ourproductsRl.setOnClickListener(this)
         binding.myoffersRl.setOnClickListener(this)
         binding.complaintRl.setOnClickListener(this)
-        binding.goaltrackRl.setOnClickListener(this)
+        binding.myclientsRl.setOnClickListener(this)
 
     }
     override fun onClick(p0: View?) {
         var code = 1
         when (p0) {
-            binding.goaltrackRl -> code = 1
+            binding.myclientsRl -> code = 1
             binding.mytrainerRl -> code = 2
             binding.ourproductsRl -> code = 3
             binding.myoffersRl -> code = 4
@@ -79,7 +79,7 @@ class HomeFragment : Fragment(),OnClickListener {
 
         when(code)
         {
-            1 ->  findNavController().navigate(R.id.action_homeFragment_to_profileFragment3)
+            1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
 
         }
 

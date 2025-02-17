@@ -1,6 +1,7 @@
 package com.oxad.mygym.retrofit
 
 import com.oxad.mygym.model.AdminLoginModel
+import com.oxad.mygym.model.MyMemberListModel
 import com.oxad.mygym.model.UserRegisterModel
 import retrofit2.Call
 import retrofit2.http.Field
@@ -18,7 +19,8 @@ interface ApiService {
     @POST("registerusers.php") // Adjust this to match your backend endpoint
     fun registerUser(@Field("name") name: String,
                      @Field("email") email: String): Call<UserRegisterModel>
-
+    @GET("getmymembers") // Adjust this to match your backend endpoint
+    fun getmymembers(@Query("gymid") gymid: Int): Call<MyMemberListModel>
     @GET("getgymdata") // Adjust this to match your backend endpoint
     fun loginAdmin(@Query("mobile") mob: Long,
                      @Query("password") pass: String): Call<AdminLoginModel>
@@ -31,6 +33,13 @@ interface ApiService {
                         @Field("type") type: Int,
                         @Field("height") height: Double,
                         @Field("weight") weight: Double,): Call<UserRegisterModel>
-}
 
+@FormUrlEncoded
+@POST("addmycustomer") // Adjust this to match your backend endpoint
+fun addmymember(@Field("name") name: String,
+                    @Field("email") email: String,
+                    @Field("gymid") gymid: Int,
+                    @Field("mob") mob: Long,
+                    @Field("paidmonths") paidmonths: Int,): Call<UserRegisterModel>
+}
 // Response model
