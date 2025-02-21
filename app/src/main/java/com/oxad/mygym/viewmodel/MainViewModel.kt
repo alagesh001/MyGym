@@ -1,8 +1,11 @@
 package com.oxad.mygym.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.oxad.mygym.database.ApiRepository
@@ -16,7 +19,6 @@ import com.oxad.mygym.utils.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 class MainViewModel() : ViewModel() {
     var gymResult: ArrayList<LoginResult> = ArrayList()
     var currentGymSelected: Int = 0
@@ -27,13 +29,27 @@ class MainViewModel() : ViewModel() {
     val trainerList: StateFlow<List<TrainerModel>> = _trainerList
     private var currentPage = 1
     private val limit = 5
-    private var isLastPage = false
-fun loadTrainerData(dataStoreManager: DataStoreManager){
+     var isLastPage = false
+
+    private val _searchQuery = MutableLiveData<String>()
+
+    val members: LiveData<List<Member>> = _searchQuery.switchMap { query ->
+        memberDao.searchMembersByName(query)
+
+    /*    if (query.isNullOrBlank()) {
+            MutableLiveData(emptyList())
+        } else {
+            memberDao.searchMembersByName(query)
+        }*/
+    }
+
+    fun searchMembers(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun loadTrainerData(dataStoreManager: DataStoreManager){
     viewModelScope.launch {
 
-        dataStoreManager.getCoaches().collect { coaches ->
-            Log.d("DataStoreA", "Stored Coaches: $coaches")
-            if(coaches.isEmpty()){
                 Log.d("DataStoreA", "Not Stored")
 
                 val result = ApiRepository().getTrainers(gymResult[currentGymSelected].GymId)
@@ -42,34 +58,31 @@ fun loadTrainerData(dataStoreManager: DataStoreManager){
                     if(response.success){
                         _trainerList.value = response.result
                         dataStoreManager.saveCoaches(response.result)
-
                     }else{
-
+                        _trainerList.value = emptyList()
+                        dataStoreManager.saveCoaches(emptyList())
                     }
                 }
 
                 result.onFailure { exception ->
                     exception.message ?: "Something went wrong!"
                 }
-            }else{
-                Log.d("DataStoreA", "Stored "+Gson().toJson(coaches))
-                _trainerList.value = coaches
-
             }
 
-            }
 
-    }
+
+
 }
     fun loadMembers() {
-        if (isLastPage) return // Stop loading if last page reached
 
         viewModelScope.launch {
             val cachedMembers = memberDao.getAllMembers()
+            Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
 
             if (cachedMembers.isNotEmpty()) {
                 _memberList.value =  cachedMembers // Return cached data
             } else {
+
                 val result = ApiRepository().getMembers(gymResult[currentGymSelected].GymId,currentPage)
                 result.onSuccess { response ->
                    // Log.e("chadka",""+ Gson().toJson(response))
@@ -98,7 +111,7 @@ fun loadTrainerData(dataStoreManager: DataStoreManager){
         }
     }
 
-    fun refresh() {
+    fun refreshMembers() {
         viewModelScope.launch {
             memberDao.clearMembers()
             currentPage = 1

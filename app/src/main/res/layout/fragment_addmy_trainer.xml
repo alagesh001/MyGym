@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_gravity="center"
+
+    >
 
     <!-- Name Field -->
     <TextView
         android:id="@+id/name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
+        android:text="Trainer Name"
         android:textSize="16sp" />
 
     <EditText
@@ -35,35 +38,10 @@
         android:hint="Enter Mobile Number"
         android:inputType="phone" />
 
-    <!-- Email Field -->
-    <TextView
-        android:id="@+id/email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/email_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Email Address"
-        android:inputType="textEmailAddress" />
 
-    <!-- Paid Months Field -->
-    <TextView
-        android:id="@+id/paidmonths_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Paid Months"
-        android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/paidmonths_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Number of Paid Months"
-        android:inputType="number" />
+
 
     <!-- Submit Button -->
     <Button

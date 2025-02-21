@@ -1,27 +1,33 @@
 package com.oxad.mygym.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.google.gson.Gson
+import com.oxad.mygym.database.ApiRepository
 import com.oxad.mygym.databinding.FragmentAddmyClientBinding
 import com.oxad.mygym.databinding.FragmentAddmyTrainerBinding
 import com.oxad.mygym.databinding.FragmentMyTrainerBinding
+import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.UserRegisterModel
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.utils.Utils
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
  * Use the [AddmyTrainerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddmyTrainerFragment : Fragment(), ApiInterface, View.OnClickListener {
+class AddmyTrainerFragment : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -39,7 +45,6 @@ class AddmyTrainerFragment : Fragment(), ApiInterface, View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        apiManager = ApiManager(requireContext(), this)
         binding = FragmentAddmyTrainerBinding.inflate(inflater, container, false)
         initUi()
         return binding.root
@@ -62,9 +67,27 @@ class AddmyTrainerFragment : Fragment(), ApiInterface, View.OnClickListener {
         }
     }
 private fun dataAdd(){
-    if(binding.nameInput.text.isNotEmpty() && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()){
-      apiManager.addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt())
-    }else{
+    if(binding.nameInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ){
+        lifecycleScope.launch {
+            val result = ApiRepository().addmytrainer(binding.nameInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong())
+            Log.e("chadka",""+ Gson().toJson(result))
+            result.onSuccess { response ->
+                if(response.success){
+                    if(context !=null) {
+                        mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+                        Utils.showToast(requireContext(), "Trainer Added Successfully!")
+                    }
+                }else{
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                }
+            }
+
+            result.onFailure { exception ->
+                exception.message ?: "Something went wrong!"
+            }
+        }    }else{
         if(context != null)
         {
             Utils.showToast(requireContext(), "Fill all the fields")
@@ -81,27 +104,7 @@ private fun dataAdd(){
             }
     }
 
-    override fun onSuccess(response: Any, serviceCode: Int) {
-        when(serviceCode){
-            RsConstants.ADD_MY_MEMBERS -> addmymemberResponse(response)
-        }
-    }
 
-    override fun onError(error: String) {
-    }
-
-    private fun addmymemberResponse(response: Any) {
-        val userRegisterModel = response as UserRegisterModel
-
-
-        if (userRegisterModel.success) {
-            if (context != null) {
-                Utils.showToast(requireContext(), "Added successfully")
-            }
-
-
-        }
-    }
 
 
 }

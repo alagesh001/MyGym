@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="10dp">
+
+    <!-- Main Item (Always Visible) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_viewcard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_15sdp"
+        >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="#3C3C3C"
+
+    >
+
+        <ImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground"
+            android:background="@drawable/circle_shape"
+            android:visibility="gone"
+            android:padding="2dp" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rakesh Sharma"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:layout_toRightOf="@id/imgProfile"
+
+           />
+
+</RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!-- Expandable Section (Initially Hidden) -->
+    <LinearLayout
+        android:id="@+id/expandableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="visible"
+        android:layout_marginTop="-40dp"
+        android:background="#E4E4E4">
+
+        <TextView
+            android:id="@+id/tvDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Expanded Details Here"
+            android:layout_marginTop="40dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:padding="10dp" />
+    </LinearLayout>
+</LinearLayout>

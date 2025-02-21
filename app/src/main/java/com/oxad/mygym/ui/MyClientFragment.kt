@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.mygym.R
 import com.oxad.mygym.adapter.MemberAdapter
+import com.oxad.mygym.adapter.MemberSearchAdapter
 import com.oxad.mygym.adapter.RenewalAdapter
 import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.databinding.FragmentMyClientBinding
@@ -45,6 +47,7 @@ class MyClientFragment : Fragment(),ApiInterface {
     private lateinit var renewalAdapter: RenewalAdapter
     private lateinit var apiManager: ApiManager
     private lateinit var memberAdapter: MemberAdapter
+    private lateinit var memberSearchAdapter: MemberSearchAdapter
 
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,20 +72,45 @@ apiManager = ApiManager(requireContext(),this)
     private fun initUi(){
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
 
+activity?.let {
+    memberAdapter = MemberAdapter()
 
-        memberAdapter = MemberAdapter()
+    binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-
-        binding.recyclerView.adapter =  memberAdapter
-
-        mainViewModel.loadMembers()
-        lifecycleScope.launch {
-            mainViewModel.memberList.collectLatest { members ->
-                memberAdapter.submitList(members)
-            }
-
+    binding.recyclerView.adapter =  memberAdapter
+    mainViewModel.loadMembers()
+  /*  lifecycleScope.launch {
+        mainViewModel.memberList.collectLatest { members ->
+            memberAdapter.submitList(members)
         }
+
+    }*/
+   /* memberSearchAdapter = MemberSearchAdapter()
+    binding.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
+    binding.recyclerViewSearch.adapter = memberSearchAdapter*/
+
+    // Observe LiveData
+    mainViewModel.members.observe(viewLifecycleOwner) { members ->
+        memberAdapter.submitList(members)
+
+        // memberSearchAdapter.submitList(members)
+    }
+    mainViewModel.searchMembers("")
+
+    binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+             mainViewModel.searchMembers(query?:"")
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            mainViewModel.searchMembers(newText?:"")
+            return true
+        }
+    })
+
+}
+
         }
 
 

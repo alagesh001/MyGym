@@ -164,5 +164,6 @@ data class TrainerModel(
     val name: String,
 
     val mob: String,
+    var isExpanded: Boolean = false
 
     )

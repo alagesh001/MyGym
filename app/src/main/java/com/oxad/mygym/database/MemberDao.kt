@@ -1,6 +1,7 @@
 package com.oxad.mygym.database
 
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -20,4 +21,6 @@ interface MemberDao {
 
     @Query("DELETE FROM members")
     suspend fun clearMembers()
+    @Query("SELECT * FROM members WHERE name LIKE '%' || :name || '%'")
+    fun searchMembersByName(name: String): LiveData<List<Member>>
 }

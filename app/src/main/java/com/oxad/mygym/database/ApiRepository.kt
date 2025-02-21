@@ -28,6 +28,15 @@ class ApiRepository() {
         }
 
     }
+    suspend fun addmytrainer(name:String, gymid: Int,mob:Long): Result<UserRegisterModel> {
+        return try {
+            val response = RetrofitClient.instance.addmytrainer(name,gymid,mob)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
         return try {
             val response = RetrofitClient.instance.getmytrainer(gymId)

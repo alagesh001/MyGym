@@ -15,8 +15,10 @@ import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.databinding.FragmentHomeBinding
 import com.oxad.mygym.datastore.DataStoreManager
+import com.oxad.mygym.model.TrainerModel
 import com.oxad.mygym.viewmodel.MainViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -53,10 +55,18 @@ class HomeFragment : Fragment(),OnClickListener {
         initUi()
         return binding.root    }
     private fun initUi(){
+        activity?.lifecycleScope?.launch {
+          Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
+
+        }
         binding.title.text = getString(R.string.welcometitle,mainViewModel.gymResult[mainViewModel.currentGymSelected].GymName,mainViewModel.gymResult[mainViewModel.currentGymSelected].Location)
+
         setclicklistener()
         // Set new gradient colors
 
+    }
+    suspend fun getCoachesList(): List<TrainerModel> {
+        return DataStoreManager(requireContext()).getCoaches().first()
     }
     private fun setclicklistener(){
         binding.mytrainerRl.setOnClickListener(this)
@@ -65,6 +75,7 @@ class HomeFragment : Fragment(),OnClickListener {
         binding.complaintRl.setOnClickListener(this)
         binding.myclientsRl.setOnClickListener(this)
         binding.clientaddIv.setOnClickListener(this)
+        binding.traineraddIv.setOnClickListener(this)
 
     }
     override fun onClick(p0: View?) {
@@ -76,7 +87,7 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.myoffersRl -> code = 4
             binding.complaintRl -> code = 5
             binding.clientaddIv -> code =6
-
+            binding.traineraddIv -> code = 7
         }
         openFragment(code)
     }
@@ -86,7 +97,11 @@ class HomeFragment : Fragment(),OnClickListener {
         when(code)
         {
             1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
+            2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
+            7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
+
+
         }
 
     }
