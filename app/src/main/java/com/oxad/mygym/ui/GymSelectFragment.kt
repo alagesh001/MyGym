@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.mygym.R
 import com.oxad.mygym.adapter.MemberAdapter
 import com.oxad.mygym.databinding.FragmentGymSelectBinding
+import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.viewmodel.MainViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,8 +54,12 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
         return binding.root     }
     private fun initUi(){
         Log.e("checkfra","Yes")
-        lifecycleScope.launch {
+
+        activity?.lifecycleScope?.launch {
             mainViewModel.clearmembers()
+            if(context!=null) {
+                DataStoreManager(requireContext()).clearCoaches()
+            }
         }
         binding.recyclerView.setLayoutManager(LinearLayoutManager(requireContext()))
         gymselectAdapter = GymselectAdapter(mainViewModel.gymResult,this)
@@ -74,6 +79,9 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
 
     override fun onItemSelected(item: Int) {
         mainViewModel.currentGymSelected = item
+        if(context!=null) {
+            mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+        }
         findNavController().navigate(R.id.action_gymSelectFragment_to_homeFragment)
     }
 }

@@ -1,6 +1,7 @@
 package com.oxad.mygym.retrofit
 
 import com.oxad.mygym.model.AdminLoginModel
+import com.oxad.mygym.model.GetMyTrainersResponse
 import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.MyMemberListModel
 import com.oxad.mygym.model.UserRegisterModel
@@ -25,6 +26,8 @@ interface ApiService {
                      @Query("page") page: Int
 
     ):MemberResponse
+    @GET("gettrainerdata") // Adjust this to match your backend endpoint
+    suspend  fun getmytrainer(@Query("gymid") gymid: Int): GetMyTrainersResponse
     @GET("getgymlist") // Adjust this to match your backend endpoint
     fun loginAdmin(@Query("mobile") mob: Long,
                      @Query("password") pass: String): Call<AdminLoginModel>
@@ -40,10 +43,10 @@ interface ApiService {
 
 @FormUrlEncoded
 @POST("addnewcustomer") // Adjust this to match your backend endpoint
-fun addmymember(@Field("name") name: String,
+    suspend fun addmymember(@Field("name") name: String,
                     @Field("email") email: String,
                     @Field("gymid") gymid: Int,
                     @Field("mob") mob: Long,
-                    @Field("paidmonths") paidmonths: Int,): Call<UserRegisterModel>
+                    @Field("paidmonths") paidmonths: Int,): UserRegisterModel
 }
 // Response model

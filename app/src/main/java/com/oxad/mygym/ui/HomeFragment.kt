@@ -2,16 +2,22 @@ package com.oxad.mygym.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.databinding.FragmentHomeBinding
+import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,7 +54,6 @@ class HomeFragment : Fragment(),OnClickListener {
         return binding.root    }
     private fun initUi(){
         binding.title.text = getString(R.string.welcometitle,mainViewModel.gymResult[mainViewModel.currentGymSelected].GymName,mainViewModel.gymResult[mainViewModel.currentGymSelected].Location)
-
         setclicklistener()
         // Set new gradient colors
 

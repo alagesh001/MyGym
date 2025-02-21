@@ -1,14 +1,19 @@
 package com.oxad.mygym.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.adapter.RenewalAdapter
+import com.oxad.mygym.database.ApiRepository
 import com.oxad.mygym.databinding.FragmentAddmyClientBinding
 import com.oxad.mygym.databinding.FragmentMyClientBinding
 import com.oxad.mygym.model.MyMemberListModel
@@ -18,6 +23,7 @@ import com.oxad.mygym.retrofit.ApiManager
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.utils.Utils
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,7 +80,26 @@ class AddmyClientFragment : Fragment(),ApiInterface,OnClickListener {
     }
 private fun dataAdd(){
     if(binding.nameInput.text.isNotEmpty() && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()){
-      apiManager.addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt())
+        lifecycleScope.launch {
+            val result = ApiRepository().addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt())
+            Log.e("chadka",""+ Gson().toJson(result))
+            result.onSuccess { response ->
+               if(response.success){
+                   if(context !=null) {
+                       Utils.showToast(requireContext(), "Added Successfully!")
+                   }
+               }else{
+                   if(context !=null) {
+                       Utils.showToast(requireContext(), response.message)
+                   }
+               }
+            }
+
+            result.onFailure { exception ->
+                exception.message ?: "Something went wrong!"
+            }
+        }
+    //  apiManager.addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt())
     }else{
         if(context != null)
         {        Utils.showToast(requireContext(),"Fill all the fields")}
@@ -95,7 +120,7 @@ private fun dataAdd(){
 
     override fun onSuccess(response: Any, serviceCode: Int) {
         when(serviceCode){
-            RsConstants.ADD_MY_MEMBERS -> addmymemberResponse(response)
+           // RsConstants.ADD_MY_MEMBERS -> addmymemberResponse(response)
         }
     }
 

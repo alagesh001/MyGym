@@ -58,7 +58,7 @@ private val contextA = context
     fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int) {
       //  Log.w("checkresponss","call api registeruser }")
 
-        RetrofitClient.instance.addmymember(name,email,gymid,mob,paidmonths)
+       /* RetrofitClient.instance.addmymember(name,email,gymid,mob,paidmonths)
             .enqueue(object : Callback<UserRegisterModel> {
 
                 override fun onResponse(call: Call<UserRegisterModel>, response: Response<UserRegisterModel>) {
@@ -79,7 +79,7 @@ private val contextA = context
                    // Log.e("checkresponss", "Error: ${t.message}")
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
-            })
+            })*/
     }
     fun getmymembers( gymid: Int) {
        // Log.w("checkresponss","call api registeruser }")

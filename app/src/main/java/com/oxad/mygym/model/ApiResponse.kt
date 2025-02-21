@@ -40,7 +40,8 @@ data class MemberResponse(
 data class Member(
     @PrimaryKey val mobile: Long,
     val name: String,
-    val renewal_date: String
+    val renewal_date: String,
+    var isExpanded: Boolean = false
 )
 
 data class MyClient(
@@ -149,4 +150,19 @@ data class LoginResult(
             return arrayOfNulls(size)
         }
     }
+
 }
+data class GetMyTrainersResponse(   val success: Boolean,
+
+                                    val message: String,
+
+                                    val result: ArrayList<TrainerModel>)
+data class TrainerModel(
+
+    val coachid: Int,
+
+    val name: String,
+
+    val mob: String,
+
+    )

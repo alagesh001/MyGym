@@ -3,6 +3,7 @@ package com.oxad.mygym.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -29,19 +30,28 @@ class MemberAdapter : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
         member.let {
             holder.bind(it,position)
         }
+        holder.rootLlView.setOnClickListener {
+            member.isExpanded = !member.isExpanded
+            notifyItemChanged(position) // Refresh item view
+        }
     }
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val rootLlView: LinearLayout = view.findViewById(R.id.rootView)
+
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
         private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
         private val renewalDateTextView: TextView = view.findViewById(R.id.tvRenewalDate)
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
+        val expandableLayout: View = itemView.findViewById(R.id.expandableLayout)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()
             renewalDateTextView.text = "${member.renewal_date}"
+            expandableLayout.visibility = if (member.isExpanded) View.VISIBLE else View.GONE
+
         }
     }
 

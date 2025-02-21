@@ -70,15 +70,7 @@ android:alpha="0.8"
                 android:layout_centerVertical="true"
                 >
 
-            <ImageView
-                android:id="@+id/clientsetting_iv"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/setting_icon"
-                android:background="@drawable/circle_shape"
-                android:padding="@dimen/_5sdp"
 
-                />
     <ImageView
         android:id="@+id/clientadd_iv"
         android:layout_width="@dimen/_30sdp"
@@ -128,15 +120,7 @@ android:alpha="0.8"
                 android:layout_centerVertical="true"
                 >
 
-                <ImageView
-                    android:id="@+id/trainersetting_iv"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/setting_icon"
-                    android:background="@drawable/circle_shape"
-                    android:padding="@dimen/_5sdp"
 
-                    />
                 <ImageView
                     android:id="@+id/traineradd_iv"
                     android:layout_width="@dimen/_30sdp"
@@ -183,15 +167,7 @@ android:alpha="0.8"
                 android:layout_centerVertical="true"
                 >
 
-                <ImageView
-                    android:id="@+id/productsetting_iv"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/setting_icon"
-                    android:background="@drawable/circle_shape"
-                    android:padding="@dimen/_5sdp"
 
-                    />
                 <ImageView
                     android:id="@+id/productadd_iv"
                     android:layout_width="@dimen/_30sdp"
@@ -239,15 +215,7 @@ android:alpha="0.8"
                 android:layout_centerVertical="true"
                 >
 
-                <ImageView
-                    android:id="@+id/offer_iv"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/setting_icon"
-                    android:background="@drawable/circle_shape"
-                    android:padding="@dimen/_5sdp"
 
-                    />
                 <ImageView
                     android:id="@+id/offeradd_iv"
                     android:layout_width="@dimen/_30sdp"
@@ -280,7 +248,7 @@ android:alpha="0.8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Gym Profile"
+                android:text="My Gym Profile"
                 android:paddingHorizontal="@dimen/_20sdp"
 
                 android:textColor="@color/white"
@@ -296,17 +264,7 @@ android:alpha="0.8"
                 >
 
 
-                <ImageView
-                    android:id="@+id/profilesetting_iv"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/setting_icon"
-                    android:background="@drawable/circle_shape"
 
-                    android:layout_marginHorizontal="@dimen/_20sdp"
-                    android:padding="@dimen/_5sdp"
-
-                    />
             </LinearLayout>
 
         </RelativeLayout>
