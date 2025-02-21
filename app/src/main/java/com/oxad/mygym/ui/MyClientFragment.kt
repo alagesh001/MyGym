@@ -1,6 +1,5 @@
 package com.oxad.mygym.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,20 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.mygym.R
-import com.oxad.mygym.activity.MainActivity
+import com.oxad.mygym.adapter.MemberAdapter
 import com.oxad.mygym.adapter.RenewalAdapter
-import com.oxad.mygym.databinding.FragmentHomeBinding
+import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.databinding.FragmentMyClientBinding
-import com.oxad.mygym.model.AdminLoginModel
-import com.oxad.mygym.model.MyClient
-import com.oxad.mygym.model.MyMemberListModel
+import com.oxad.mygym.model.MemberResponse
+
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
+
 import com.oxad.mygym.utils.RsConstants
-import com.oxad.mygym.utils.Utils
 import com.oxad.mygym.viewmodel.MainViewModel
+
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import retrofit2.Call
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,10 +43,10 @@ class MyClientFragment : Fragment(),ApiInterface {
     private var param2: String? = null
     private lateinit var binding: FragmentMyClientBinding
     private lateinit var renewalAdapter: RenewalAdapter
-    private lateinit var myMemberListModel: MyMemberListModel
     private lateinit var apiManager: ApiManager
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private lateinit var memberAdapter: MemberAdapter
 
+    private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -63,22 +67,25 @@ apiManager = ApiManager(requireContext(),this)
 
     }
     private fun initUi(){
-apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
+//apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
 
-     /*   myMemberListModel = MyMemberListModel(
-            success = true,
-            message = "Data Loaded Successfully",
-            result = arrayListOf(
-                MyClient("John Doe", 1234567890, "2025-03-01"),
-                MyClient("Jane Smith", 9876543210, "2025-04-15"),
-                MyClient("Mike Johnson", 1122334455, "2025-06-10")
-            )
-        )*/
+
+        memberAdapter = MemberAdapter()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
+        binding.recyclerView.adapter =  memberAdapter
 
-    }
+        mainViewModel.loadMembers()
+        lifecycleScope.launch {
+            mainViewModel.memberList.collectLatest { members ->
+                memberAdapter.submitList(members)
+            }
+
+        }
+        }
+
+
     companion object {
 
         @JvmStatic
@@ -100,12 +107,12 @@ apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected
     override fun onError(error: String) {
     }
     private fun setmemberList(response: Any){
-        val myMemberListModelres =  response as MyMemberListModel
+        val myMemberListModelres =  response as MemberResponse
 
 
         if(myMemberListModelres.success) {
             if(context !=null) {
-                Utils.showToast(requireContext(), "Success")
+               // Utils.showToast(requireContext(), "Success")
                 if (myMemberListModelres.result.isNotEmpty()) {
                     renewalAdapter = RenewalAdapter(myMemberListModelres.result)
                     binding.recyclerView.adapter = renewalAdapter
@@ -120,4 +127,6 @@ apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected
         super.onDestroy()
         Log.w("isdestroyc","Yes")
     }
+
+
 }

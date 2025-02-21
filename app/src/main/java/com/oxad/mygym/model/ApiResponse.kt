@@ -2,6 +2,9 @@ package com.oxad.mygym.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 data class ApiResponse(val s:String)
 data class UserRegisterModel(
@@ -19,6 +22,27 @@ data class MyMemberListModel(
     var result: ArrayList<MyClient>
 
 )
+
+data class MemberResponse(
+    val success: Boolean,
+    @SerializedName("total_records") val totalRecords: Int,
+    @SerializedName("total_pages") val totalPages: Int,
+    @SerializedName("current_page") val currentPage: Int,
+    val limit: Int,
+    val result: List<Member>,
+    val message: String
+
+)
+
+
+
+@Entity(tableName = "members")
+data class Member(
+    @PrimaryKey val mobile: Long,
+    val name: String,
+    val renewal_date: String
+)
+
 data class MyClient(
 
     val name: String,

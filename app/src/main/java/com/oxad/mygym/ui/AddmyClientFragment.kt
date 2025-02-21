@@ -4,12 +4,20 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.oxad.mygym.R
+import com.oxad.mygym.adapter.RenewalAdapter
 import com.oxad.mygym.databinding.FragmentAddmyClientBinding
 import com.oxad.mygym.databinding.FragmentMyClientBinding
+import com.oxad.mygym.model.MyMemberListModel
+import com.oxad.mygym.model.UserRegisterModel
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
+import com.oxad.mygym.utils.RsConstants
+import com.oxad.mygym.utils.Utils
+import com.oxad.mygym.viewmodel.MainViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,12 +29,13 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddmyClientFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddmyClientFragment : Fragment(),ApiInterface {
+class AddmyClientFragment : Fragment(),ApiInterface,OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentAddmyClientBinding
     private lateinit var apiManager: ApiManager
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +52,34 @@ class AddmyClientFragment : Fragment(),ApiInterface {
         // Inflate the layout for this fragment
         apiManager = ApiManager(requireContext(),this)
         binding = FragmentAddmyClientBinding.inflate(inflater, container, false)
-       // initUi()
+        initUi()
         return binding.root
     }
+    private fun initUi(){
+        setclicklistener()
+    }
+    private fun setclicklistener(){
+        binding.submitButton.setOnClickListener(this)
+
+
+    }
+    override fun onClick(p0: View?) {
+
+        when (p0) {
+            binding.submitButton -> dataAdd()
+
+
+
+        }
+    }
+private fun dataAdd(){
+    if(binding.nameInput.text.isNotEmpty() && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()){
+      apiManager.addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt())
+    }else{
+        if(context != null)
+        {        Utils.showToast(requireContext(),"Fill all the fields")}
+    }
+}
 
     companion object {
 
@@ -60,8 +94,26 @@ class AddmyClientFragment : Fragment(),ApiInterface {
     }
 
     override fun onSuccess(response: Any, serviceCode: Int) {
+        when(serviceCode){
+            RsConstants.ADD_MY_MEMBERS -> addmymemberResponse(response)
+        }
     }
 
     override fun onError(error: String) {
     }
+
+    private fun addmymemberResponse(response: Any) {
+        val userRegisterModel = response as UserRegisterModel
+
+
+        if (userRegisterModel.success) {
+            if (context != null) {
+                Utils.showToast(requireContext(), "Added successfully")
+            }
+
+
+        }
+    }
+
+
 }

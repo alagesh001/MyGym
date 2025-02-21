@@ -54,7 +54,7 @@ initUI()
         }
     }
     private fun login(){
-        apiManager.loginAdmin( 8148602102,"ags123")
+        apiManager.loginAdmin( 8148602102,"ags0071")
       /*  if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
 
            // apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString())

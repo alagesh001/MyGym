@@ -33,6 +33,48 @@
         <action
             android:id="@+id/action_homeFragment_to_myclientfragment"
             app:destination="@id/myclientfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addmyclientfragment"
+            app:destination="@id/addmyclientfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myTrainerFragment"
+            app:destination="@id/myTrainerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addmytrainerfragment"
+            app:destination="@id/addmytrainerfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myProductFragment"
+            app:destination="@id/myProductFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addmyproductfragment"
+            app:destination="@id/addmyproductfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myofferfragment"
+            app:destination="@id/myofferfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addmyofferfragment"
+            app:destination="@id/addmyofferfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addmyclientfragment2"
+            app:destination="@id/addmyclientfragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_gymprofilefragment"
+            app:destination="@id/gymprofilefragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myclientsettingfrag"
+            app:destination="@id/myclientsettingfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_gymprofilesettingfrag"
+            app:destination="@id/gymprofilesettingfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_offersettingfrag"
+            app:destination="@id/offersettingfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_productsettingfrag"
+            app:destination="@id/productsettingfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_trainersettingfrag"
+            app:destination="@id/trainersettingfrag" />
     </fragment>
 
     <fragment
@@ -43,4 +85,58 @@
         android:id="@+id/myclientfragment"
         android:name="com.oxad.mygym.ui.MyClientFragment"
         tools:layout="@layout/fragment_my_client"/>
+    <fragment
+        android:id="@+id/addmyclientfragment"
+        android:name="com.oxad.mygym.ui.AddmyClientFragment"
+        tools:layout="@layout/fragment_addmy_client"/>
+    <fragment
+        android:id="@+id/myTrainerFragment"
+        android:name="com.oxad.mygym.ui.MyTrainersFragment"
+        tools:layout="@layout/fragment_my_trainer"/>
+    <fragment
+        android:id="@+id/addmytrainerfragment"
+        android:name="com.oxad.mygym.ui.AddmyTrainerFragment"
+        tools:layout="@layout/fragment_addmy_trainer"/>
+    <fragment
+        android:id="@+id/addmyproductfragment"
+        android:name="com.oxad.mygym.ui.AddmyProductFragment"
+        tools:layout="@layout/fragment_addmy_product"/>
+    <fragment
+        android:id="@+id/myProductFragment"
+        android:name="com.oxad.mygym.ui.MyProductsFragment"
+        tools:layout="@layout/fragment_my_products"/>
+    <fragment
+        android:id="@+id/myofferfragment"
+        android:name="com.oxad.mygym.ui.MyOffersFragment"
+        tools:layout="@layout/fragment_my_offers"/>
+    <fragment
+        android:id="@+id/addmyofferfragment"
+        android:name="com.oxad.mygym.ui.AddmyOfferFragment"
+        tools:layout="@layout/fragment_addmy_offer"/>
+    <fragment
+        android:id="@+id/gymprofilefragment"
+        android:name="com.oxad.mygym.ui.GymprofileFragment"
+        tools:layout="@layout/fragment_gymprofile"/>
+    <fragment
+        android:id="@+id/myclientsettingfrag"
+        android:name="com.oxad.mygym.ui.ClientSettingFragment"
+        tools:layout="@layout/fragment_client_setting"/>
+    <fragment
+        android:id="@+id/trainersettingfrag"
+        android:name="com.oxad.mygym.ui.TrainerSettingFragment"
+        tools:layout="@layout/fragment_trainer_setting"/>
+    <fragment
+        android:id="@+id/productsettingfrag"
+        android:name="com.oxad.mygym.ui.ProductSettingFragment"
+        tools:layout="@layout/fragment_product_setting"/>
+    <fragment
+        android:id="@+id/offersettingfrag"
+        android:name="com.oxad.mygym.ui.OfferSettingFragment"
+        tools:layout="@layout/fragment_offer_setting"/>
+    <fragment
+        android:id="@+id/gymprofilesettingfrag"
+        android:name="com.oxad.mygym.ui.GymProfileSettingFragment"
+        tools:layout="@layout/fragment_gym_profile_setting"/>
+
+
 </navigation>

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.oxad.mygym.R
+import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.databinding.ActivityMainBinding
 import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.viewmodel.MainViewModel
@@ -17,12 +18,16 @@ import com.oxad.mygym.viewmodel.MainViewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
+
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
+
+
         initUi()
     }
 

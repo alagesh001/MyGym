@@ -1,17 +1,24 @@
 package com.oxad.mygym.ui
 
 import GymselectAdapter
+import android.graphics.pdf.PdfDocument.Page
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.mygym.R
+import com.oxad.mygym.adapter.MemberAdapter
 import com.oxad.mygym.databinding.FragmentGymSelectBinding
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -45,7 +52,10 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
         initUi()
         return binding.root     }
     private fun initUi(){
-
+        Log.e("checkfra","Yes")
+        lifecycleScope.launch {
+            mainViewModel.clearmembers()
+        }
         binding.recyclerView.setLayoutManager(LinearLayoutManager(requireContext()))
         gymselectAdapter = GymselectAdapter(mainViewModel.gymResult,this)
         binding.recyclerView.setAdapter(gymselectAdapter)

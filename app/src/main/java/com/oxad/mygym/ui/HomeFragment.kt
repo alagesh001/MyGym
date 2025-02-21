@@ -59,6 +59,7 @@ class HomeFragment : Fragment(),OnClickListener {
         binding.myoffersRl.setOnClickListener(this)
         binding.complaintRl.setOnClickListener(this)
         binding.myclientsRl.setOnClickListener(this)
+        binding.clientaddIv.setOnClickListener(this)
 
     }
     override fun onClick(p0: View?) {
@@ -69,7 +70,7 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.ourproductsRl -> code = 3
             binding.myoffersRl -> code = 4
             binding.complaintRl -> code = 5
-
+            binding.clientaddIv -> code =6
 
         }
         openFragment(code)
@@ -80,7 +81,7 @@ class HomeFragment : Fragment(),OnClickListener {
         when(code)
         {
             1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
-
+            6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
         }
 
     }

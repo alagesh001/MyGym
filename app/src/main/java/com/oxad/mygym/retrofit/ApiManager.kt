@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.oxad.mygym.model.AdminLoginModel
+import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.MyMemberListModel
 import com.oxad.mygym.utils.RsConstants.Companion.REGISTER_USER
 import com.oxad.mygym.utils.RsConstants.Companion.SAVE_USER
@@ -19,14 +20,49 @@ class ApiManager(context: Context,apiInterface: ApiInterface) {
 private val contextA = context
     private val apiInterfaceIs = apiInterface
     private val sessionManager = SessionManager(contextA)
+
+/*
+        fun getmyTrainers(gymid: Int) {
+            // Log.w("checkresponss","call api registeruser }")
+
+            RetrofitClient.instance.getmymembers(gymid)
+                .enqueue(object : Callback<MyMemberListModel> {
+
+                    override fun onResponse(
+                        call: Call<MyMemberListModel>,
+                        response: Response<MyMemberListModel>
+                    ) {
+                        //Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+
+                        if (response.body() != null) {
+                            if (response.body()!!.success) {
+                                //sessionManager.saveLogin(profileUrl, name, email)
+                                apiInterfaceIs.onSuccess(
+                                    response.body()!!,
+                                    RsConstants.GET_MY_MEMBERS
+                                )
+                            } else {
+                                apiInterfaceIs.onError(response.body()!!.message)
+                            }
+                        }
+
+                    }
+
+                    override fun onFailure(call: Call<MyMemberListModel>, t: Throwable) {
+                        //Log.e("checkresponss", "Error: ${t.message}")
+                        Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }*/
+
     fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int) {
-        Log.w("checkresponss","call api registeruser }")
+      //  Log.w("checkresponss","call api registeruser }")
 
         RetrofitClient.instance.addmymember(name,email,gymid,mob,paidmonths)
             .enqueue(object : Callback<UserRegisterModel> {
 
                 override fun onResponse(call: Call<UserRegisterModel>, response: Response<UserRegisterModel>) {
-                    Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                   // Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
 
                     if(response.body()!=null) {
                         if (response.body()!!.success) {
@@ -40,19 +76,19 @@ private val contextA = context
                 }
 
                 override fun onFailure(call: Call<UserRegisterModel>, t: Throwable) {
-                    Log.e("checkresponss", "Error: ${t.message}")
+                   // Log.e("checkresponss", "Error: ${t.message}")
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
     fun getmymembers( gymid: Int) {
-        Log.w("checkresponss","call api registeruser }")
+       // Log.w("checkresponss","call api registeruser }")
 
-        RetrofitClient.instance.getmymembers(gymid)
-            .enqueue(object : Callback<MyMemberListModel> {
+    /*    RetrofitClient.instance.getmymembers(gymid)
+            .enqueue(object : Callback<MemberResponse> {
 
-                override fun onResponse(call: Call<MyMemberListModel>, response: Response<MyMemberListModel>) {
-                    Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                override fun onResponse(call: Call<MemberResponse>, response: Response<MemberResponse>) {
+                    //Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
 
                     if(response.body()!=null) {
                         if (response.body()!!.success) {
@@ -65,11 +101,11 @@ private val contextA = context
 
                 }
 
-                override fun onFailure(call: Call<MyMemberListModel>, t: Throwable) {
-                    Log.e("checkresponss", "Error: ${t.message}")
+                override fun onFailure(call: Call<MemberResponse>, t: Throwable) {
+                    //Log.e("checkresponss", "Error: ${t.message}")
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
-            })
+            })*/
     }
     fun loginAdmin( mob: Long, pass: String) {
         //Log.w("checkresponss","call api registeruser }")
@@ -149,6 +185,7 @@ private val contextA = context
             })
     }
 }
+
 interface ApiInterface{
     fun onSuccess(response:Any,serviceCode:Int)
     fun onError(error:String)
