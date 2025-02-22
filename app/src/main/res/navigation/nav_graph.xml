@@ -84,7 +84,11 @@
     <fragment
         android:id="@+id/myclientfragment"
         android:name="com.oxad.mygym.ui.MyClientFragment"
-        tools:layout="@layout/fragment_my_client"/>
+        tools:layout="@layout/fragment_my_client">
+        <action
+            android:id="@+id/action_myclientfragment_to_addmyclientfragment"
+            app:destination="@id/addmyclientfragment" />
+    </fragment>
     <fragment
         android:id="@+id/addmyclientfragment"
         android:name="com.oxad.mygym.ui.AddmyClientFragment"

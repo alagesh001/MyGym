@@ -59,9 +59,20 @@ interface ApiService {
         @Field("email") email: String,
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
-        @Field("paidmonths") paidmonths: Int
+        @Field("paidmonths") paidmonths: Int,
+        @Field("date") date: String
     ): UserRegisterModel
-
+    @FormUrlEncoded
+    @POST("updatetable") // Adjust this to match your backend endpoint
+    suspend fun updatemymember(
+        @Field("name") name: String,
+        @Field("email") email: String,
+        @Field("gymid") gymid: Int,
+        @Field("mob") mob: Long,
+        @Field("paidmonths") paidmonths: Int,
+        @Field("date") date: String,
+        @Field("userid") userid: Long,
+    ): UserRegisterModel
     @FormUrlEncoded
     @POST("addmytrainer") // Adjust this to match your backend endpoint
     suspend fun addmytrainer(

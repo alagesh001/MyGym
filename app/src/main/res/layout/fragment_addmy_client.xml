@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
+        android:textStyle="bold"
         android:textSize="16sp" />
 
     <EditText
@@ -29,6 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mobile"
+        android:textStyle="bold"
+
         android:textSize="16sp" />
 
     <EditText
@@ -44,6 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
+        android:textStyle="bold"
+
         android:textSize="16sp" />
 
     <EditText
@@ -59,6 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Paid Months"
+        android:textStyle="bold"
+
         android:textSize="16sp" />
 
     <EditText
@@ -67,13 +74,54 @@
         android:layout_height="wrap_content"
         android:hint="Enter Number of Paid Months"
         android:inputType="number" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="From Date"
+        android:textStyle="bold"
+
+        android:textSize="16sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="5dp">
+
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"/>
+        <TextView
+            android:id="@+id/textViewSelectedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:visibility="gone"
+            android:text="" />
+    </LinearLayout>
 
     <!-- Submit Button -->
     <Button
         android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:backgroundTint="#E40212"
+        android:layout_gravity="center" />
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:backgroundTint="#E40212"
         android:layout_gravity="center" />
 
 </LinearLayout>

@@ -41,8 +41,44 @@ data class Member(
     @PrimaryKey val mobile: Long,
     val name: String,
     val renewal_date: String,
+    val email: String,
+    val userid: Long,
     var isExpanded: Boolean = false
-)
+):Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readLong(),
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(mobile)
+        parcel.writeString(name)
+        parcel.writeString(renewal_date)
+        parcel.writeString(email)
+        parcel.writeLong(userid)
+        parcel.writeByte(if (isExpanded) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Member> {
+        override fun createFromParcel(parcel: Parcel): Member {
+            return Member(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Member?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
 
 data class MyClient(
 
