@@ -41,13 +41,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MyClientFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MyClientFragment : Fragment(),ApiInterface,MemberAdapter.MemberAdapterListener {
+class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentMyClientBinding
     private lateinit var renewalAdapter: RenewalAdapter
-    private lateinit var apiManager: ApiManager
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var memberSearchAdapter: MemberSearchAdapter
 
@@ -64,7 +63,6 @@ class MyClientFragment : Fragment(),ApiInterface,MemberAdapter.MemberAdapterList
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-apiManager = ApiManager(requireContext(),this)
         binding = FragmentMyClientBinding.inflate(inflater, container, false)
         initUi()
         return binding.root
@@ -75,7 +73,7 @@ apiManager = ApiManager(requireContext(),this)
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
 
 activity?.let {
-    memberAdapter = MemberAdapter(this)
+    memberAdapter = MemberAdapter(requireContext(),this)
 
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -98,7 +96,9 @@ activity?.let {
         // memberSearchAdapter.submitList(members)
     }
     mainViewModel.searchMembers("")
-
+    binding.searchView.setOnClickListener {
+        binding.searchView.isIconified = false
+    }
     binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
              mainViewModel.searchMembers(query?:"")
@@ -128,39 +128,17 @@ activity?.let {
             }
     }
 
-    override fun onSuccess(response: Any, serviceCode: Int) {
-        when(serviceCode){
-            RsConstants.GET_MY_MEMBERS -> setmemberList(response)
-        }
-    }
 
-    override fun onError(error: String) {
-    }
-    private fun setmemberList(response: Any){
-        val myMemberListModelres =  response as MemberResponse
-
-
-        if(myMemberListModelres.success) {
-            if(context !=null) {
-               // Utils.showToast(requireContext(), "Success")
-                if (myMemberListModelres.result.isNotEmpty()) {
-                    renewalAdapter = RenewalAdapter(myMemberListModelres.result)
-                    binding.recyclerView.adapter = renewalAdapter
-                }
-            }
-        }
-
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.w("isdestroyc","Yes")
     }
 
-    override fun onUpdateClick(member: Member) {
+    override fun onUpdateClick(member: Member,isRenew:Boolean) {
         val bundle = Bundle().apply {
             putParcelable("member_data", member)
+            putBoolean("is_renew", isRenew)
         }
 
         findNavController().navigate(R.id.action_myclientfragment_to_addmyclientfragment,bundle)

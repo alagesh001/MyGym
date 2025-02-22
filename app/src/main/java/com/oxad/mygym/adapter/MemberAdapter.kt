@@ -1,19 +1,24 @@
 package com.oxad.mygym.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.oxad.mygym.R
 import com.oxad.mygym.model.Member
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-class MemberAdapter(private val listener: MemberAdapterListener) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
+class MemberAdapter(private val context: Context, private val listener: MemberAdapterListener) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_member, parent, false)
         return MemberViewHolder(view)
@@ -32,17 +37,29 @@ class MemberAdapter(private val listener: MemberAdapterListener) : RecyclerView.
         member.let {
             holder.bind(it,position)
         }
+        if(isDateExpired(member.renewal_date)){
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
+        }else if(isDateCloseToExpiry(member.renewal_date)){
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
+        }else{
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green)
+        }
+
         holder.rootLlView.setOnClickListener {
             member.isExpanded = !member.isExpanded
             notifyItemChanged(position) // Refresh item view
         }
         holder.updateTextView.setOnClickListener {
-            listener.onUpdateClick(member)
+            listener.onUpdateClick(member,false)
+        }
+        holder.renewTextView.setOnClickListener {
+            listener.onUpdateClick(member,true)
         }
     }
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rootLlView: LinearLayout = view.findViewById(R.id.rootView)
+        val selectView: LinearLayout = view.findViewById(R.id.card_bg)
 
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
         private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
@@ -50,6 +67,7 @@ class MemberAdapter(private val listener: MemberAdapterListener) : RecyclerView.
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
         val expandableLayout: View = itemView.findViewById(R.id.expandableLayout)
         val updateTextView: TextView = itemView.findViewById(R.id.update_tv)
+        val renewTextView: TextView = itemView.findViewById(R.id.renew_tv)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
@@ -61,6 +79,34 @@ class MemberAdapter(private val listener: MemberAdapterListener) : RecyclerView.
         }
     }
 
+    fun isDateExpired(dateString: String, format: String = "yyyy-MM-dd"): Boolean {
+        val dateFormat = SimpleDateFormat(format, Locale.getDefault())
+
+        return try {
+            val givenDate = dateFormat.parse(dateString) // Convert string to Date
+            val currentDate = Calendar.getInstance().time // Get current date
+
+            givenDate?.before(currentDate) ?: false // Check if given date is before today
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false // Return false if parsing fails
+        }
+    }
+
+    fun isDateCloseToExpiry(dateString: String, format: String = "yyyy-MM-dd", daysBeforeExpiry: Int = 5): Boolean {
+        val dateFormat = SimpleDateFormat(format, Locale.getDefault())
+
+        return try {
+            val givenDate = dateFormat.parse(dateString) // Convert string to Date
+            val currentDate = Calendar.getInstance() // Get current date
+            val expiryThreshold = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, daysBeforeExpiry) }
+
+            givenDate?.before(expiryThreshold.time) == true && givenDate.after(currentDate.time)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false // Return false if parsing fails
+        }
+    }
     class MemberDiffCallback : DiffUtil.ItemCallback<Member>() {
         override fun areItemsTheSame(oldItem: Member, newItem: Member): Boolean {
             return oldItem.mobile == newItem.mobile
@@ -71,6 +117,6 @@ class MemberAdapter(private val listener: MemberAdapterListener) : RecyclerView.
         }
     }
     interface MemberAdapterListener{
-        fun onUpdateClick(member:Member)
+        fun onUpdateClick(member:Member,isRenew:Boolean)
     }
 }

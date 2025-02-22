@@ -18,9 +18,27 @@ class ApiRepository() {
                 Result.failure(e) // Return failure with exception
             }
         }
-    suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,userid:Long): Result<UserRegisterModel> {
+    suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long): Result<UserRegisterModel> {
         return try {
-            val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,paidmonths,date,userid)
+            val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
+    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long): Result<UserRegisterModel> {
+        return try {
+            val response = RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
+    suspend fun deletemymembers( gymid: Int,userid:Long): Result<UserRegisterModel> {
+        return try {
+            val response = RetrofitClient.instance.deletemymember(gymid,userid)
             Result.success(response) // Return success
         } catch (e: Exception) {
             Result.failure(e) // Return failure with exception

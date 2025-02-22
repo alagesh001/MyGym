@@ -8,11 +8,11 @@
 
     >
 <LinearLayout
+    android:id="@+id/card_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:background="@drawable/roun_rad_rect"
-    android:backgroundTint="#B9F8AB"
+    android:backgroundTint="@color/green"
     android:orientation="horizontal"
     android:elevation="1dp"
     android:padding="16dp">
@@ -26,6 +26,8 @@
         android:layout_marginEnd="8dp"
         android:text="1"
         android:textSize="16sp"
+        android:textColor="@color/white"
+
         android:textStyle="bold" />
 
     <!-- Name -->
@@ -40,6 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name"
+            android:textColor="@color/white"
+
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -56,6 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Renewal Date"
+        android:textColor="@color/white"
+
         android:textSize="16sp" />
 </LinearLayout>
     <RelativeLayout
@@ -75,27 +81,50 @@
             android:layout_marginTop="40dp"
             android:text="Mobile"
             android:textSize="16sp" />
-        <TextView
-            android:id="@+id/update_tv"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Update"
-            android:backgroundTint="#3F51B5"
+            android:orientation="vertical"
             android:layout_alignParentEnd="true"
+
+            >
+
+        <TextView
+            android:id="@+id/update_tv"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Edit"
+            android:textAlignment="center"
+            android:backgroundTint="#3F51B5"
             android:textColor="@color/white"
             android:padding="@dimen/_10sdp"
 
             android:background ="@drawable/roun_rad_rect"
             android:textSize="16sp" />
-       <!-- <TextView
-            android:id="@+id/tvDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Expanded Details Here"
+            <TextView
+                android:id="@+id/renew_tv"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Renew"
+                android:textAlignment="center"
+                android:backgroundTint="#3F51B5"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"
 
-            android:textColor="@color/black"
-            android:textSize="16sp"
-         />-->
+                android:background ="@drawable/roun_rad_rect"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- <TextView
+             android:id="@+id/tvDetails"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Expanded Details Here"
+
+             android:textColor="@color/black"
+             android:textSize="16sp"
+          />-->
     </RelativeLayout>
 </LinearLayout>

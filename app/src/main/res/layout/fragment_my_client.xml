@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="Search Members..."
-            android:background="#FFFCF4"
+            android:background="#D5D5D5"
             />
 
         <androidx.recyclerview.widget.RecyclerView

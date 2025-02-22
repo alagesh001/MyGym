@@ -69,8 +69,23 @@ interface ApiService {
         @Field("email") email: String,
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
+        @Field("userid") userid: Long,
+        @Field("isRenew") isRenew: Int =0
+
+    ): UserRegisterModel
+    @FormUrlEncoded
+    @POST("updatetable") // Adjust this to match your backend endpoint
+    suspend fun renewmymember(
+        @Field("gymid") gymid: Int,
         @Field("paidmonths") paidmonths: Int,
         @Field("date") date: String,
+        @Field("userid") userid: Long,
+        @Field("isRenew") isRenew: Int =1
+    ): UserRegisterModel
+    @FormUrlEncoded
+    @POST("deletemycustomer") // Adjust this to match your backend endpoint
+    suspend fun deletemymember(
+        @Field("gymid") gymid: Int,
         @Field("userid") userid: Long,
     ): UserRegisterModel
     @FormUrlEncoded

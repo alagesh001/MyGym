@@ -1,5 +1,9 @@
 package com.oxad.mygym.ui
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -10,11 +14,13 @@ import android.view.View.GONE
 import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.adapter.RenewalAdapter
@@ -53,9 +59,13 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     private lateinit var apiManager: ApiManager
     private val mainViewModel: MainViewModel by activityViewModels()
     private var memberData:Member?  = null
+    private var isRenew:Boolean?  = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         memberData = arguments?.getParcelable("member_data",)
+        isRenew = arguments?.getBoolean("is_renew",)
+
 
     }
 
@@ -73,15 +83,30 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
         Log.d("AddMyClientFragment", "Received Member: ${memberData?.name}, Age: ${memberData?.mobile}")
         if(memberData!=null){
+            binding.deleteButton.visibility = VISIBLE
+            if(isRenew == true){
+                binding.nameInput.isEnabled = false
+                binding.renewLl.visibility = VISIBLE
+                binding.editLl.visibility = GONE
+                binding.updateButton.visibility = GONE
+                binding.renewButton.visibility = VISIBLE
+            }else{
+                binding.renewLl.visibility = GONE
+                binding.editLl.visibility = VISIBLE
+                binding.updateButton.visibility = VISIBLE
+                binding.renewButton.visibility = GONE
+
+            }
+            binding.submitButton.visibility = GONE
             binding.nameInput.text = memberData?.name?.toEditable()
             binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
             binding.emailInput.text = memberData?.email?.toEditable()
-            binding.updateButton.visibility = VISIBLE
-            binding.submitButton.visibility = GONE
+
             if(memberData?.renewal_date !=null) {
                 datePreSet = convertToCalendar(memberData!!.renewal_date)?:Calendar.getInstance()
             }
         }else{
+            binding.deleteButton.visibility = GONE
             binding.updateButton.visibility = GONE
             binding.submitButton.visibility = VISIBLE
             datePreSet = Calendar.getInstance()
@@ -126,43 +151,139 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     private fun setclicklistener(){
         binding.submitButton.setOnClickListener(this)
         binding.updateButton.setOnClickListener(this)
+        binding.renewButton.setOnClickListener(this)
+        binding.deleteButton.setOnClickListener(this)
 
 
     }
     override fun onClick(p0: View?) {
 
         when (p0) {
-            binding.submitButton -> dataAdd(false)
-            binding.updateButton -> dataAdd(true)
+            binding.submitButton -> {
+                if (binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
 
+                    dataAdd(false)
+                } else {
+                    if (context != null) {
+                        Utils.showToast(requireContext(), "Fill all the fields")
+                    }
 
+                }
+
+            }
+
+            binding.updateButton -> {
+                if (binding.nameInput.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ) {
+                    dataAdd(true)
+                } else {
+                    if (context != null) {
+                        Utils.showToast(requireContext(), "Fill all the fields")
+                    }
+                }
+            }
+
+            binding.renewButton -> {
+            if ( dateIs != "" && binding.paidmonthsInput.text.isNotEmpty()) {
+                dataAdd(true)
+            } else {
+                if (context != null) {
+                    Utils.showToast(requireContext(), "Fill all the fields")
+                }
+            }
+        }
+            binding.deleteButton -> activity?.let{
+                showCustomDialog(requireContext()) { deleteMember() }
+
+            }
 
         }
+    }
+    private fun deleteMember(){
+        lifecycleScope.launch {
+
+            val result =     memberData?.userid?.let {
+                ApiRepository().deletemymembers(
+                    mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
+                    it
+                )
+            }
+            Log.e("chadka",""+ Gson().toJson(result))
+            result?.onSuccess { response ->
+                if(response.success){
+
+                    if(context !=null) {
+                        mainViewModel.refreshMembers()
+
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                    findNavController().popBackStack()
+                }else{
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                }
+            }
+
+            result?.onFailure { exception ->
+                Utils.showToast(requireContext(), "Failed")
+                exception.message ?: "Something went wrong!"
+            }
+
+        }
+    }
+
+    private fun showCustomDialog(context: Context, onConfirm: () -> Unit) {
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_custom)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val btnConfirm = dialog.findViewById<Button>(R.id.btnConfirm)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+
+        btnConfirm.setOnClickListener {
+            onConfirm() // Perform delete action
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 private fun dataAdd(isUpdate:Boolean){
     Log.e("chadka",""+ dateIs)
 
-    if(binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()){
         lifecycleScope.launch {
 
             val result = if(!isUpdate){
                 ApiRepository().addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt(),dateIs)
             }else{
-                memberData?.userid?.let {
-                    ApiRepository().updatemymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt(),dateIs,
-                        it
-                    )
+                if(isRenew == true){
+                    memberData?.userid?.let {
+                        ApiRepository().renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
+                            it
+                        )
+                    }
+                }else{
+                    memberData?.userid?.let {
+                        ApiRepository().updatemymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
+                            it
+                        )
+                    }
                 }
+
 
             }
             Log.e("chadka",""+ Gson().toJson(result))
             result?.onSuccess { response ->
                if(response.success){
+
                    if(context !=null) {
                        mainViewModel.refreshMembers()
 
                        Utils.showToast(requireContext(), response.message)
                    }
+                   findNavController().popBackStack()
                }else{
                    if(context !=null) {
                        Utils.showToast(requireContext(), response.message)
@@ -171,12 +292,11 @@ private fun dataAdd(isUpdate:Boolean){
             }
 
             result?.onFailure { exception ->
+                Utils.showToast(requireContext(), "Failed")
                 exception.message ?: "Something went wrong!"
             }
-        }
-    }else{
-        if(context != null)
-        {        Utils.showToast(requireContext(),"Fill all the fields")}
+
+
     }
 }
 
