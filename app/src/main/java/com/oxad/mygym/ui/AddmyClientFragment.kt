@@ -1,9 +1,11 @@
 package com.oxad.mygym.ui
 
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -14,9 +16,12 @@ import android.view.View.GONE
 import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -80,6 +85,20 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     }
    private  lateinit var datePreSet:Calendar
     private fun initUi(){
+
+
+        activity?.let {
+            lifecycleScope.launch {
+                mainViewModel.trainerList.collect { trainers ->
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_dropdown_item,
+                        trainers.map { it.name })
+                    binding.spinnerTypeTrainer.adapter = adapter
+
+                }
+            }
+        }
 
         Log.d("AddMyClientFragment", "Received Member: ${memberData?.name}, Age: ${memberData?.mobile}")
         if(memberData!=null){
@@ -153,12 +172,14 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         binding.updateButton.setOnClickListener(this)
         binding.renewButton.setOnClickListener(this)
         binding.deleteButton.setOnClickListener(this)
-
+        binding.etDateOfBirth.setOnClickListener(this)
 
     }
     override fun onClick(p0: View?) {
 
         when (p0) {
+            binding.etDateOfBirth ->    showDatePickerDialog(binding.etDateOfBirth)
+
             binding.submitButton -> {
                 if (binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
 
@@ -198,6 +219,58 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
         }
     }
+    private fun showDatePickerDialog(editText: EditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+activity?.let {
+    val datePickerDialog =
+        DatePickerDialog(
+            ContextThemeWrapper(requireContext(), android.R.style.Theme_Holo_Light_Dialog), // Forces spinner mode
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                editText.setText(formattedDate)
+            },
+            year, month, day
+        )
+
+    // Force spinner mode for devices >= Android 7 (Nougat)
+    try {
+        val datePicker = datePickerDialog.datePicker
+        val method = datePicker.javaClass.getDeclaredMethod("setSpinnersShown", Boolean::class.java)
+        method.invoke(datePicker, true)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    // Show the DatePickerDialog
+    datePickerDialog.show()
+}
+        // Use spinner mode by applying a custom theme
+
+    }
+/*    private fun showDatePickerDialog(editText: EditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+activity?.let {
+    val datePickerDialog = DatePickerDialog(
+        requireContext(),
+        { _, selectedYear, selectedMonth, selectedDay ->
+            // Format the selected date and set it in EditText
+            val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+            editText.setText(formattedDate)
+        },
+        year, month, day
+    )
+
+    // Show the dialog
+    datePickerDialog.show()
+}
+
+    }*/
     private fun deleteMember(){
         lifecycleScope.launch {
 

@@ -85,20 +85,20 @@ class MainViewModel() : ViewModel() {
 
                 val result = ApiRepository().getMembers(gymResult[currentGymSelected].GymId,currentPage)
                 result.onSuccess { response ->
-                   // Log.e("chadka",""+ Gson().toJson(response))
+                   // Log.e("chadka", "" + Gson().toJson(response))
+                    if (response.success) {
+                        _memberList.value = (_memberList.value ?: emptyList()) + response.result
+                        if (currentPage < response.totalPages) {
+                            currentPage++ // Move to next page
+                            loadMembers()
+                        } else {
+                            isLastPage = true // No more data
+                            memberDao.insertMembers(_memberList.value)
+                            // Log.e("chadka","get all data "+ Gson().toJson(memberDao.getAllMembers()))
 
-                    _memberList.value = (_memberList.value ?: emptyList()) + response.result
-                    if (currentPage < response.totalPages) {
-                        currentPage++ // Move to next page
-                        loadMembers()
-                    } else {
-                        isLastPage = true // No more data
-                        memberDao.insertMembers(_memberList.value)
-                       // Log.e("chadka","get all data "+ Gson().toJson(memberDao.getAllMembers()))
-
+                        }
                     }
                 }
-
                 result.onFailure { exception ->
                     exception.message ?: "Something went wrong!"
                 }

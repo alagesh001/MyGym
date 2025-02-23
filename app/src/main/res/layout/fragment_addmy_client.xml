@@ -5,8 +5,17 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_gravity="center"
-
+android:layout_marginVertical="@dimen/_20sdp"
     >
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
 
     <!-- Name Field -->
@@ -24,54 +33,180 @@
         android:layout_height="wrap_content"
         android:hint="Enter Name"
         android:inputType="textPersonName" />
-    <LinearLayout
-        android:id="@+id/edit_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible"
-        >
-    <!-- Mobile Field -->
-    <TextView
-        android:id="@+id/mob_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mobile"
-        android:textStyle="bold"
 
-        android:textSize="16sp" />
+        <!-- Paid Months Field -->
+        <LinearLayout
+            android:id="@+id/edit_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <!-- Mobile Field -->
+            <TextView
+                android:id="@+id/mob_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile"
+                android:textSize="16sp"
 
-    <EditText
-        android:id="@+id/mob_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Mobile Number"
-        android:inputType="phone" />
+                android:textStyle="bold" />
 
-    <!-- Email Field -->
-    <TextView
-        android:id="@+id/email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textStyle="bold"
+            <EditText
+                android:id="@+id/mob_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Mobile Number"
+                android:inputType="phone" />
 
-        android:textSize="16sp" />
+            <!-- Email Field -->
+            <TextView
+                android:id="@+id/email_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="16sp"
 
-    <EditText
-        android:id="@+id/email_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Email Address"
-        android:inputType="textEmailAddress" />
-</LinearLayout>
+                android:textStyle="bold" />
 
-    <!-- Paid Months Field -->
-    <LinearLayout
+            <EditText
+                android:id="@+id/email_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Email Address"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/dob_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of birth"
+                android:textSize="16sp"
+
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Date of Birth"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/height_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Height"
+                android:textSize="16sp"
+
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/height_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Height"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/weight_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight"
+                android:textSize="16sp"
+
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/weight_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Weight"
+                android:inputType="numberDecimal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/goaltv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Goal"
+                        android:textSize="16sp"
+
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinner_type"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/goaltv"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/custom_spinner"
+                        android:entries="@array/user_types"
+                        android:padding="@dimen/_5sdp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gender"
+                        android:textSize="16sp"
+
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinner_type_gender"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:background="@drawable/custom_spinner"
+                        android:entries="@array/gender_types"
+
+                        android:padding="@dimen/_5sdp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Trainer"
+                android:textSize="16sp"
+
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_type_trainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/custom_spinner"
+                android:padding="@dimen/_5sdp"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
         android:id="@+id/renew_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="10dp"
+
         android:visibility="visible"
         >
 
@@ -159,4 +294,8 @@
         android:backgroundTint="#E40212"
         android:visibility="gone"
         android:layout_gravity="center" />
+    </LinearLayout>
+
+</ScrollView>
+
 </LinearLayout>
