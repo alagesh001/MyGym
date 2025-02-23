@@ -422,7 +422,10 @@ activity?.let {
         dialog.show()
     }
 private fun dataAdd(isUpdate:Boolean){
-
+    if(trainerData?.isEmpty() == true){
+        Utils.showToast(requireContext(), "No trainers found")
+        return
+    }
         lifecycleScope.launch {
 
             val result = if(!isUpdate){
