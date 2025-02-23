@@ -7,7 +7,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,12 +38,15 @@ import com.oxad.mygym.databinding.FragmentMyClientBinding
 import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.MyMemberListModel
+import com.oxad.mygym.model.TrainerModel
 import com.oxad.mygym.model.UserRegisterModel
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.utils.Utils
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -80,16 +86,58 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentAddmyClientBinding.inflate(inflater, container, false)
+
         initUi()
         return binding.root
     }
+
+    private val handler = Handler(Looper.getMainLooper())
+        private fun validateReferralId(members: List<Member>) {
+            binding.referInput.addTextChangedListener(object : TextWatcher {
+                private var lastInput: String? = null
+
+                override fun afterTextChanged(s: Editable?) {
+                    val referralId = s.toString().trim()
+                    if (referralId.length == 10) {
+                        if (lastInput != referralId) {
+                            lastInput = referralId
+                            handler.removeCallbacksAndMessages(null) // Debounce previous calls
+                            handler.postDelayed({
+                                checkReferralIdInList(members, referralId)
+                            }, 500) // Delay validation for smoother UX
+                        }
+                    }else{
+                        binding.referInput.setTextColor(Color.RED)
+
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+        }
+    private fun checkReferralIdInList(members: List<Member>, referralId: String) {
+        val isValid = members.any { it.referral_id == referralId }
+//Log.e("chjjada","memberss "+Gson().toJson(members))
+       // Log.e("chjjada","referral_id "+referralId)
+
+        if (isValid) {
+            binding.referInput.setTextColor(Color.GREEN)
+        } else {
+            binding.referInput.setTextColor(Color.RED)
+        }
+    }
    private  lateinit var datePreSet:Calendar
+
+    private   var dobPreSet:Calendar ? = null
+   private var trainerData:List<TrainerModel> ? =null
     private fun initUi(){
 
 
         activity?.let {
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 mainViewModel.trainerList.collect { trainers ->
+                    trainerData = trainers
                     val adapter = ArrayAdapter(
                         requireContext(),
                         android.R.layout.simple_spinner_dropdown_item,
@@ -100,6 +148,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             }
         }
 
+        binding.spinnerTypeGender.selectedItem.toString()
         Log.d("AddMyClientFragment", "Received Member: ${memberData?.name}, Age: ${memberData?.mobile}")
         if(memberData!=null){
             binding.deleteButton.visibility = VISIBLE
@@ -114,12 +163,49 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 binding.editLl.visibility = VISIBLE
                 binding.updateButton.visibility = VISIBLE
                 binding.renewButton.visibility = GONE
+                binding.referInput.isEnabled = false
+                binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
+                binding.emailInput.text = memberData?.email?.toEditable()
+                binding.heightInput.text = Editable.Factory.getInstance().newEditable(memberData?.height.toString())
+                binding.weightInput.text = Editable.Factory.getInstance().newEditable(memberData?.height?.toString())
 
+                val selectionGoal = (memberData?.goal)?.minus(1)
+                Log.e("adsfadf","pos $memberData?.goal")
+                try {
+                    binding.spinnerType.setSelection(selectionGoal?:0)
+
+                }catch (e:Exception){
+                    binding.spinnerType.setSelection(0)
+
+                }
+
+                val position = trainerData?.indexOfFirst { it.coachid == memberData?.coachid }
+                if (position != null && position >= 0) {
+                    try {
+                        binding.spinnerTypeTrainer.setSelection(position)
+
+                    }catch (e:Exception){
+                        binding.spinnerTypeTrainer.setSelection(0)
+
+                    }
+
+                } else {
+                    binding.spinnerTypeTrainer.setSelection(0)
+                }
+
+
+
+                val genderarray= resources.getStringArray(R.array.gender_types)
+                binding.spinnerTypeGender.setSelection(genderarray.indexOf(memberData?.gender?:"Male"))
+                binding.etDateOfBirth.text = memberData?.dob.toString().toEditable()
+                if(memberData?.dob !=null) {
+                    dobPreSet = convertToCalendar(memberData!!.dob)?:Calendar.getInstance()
+                }
+                binding.referInput.text = memberData?.referred_by?.toEditable()
             }
             binding.submitButton.visibility = GONE
             binding.nameInput.text = memberData?.name?.toEditable()
-            binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
-            binding.emailInput.text = memberData?.email?.toEditable()
+
 
             if(memberData?.renewal_date !=null) {
                 datePreSet = convertToCalendar(memberData!!.renewal_date)?:Calendar.getInstance()
@@ -129,6 +215,12 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             binding.updateButton.visibility = GONE
             binding.submitButton.visibility = VISIBLE
             datePreSet = Calendar.getInstance()
+            mainViewModel.loadMembers()
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.memberList.collectLatest { members ->
+                    validateReferralId(members)
+                }
+            }
         }
         val datePicker: DatePicker =  binding.datePicker
 
@@ -181,7 +273,9 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             binding.etDateOfBirth ->    showDatePickerDialog(binding.etDateOfBirth)
 
             binding.submitButton -> {
-                if (binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
+                Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
+
+                if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
 
                     dataAdd(false)
                 } else {
@@ -194,7 +288,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             }
 
             binding.updateButton -> {
-                if (binding.nameInput.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ) {
+                if (binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ) {
                     dataAdd(true)
                 } else {
                     if (context != null) {
@@ -220,7 +314,8 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         }
     }
     private fun showDatePickerDialog(editText: EditText) {
-        val calendar = Calendar.getInstance()
+
+        val calendar = dobPreSet ?: Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -229,7 +324,10 @@ activity?.let {
         DatePickerDialog(
             ContextThemeWrapper(requireContext(), android.R.style.Theme_Holo_Light_Dialog), // Forces spinner mode
             { _, selectedYear, selectedMonth, selectedDay ->
-                val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth,selectedDay)
+                val mysqlDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val formattedDate = mysqlDateFormat.format(selectedDate.time)
                 editText.setText(formattedDate)
             },
             year, month, day
@@ -324,12 +422,25 @@ activity?.let {
         dialog.show()
     }
 private fun dataAdd(isUpdate:Boolean){
-    Log.e("chadka",""+ dateIs)
 
         lifecycleScope.launch {
 
             val result = if(!isUpdate){
-                ApiRepository().addmymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),binding.paidmonthsInput.text.toString().toInt(),dateIs)
+                trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid?.toLong()
+                    ?.let {
+                        ApiRepository().addmymembers(
+                            binding.nameInput.text.toString(),binding.emailInput.text.toString(),
+                            mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
+                            binding.paidmonthsInput.text.toString().toInt(),dateIs,
+                            binding.etDateOfBirth.text.toString(),
+                            binding.heightInput.text.toString().toFloat(),
+                            binding.weightInput.text.toString().toFloat(),
+                            binding.spinnerType.selectedItemPosition  + 1,
+                            it,
+                            binding.spinnerTypeGender.selectedItem.toString(),
+                            binding.referInput.text.toString().trim()
+                        )
+                    }
             }else{
                 if(isRenew == true){
                     memberData?.userid?.let {
@@ -339,8 +450,12 @@ private fun dataAdd(isUpdate:Boolean){
                     }
                 }else{
                     memberData?.userid?.let {
-                        ApiRepository().updatemymembers(binding.nameInput.text.toString(),binding.emailInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
-                            it
+                        ApiRepository().updatemymembers(binding.nameInput.text.toString(),
+                            binding.emailInput.text.toString(),
+                            mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
+                            binding.mobInput.text.toString().toLong(),
+                            it,
+
                         )
                     }
                 }
@@ -386,5 +501,9 @@ private fun dataAdd(isUpdate:Boolean){
     }
 
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.e("chadkaa","destroy")
+        viewLifecycleOwner.lifecycleScope.coroutineContext.cancel()
+    }
 }

@@ -60,7 +60,16 @@ interface ApiService {
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
         @Field("paidmonths") paidmonths: Int,
-        @Field("date") date: String
+        @Field("date") date: String,
+        @Field("dob") dob: String,
+        @Field("height") height: Float,
+        @Field("weight") weight: Float,
+        @Field("goal") goal: Int,
+        @Field("trainer") trainerId: Long,
+        @Field("gender") gender: String,
+        @Field("referredBy") referredBy: String
+
+
     ): UserRegisterModel
     @FormUrlEncoded
     @POST("updatetable") // Adjust this to match your backend endpoint
@@ -70,7 +79,8 @@ interface ApiService {
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
         @Field("userid") userid: Long,
-        @Field("isRenew") isRenew: Int =0
+        @Field("isRenew") isRenew: Int =0,
+
 
     ): UserRegisterModel
     @FormUrlEncoded

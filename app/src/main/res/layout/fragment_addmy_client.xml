@@ -59,6 +59,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:inputType="phone" />
 
             <!-- Email Field -->
+            z
             <TextView
                 android:id="@+id/email_label"
                 android:layout_width="wrap_content"
@@ -74,7 +75,20 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:hint="Enter Email Address"
                 android:inputType="textEmailAddress" />
+            <TextView
+                android:id="@+id/refer_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Referral Id"
+                android:textStyle="bold"
+                android:textSize="16sp" />
 
+            <EditText
+                android:id="@+id/refer_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Referral Id"
+                android:inputType="text" />
             <TextView
                 android:id="@+id/dob_label"
                 android:layout_width="wrap_content"
@@ -95,7 +109,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:id="@+id/height_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Height"
+                android:text="Height (in cm)"
                 android:textSize="16sp"
 
                 android:textStyle="bold" />
@@ -111,7 +125,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:id="@+id/weight_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weight"
+                android:text="Weight (in kg)"
                 android:textSize="16sp"
 
                 android:textStyle="bold" />

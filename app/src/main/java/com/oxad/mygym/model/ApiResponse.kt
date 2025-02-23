@@ -43,16 +43,38 @@ data class Member(
     val renewal_date: String,
     val email: String,
     val userid: Long,
-    var isExpanded: Boolean = false
-):Parcelable {
+    val referral_id: String? = "",
+    var isExpanded: Boolean = false,
+    val height: Float = 0f,
+    val weight: Float = 0f,
+    val dob: String,
+    val coachid: Long,
+    val goal: Int = 1,
+    val gender: String? = "Male",
+    val referred_by: String? = "",
+
+    ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString() ?: "",
+
         parcel.readString() ?: "",
+
         parcel.readString() ?: "",
+
         parcel.readLong(),
-        parcel.readByte() != 0.toByte()
-    ) {
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readFloat(),
+        parcel.readFloat(),
+        parcel.readString() ?: "",
+
+        parcel.readLong(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString() ?: "",
+
+        ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -61,7 +83,15 @@ data class Member(
         parcel.writeString(renewal_date)
         parcel.writeString(email)
         parcel.writeLong(userid)
+        parcel.writeString(referral_id)
         parcel.writeByte(if (isExpanded) 1 else 0)
+        parcel.writeFloat(height)
+        parcel.writeFloat(weight)
+        parcel.writeString(dob)
+        parcel.writeLong(coachid)
+        parcel.writeInt(goal)
+        parcel.writeString(gender)
+        parcel.writeString(referred_by)
     }
 
     override fun describeContents(): Int {
@@ -195,7 +225,7 @@ data class GetMyTrainersResponse(   val success: Boolean,
                                     val result: ArrayList<TrainerModel>)
 data class TrainerModel(
 
-    val coachid: Int,
+    val coachid: Long,
 
     val name: String,
 

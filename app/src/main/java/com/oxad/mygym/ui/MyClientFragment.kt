@@ -26,6 +26,7 @@ import com.oxad.mygym.retrofit.ApiManager
 
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.cancel
 
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -79,7 +80,7 @@ activity?.let {
 
     binding.recyclerView.adapter =  memberAdapter
     mainViewModel.loadMembers()
-    lifecycleScope.launch {
+    viewLifecycleOwner.lifecycleScope.launch {
         mainViewModel.memberList.collectLatest { members ->
             memberAdapter.submitList(members)
         }
@@ -144,5 +145,9 @@ activity?.let {
         findNavController().navigate(R.id.action_myclientfragment_to_addmyclientfragment,bundle)
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.e("chadkaa","destroy")
+        viewLifecycleOwner.lifecycleScope.coroutineContext.cancel()
+    }
 }
