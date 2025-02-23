@@ -183,7 +183,7 @@ android:alpha="0.8"
 
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/myoffers_rl"
+            android:id="@+id/myrefer_rl"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"

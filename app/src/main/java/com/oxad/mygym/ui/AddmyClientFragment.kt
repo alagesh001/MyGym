@@ -167,7 +167,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
                 binding.emailInput.text = memberData?.email?.toEditable()
                 binding.heightInput.text = Editable.Factory.getInstance().newEditable(memberData?.height.toString())
-                binding.weightInput.text = Editable.Factory.getInstance().newEditable(memberData?.height?.toString())
+                binding.weightInput.text = Editable.Factory.getInstance().newEditable(memberData?.weight?.toString())
 
                 val selectionGoal = (memberData?.goal)?.minus(1)
                 Log.e("adsfadf","pos $memberData?.goal")
@@ -273,7 +273,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             binding.etDateOfBirth ->    showDatePickerDialog(binding.etDateOfBirth)
 
             binding.submitButton -> {
-                Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
+              //  Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
 
                 if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
 
@@ -378,7 +378,7 @@ activity?.let {
                     it
                 )
             }
-            Log.e("chadka",""+ Gson().toJson(result))
+            //Log.e("chadka",""+ Gson().toJson(result))
             result?.onSuccess { response ->
                 if(response.success){
 
@@ -426,7 +426,7 @@ private fun dataAdd(isUpdate:Boolean){
         lifecycleScope.launch {
 
             val result = if(!isUpdate){
-                trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid?.toLong()
+                trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid
                     ?.let {
                         ApiRepository().addmymembers(
                             binding.nameInput.text.toString(),binding.emailInput.text.toString(),
@@ -450,19 +450,26 @@ private fun dataAdd(isUpdate:Boolean){
                     }
                 }else{
                     memberData?.userid?.let {
-                        ApiRepository().updatemymembers(binding.nameInput.text.toString(),
-                            binding.emailInput.text.toString(),
-                            mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
-                            binding.mobInput.text.toString().toLong(),
-                            it,
+                        trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid?.let { it1 ->
+                            ApiRepository().updatemymembers(binding.nameInput.text.toString(),
+                                binding.emailInput.text.toString(),
+                                mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
+                                binding.mobInput.text.toString().toLong(),
+                                it, binding.etDateOfBirth.text.toString(),
+                                binding.heightInput.text.toString().toFloat(),
+                                binding.weightInput.text.toString().toFloat(),
+                                binding.spinnerType.selectedItemPosition  + 1,
+                                it1,
+                                binding.spinnerTypeGender.selectedItem.toString(),
 
-                        )
+                                )
+                        }
                     }
                 }
 
 
             }
-            Log.e("chadka",""+ Gson().toJson(result))
+            //Log.e("chadka",""+ Gson().toJson(result))
             result?.onSuccess { response ->
                if(response.success){
 
@@ -503,7 +510,7 @@ private fun dataAdd(isUpdate:Boolean){
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.e("chadkaa","destroy")
+        //Log.e("chadkaa","destroy")
         viewLifecycleOwner.lifecycleScope.coroutineContext.cancel()
     }
 }

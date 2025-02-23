@@ -1,5 +1,7 @@
 package com.oxad.mygym.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +21,7 @@ import com.oxad.mygym.adapter.MemberSearchAdapter
 import com.oxad.mygym.adapter.RenewalAdapter
 import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.databinding.FragmentMyClientBinding
+import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.MemberResponse
 
@@ -75,7 +79,7 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
 
 activity?.let {
     memberAdapter = MemberAdapter(requireContext(),this)
-
+    dataStoreManager = DataStoreManager(requireContext())
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
     binding.recyclerView.adapter =  memberAdapter
@@ -144,10 +148,31 @@ activity?.let {
 
         findNavController().navigate(R.id.action_myclientfragment_to_addmyclientfragment,bundle)
     }
+private lateinit var dataStoreManager: DataStoreManager
+    override fun onWhatsappSend(member: Member) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (::dataStoreManager.isInitialized) {
+                dataStoreManager.referralMessage.collect { savedMessage ->
+                    val fullmsg = savedMessage + " The Referral Code is ${member.referral_id}."
+                    sendWhatsAppMessage(fullmsg, "91" + member.mobile.toString().replace(" ", ""))
+                }
+            }
+        }
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.e("chadkaa","destroy")
+       // Log.e("chadkaa","destroy")
         viewLifecycleOwner.lifecycleScope.coroutineContext.cancel()
+    }
+    private fun sendWhatsAppMessage(message: String, phoneNumber: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://wa.me/$phoneNumber?text=" + Uri.encode(message))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 }

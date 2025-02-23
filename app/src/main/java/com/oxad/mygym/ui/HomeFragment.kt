@@ -71,7 +71,7 @@ class HomeFragment : Fragment(),OnClickListener {
     private fun setclicklistener(){
         binding.mytrainerRl.setOnClickListener(this)
         binding.ourproductsRl.setOnClickListener(this)
-        binding.myoffersRl.setOnClickListener(this)
+        binding.myreferRl.setOnClickListener(this)
         binding.complaintRl.setOnClickListener(this)
         binding.myclientsRl.setOnClickListener(this)
         binding.clientaddIv.setOnClickListener(this)
@@ -84,7 +84,7 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.myclientsRl -> code = 1
             binding.mytrainerRl -> code = 2
             binding.ourproductsRl -> code = 3
-            binding.myoffersRl -> code = 4
+            binding.myreferRl -> code = 4
             binding.complaintRl -> code = 5
             binding.clientaddIv -> code =6
             binding.traineraddIv -> code = 7
@@ -98,6 +98,7 @@ class HomeFragment : Fragment(),OnClickListener {
         {
             1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
             2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
+            4 -> findNavController().navigate(R.id.action_homeFragment_to_myreffrag)
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
 

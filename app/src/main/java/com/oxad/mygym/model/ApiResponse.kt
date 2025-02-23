@@ -232,4 +232,33 @@ data class TrainerModel(
     val mob: String,
     var isExpanded: Boolean = false
 
-    )
+    ):Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(coachid)
+        parcel.writeString(name)
+        parcel.writeString(mob)
+        parcel.writeByte(if (isExpanded) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TrainerModel> {
+        override fun createFromParcel(parcel: Parcel): TrainerModel {
+            return TrainerModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TrainerModel?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

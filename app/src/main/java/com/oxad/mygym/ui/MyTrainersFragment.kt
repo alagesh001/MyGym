@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.oxad.mygym.R
 import com.oxad.mygym.adapter.ExpandableAdapter
 import com.oxad.mygym.adapter.RenewalAdapter
 import com.oxad.mygym.databinding.FragmentMyClientBinding
 import com.oxad.mygym.databinding.FragmentMyTrainerBinding
 import com.oxad.mygym.model.ExpandableItem
 import com.oxad.mygym.model.MyMemberListModel
+import com.oxad.mygym.model.TrainerModel
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
 import com.oxad.mygym.utils.RsConstants
@@ -27,11 +30,11 @@ import kotlinx.coroutines.launch
  * Use the [MyTrainersFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MyTrainersFragment : Fragment() {
+class MyTrainersFragment : Fragment(),ExpandableAdapter.TrainerListener{
     // TODO: Rename and change types of parameters
 
     private lateinit var binding: FragmentMyTrainerBinding
-    private lateinit var renewalAdapter: RenewalAdapter
+    private lateinit var expandableAdapter: ExpandableAdapter
     private lateinit var apiManager: ApiManager
     private val mainViewModel: MainViewModel by activityViewModels()
 
@@ -53,15 +56,22 @@ class MyTrainersFragment : Fragment() {
 
     private fun initUi() {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        lifecycleScope.launch {
-            mainViewModel.trainerList.collectLatest { trainers ->
-                activity?.let {
-                    binding.recyclerView.adapter = ExpandableAdapter(trainers, requireContext())
+        activity?.let {
+            expandableAdapter = ExpandableAdapter(requireContext(),this)
+            binding.recyclerView.adapter = expandableAdapter
+            lifecycleScope.launch {
+                mainViewModel.trainerList.collectLatest { trainers ->
+                    activity?.let {
+                        expandableAdapter.submitList(trainers)
+                    }
                 }
+
+
             }
-
-
         }
+
+
+
     }
 
     companion object {
@@ -78,5 +88,13 @@ class MyTrainersFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onUpdate(trainerModel: TrainerModel) {
+        val bundle = Bundle().apply {
+            putParcelable("trainer_data", trainerModel)
+        }
+
+        findNavController().navigate(R.id.action_myTrainerFragment_to_addmytrainerfragment,bundle)
     }
 }

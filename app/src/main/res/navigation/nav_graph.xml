@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_homeFragment_to_trainersettingfrag"
             app:destination="@id/trainersettingfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_myreffrag"
+            app:destination="@id/myreffrag" />
     </fragment>
 
     <fragment
@@ -96,7 +99,11 @@
     <fragment
         android:id="@+id/myTrainerFragment"
         android:name="com.oxad.mygym.ui.MyTrainersFragment"
-        tools:layout="@layout/fragment_my_trainer"/>
+        tools:layout="@layout/fragment_my_trainer">
+        <action
+            android:id="@+id/action_myTrainerFragment_to_addmytrainerfragment"
+            app:destination="@id/addmytrainerfragment" />
+    </fragment>
     <fragment
         android:id="@+id/addmytrainerfragment"
         android:name="com.oxad.mygym.ui.AddmyTrainerFragment"
@@ -141,6 +148,10 @@
         android:id="@+id/gymprofilesettingfrag"
         android:name="com.oxad.mygym.ui.GymProfileSettingFragment"
         tools:layout="@layout/fragment_gym_profile_setting"/>
+    <fragment
+        android:id="@+id/myreffrag"
+        android:name="com.oxad.mygym.ui.MyReferralFragment"
+        tools:layout="@layout/fragment_my_referral"/>
 
 
 </navigation>

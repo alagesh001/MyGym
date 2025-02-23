@@ -79,10 +79,24 @@ interface ApiService {
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
         @Field("userid") userid: Long,
+        @Field("dob") dob: String,
+        @Field("height") height: Float,
+        @Field("weight") weight: Float,
+        @Field("goal") goal: Int,
+        @Field("trainer") trainerId: Long,
+        @Field("gender") gender: String,
         @Field("isRenew") isRenew: Int =0,
 
 
     ): UserRegisterModel
+    @FormUrlEncoded
+    @POST("updatetrainer") // Adjust this to match your backend endpoint
+    suspend fun updatemytrainer(
+        @Field("name") name: String,
+        @Field("gymid") gymid: Int,
+        @Field("mob") mob: Long,
+        @Field("trainer") trainerId: Long,
+        ): UserRegisterModel
     @FormUrlEncoded
     @POST("updatetable") // Adjust this to match your backend endpoint
     suspend fun renewmymember(
@@ -90,13 +104,20 @@ interface ApiService {
         @Field("paidmonths") paidmonths: Int,
         @Field("date") date: String,
         @Field("userid") userid: Long,
-        @Field("isRenew") isRenew: Int =1
+        @Field("isRenew") isRenew: Int =1,
+
     ): UserRegisterModel
     @FormUrlEncoded
     @POST("deletemycustomer") // Adjust this to match your backend endpoint
     suspend fun deletemymember(
         @Field("gymid") gymid: Int,
         @Field("userid") userid: Long,
+    ): UserRegisterModel
+    @FormUrlEncoded
+    @POST("removetrainer") // Adjust this to match your backend endpoint
+    suspend fun deletemytrainer(
+        @Field("gymid") gymid: Int,
+        @Field("coachid") coachid: Long,
     ): UserRegisterModel
     @FormUrlEncoded
     @POST("addmytrainer") // Adjust this to match your backend endpoint

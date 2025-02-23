@@ -18,9 +18,18 @@ class ApiRepository() {
                 Result.failure(e) // Return failure with exception
             }
         }
-    suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,): Result<UserRegisterModel> {
+    suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String): Result<UserRegisterModel> {
         return try {
-            val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid)
+            val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
+    suspend fun updatemytrainer( name:String,mob:Long,gymid: Int,trainerId:Long): Result<UserRegisterModel> {
+        return try {
+            val response = RetrofitClient.instance.updatemytrainer(name,gymid,mob,trainerId)
             Result.success(response) // Return success
         } catch (e: Exception) {
             Result.failure(e) // Return failure with exception
@@ -39,6 +48,16 @@ class ApiRepository() {
     suspend fun deletemymembers( gymid: Int,userid:Long): Result<UserRegisterModel> {
         return try {
             val response = RetrofitClient.instance.deletemymember(gymid,userid)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
+    suspend fun deletemytrainer( gymid: Int,trainerId:Long): Result<UserRegisterModel> {
+        return try {
+            Log.e("cadfaaasf","gid $gymid tid $trainerId")
+            val response = RetrofitClient.instance.deletemytrainer(gymid,trainerId)
             Result.success(response) // Return success
         } catch (e: Exception) {
             Result.failure(e) // Return failure with exception

@@ -27,6 +27,7 @@ class MainViewModel() : ViewModel() {
     lateinit var memberDao: MemberDao
     private val _trainerList = MutableStateFlow<List<TrainerModel>>(emptyList())
     val trainerList: StateFlow<List<TrainerModel>> = _trainerList
+
     private var currentPage = 1
     private val limit = 5
      var isLastPage = false
@@ -53,7 +54,7 @@ class MainViewModel() : ViewModel() {
                 Log.d("DataStoreA", "Not Stored")
 
                 val result = ApiRepository().getTrainers(gymResult[currentGymSelected].GymId)
-                Log.e("chadka",""+ Gson().toJson(result))
+               // Log.e("chadka",""+ Gson().toJson(result))
                 result.onSuccess { response ->
                     if(response.success){
                         _trainerList.value = response.result
@@ -77,7 +78,7 @@ class MainViewModel() : ViewModel() {
 
         viewModelScope.launch {
             val cachedMembers = memberDao.getAllMembers()
-            Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
+           // Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
 
             if (cachedMembers.isNotEmpty()) {
                 _memberList.value =  cachedMembers // Return cached data

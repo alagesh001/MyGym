@@ -55,6 +55,9 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         holder.renewTextView.setOnClickListener {
             listener.onUpdateClick(member,true)
         }
+        holder.sendwtsapp_tv.setOnClickListener {
+            listener.onWhatsappSend(member)
+        }
     }
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -68,6 +71,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         val expandableLayout: View = itemView.findViewById(R.id.expandableLayout)
         val updateTextView: TextView = itemView.findViewById(R.id.update_tv)
         val renewTextView: TextView = itemView.findViewById(R.id.renew_tv)
+        val sendwtsapp_tv: TextView = itemView.findViewById(R.id.sendwtsapp_tv)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
@@ -118,5 +122,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
     }
     interface MemberAdapterListener{
         fun onUpdateClick(member:Member,isRenew:Boolean)
+        fun onWhatsappSend(member:Member)
+
     }
 }

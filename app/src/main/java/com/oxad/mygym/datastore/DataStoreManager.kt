@@ -15,6 +15,7 @@ class DataStoreManager(private val context: Context) {
 
     companion object {
         private val COACHES_KEY = stringPreferencesKey("coaches_list")
+        private val REFERRAL_MESSAGE_KEY = stringPreferencesKey("referral_message")
     }
 
     // ✅ Save coaches list
@@ -38,4 +39,16 @@ class DataStoreManager(private val context: Context) {
             preferences.remove(COACHES_KEY) // Removes the stored coaches
         }
     }
+    suspend fun saveReferralMessage(message: String) {
+        context.dataStore.edit { preferences ->
+            preferences[REFERRAL_MESSAGE_KEY] = message
+        }
+    }
+
+    // Function to get referral message
+    val referralMessage: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[REFERRAL_MESSAGE_KEY] ?: "Join my gym using this referral code!"
+        }
+
 }
