@@ -1,0 +1,218 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/_20sdp">
+
+        <LinearLayout
+            android:id="@+id/selectionLay_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_30sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/dob_filter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:elevation="2dp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/myclients_iv"
+                    android:alpha="0.8"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/rounded_rect_grad6"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="By Date of birth"
+                    android:paddingHorizontal="@dimen/_20sdp"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:layout_centerVertical="true"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+
+
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/gender_filter"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="2dp"
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/rounded_rect_grad6"
+                    android:alpha="0.8"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="By Gender"
+                    android:paddingHorizontal="@dimen/_20sdp"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:layout_centerVertical="true"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+
+
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/goal_filter"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="2dp"
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/rounded_rect_grad6"
+                    android:alpha="0.8"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="By Goals"
+                    android:paddingHorizontal="@dimen/_20sdp"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:layout_centerVertical="true"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/age_filter"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="2dp"
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/rounded_rect_grad6"
+                    android:alpha="0.8"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="By Age"
+                    android:paddingHorizontal="@dimen/_20sdp"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:layout_centerVertical="true"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/trainer_filter"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="2dp"
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/rounded_rect_grad6"
+                    android:alpha="0.8"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="By Trainers"
+                    android:paddingHorizontal="@dimen/_20sdp"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:layout_centerVertical="true"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

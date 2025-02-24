@@ -16,9 +16,12 @@ import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.TrainerModel
 import com.oxad.mygym.utils.Utils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 class MainViewModel() : ViewModel() {
     var gymResult: ArrayList<LoginResult> = ArrayList()
     var currentGymSelected: Int = 0
@@ -43,7 +46,26 @@ class MainViewModel() : ViewModel() {
             memberDao.searchMembersByName(query)
         }*/
     }
-
+    suspend fun getMaleMembers(): List<Member> {
+        return withContext(Dispatchers.IO) {
+            memberList.value.filter { it.gender == "Male" }
+        }
+    }
+    suspend fun getTotalMemberList(): List<Member> {
+        return withContext(Dispatchers.IO) {
+            memberList.value
+        }
+    }
+    suspend fun getTrainerList(): List<TrainerModel> {
+        return withContext(Dispatchers.IO) {
+            trainerList.value
+        }
+    }
+    suspend fun getFemaleMembers(): List<Member> {
+        return withContext(Dispatchers.IO) {
+            memberList.value.filter { it.gender == "Female" }
+        }
+    }
     fun searchMembers(query: String) {
         _searchQuery.value = query
     }

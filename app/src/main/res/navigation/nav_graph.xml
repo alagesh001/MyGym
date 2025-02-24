@@ -60,24 +60,13 @@
         <action
             android:id="@+id/action_homeFragment_to_gymprofilefragment"
             app:destination="@id/gymprofilefragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_myclientsettingfrag"
-            app:destination="@id/myclientsettingfrag" />
-        <action
-            android:id="@+id/action_homeFragment_to_gymprofilesettingfrag"
-            app:destination="@id/gymprofilesettingfrag" />
-        <action
-            android:id="@+id/action_homeFragment_to_offersettingfrag"
-            app:destination="@id/offersettingfrag" />
-        <action
-            android:id="@+id/action_homeFragment_to_productsettingfrag"
-            app:destination="@id/productsettingfrag" />
-        <action
-            android:id="@+id/action_homeFragment_to_trainersettingfrag"
-            app:destination="@id/trainersettingfrag" />
+
         <action
             android:id="@+id/action_homeFragment_to_myreffrag"
             app:destination="@id/myreffrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchfilfrag"
+            app:destination="@id/searchfilfrag" />
     </fragment>
 
     <fragment
@@ -128,30 +117,21 @@
         android:id="@+id/gymprofilefragment"
         android:name="com.oxad.mygym.ui.GymprofileFragment"
         tools:layout="@layout/fragment_gymprofile"/>
-    <fragment
-        android:id="@+id/myclientsettingfrag"
-        android:name="com.oxad.mygym.ui.ClientSettingFragment"
-        tools:layout="@layout/fragment_client_setting"/>
-    <fragment
-        android:id="@+id/trainersettingfrag"
-        android:name="com.oxad.mygym.ui.TrainerSettingFragment"
-        tools:layout="@layout/fragment_trainer_setting"/>
-    <fragment
-        android:id="@+id/productsettingfrag"
-        android:name="com.oxad.mygym.ui.ProductSettingFragment"
-        tools:layout="@layout/fragment_product_setting"/>
-    <fragment
-        android:id="@+id/offersettingfrag"
-        android:name="com.oxad.mygym.ui.OfferSettingFragment"
-        tools:layout="@layout/fragment_offer_setting"/>
-    <fragment
-        android:id="@+id/gymprofilesettingfrag"
-        android:name="com.oxad.mygym.ui.GymProfileSettingFragment"
-        tools:layout="@layout/fragment_gym_profile_setting"/>
+
     <fragment
         android:id="@+id/myreffrag"
         android:name="com.oxad.mygym.ui.MyReferralFragment"
         tools:layout="@layout/fragment_my_referral"/>
-
-
+    <fragment
+        android:id="@+id/searchfilfrag"
+        android:name="com.oxad.mygym.ui.SearchFilterFragment"
+        tools:layout="@layout/fragment_search_filter">
+        <action
+            android:id="@+id/action_searchfilfrag_to_filfrag"
+            app:destination="@id/filfrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/filfrag"
+        android:name="com.oxad.mygym.ui.MemberFilterCompose"
+        tools:layout="@layout/fragment_member_filter_compose"/>
 </navigation>

@@ -135,7 +135,7 @@ android:alpha="0.8"
             </LinearLayout>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/ourproducts_rl"
+            android:id="@+id/searchfilter_rl"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"

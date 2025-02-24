@@ -55,6 +55,8 @@ class HomeFragment : Fragment(),OnClickListener {
         initUi()
         return binding.root    }
     private fun initUi(){
+        mainViewModel.loadMembers()
+
         activity?.lifecycleScope?.launch {
           Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
 
@@ -70,7 +72,7 @@ class HomeFragment : Fragment(),OnClickListener {
     }
     private fun setclicklistener(){
         binding.mytrainerRl.setOnClickListener(this)
-        binding.ourproductsRl.setOnClickListener(this)
+        binding.searchfilterRl.setOnClickListener(this)
         binding.myreferRl.setOnClickListener(this)
         binding.complaintRl.setOnClickListener(this)
         binding.myclientsRl.setOnClickListener(this)
@@ -83,7 +85,7 @@ class HomeFragment : Fragment(),OnClickListener {
         when (p0) {
             binding.myclientsRl -> code = 1
             binding.mytrainerRl -> code = 2
-            binding.ourproductsRl -> code = 3
+            binding.searchfilterRl -> code = 3
             binding.myreferRl -> code = 4
             binding.complaintRl -> code = 5
             binding.clientaddIv -> code =6
@@ -98,6 +100,7 @@ class HomeFragment : Fragment(),OnClickListener {
         {
             1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
             2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
+            3 -> findNavController().navigate(R.id.action_homeFragment_to_searchfilfrag)
             4 -> findNavController().navigate(R.id.action_homeFragment_to_myreffrag)
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
@@ -106,23 +109,5 @@ class HomeFragment : Fragment(),OnClickListener {
         }
 
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }

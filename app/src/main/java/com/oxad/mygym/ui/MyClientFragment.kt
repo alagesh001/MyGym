@@ -83,7 +83,6 @@ activity?.let {
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
     binding.recyclerView.adapter =  memberAdapter
-    mainViewModel.loadMembers()
     viewLifecycleOwner.lifecycleScope.launch {
         mainViewModel.memberList.collectLatest { members ->
             memberAdapter.submitList(members)

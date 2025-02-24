@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -19,7 +20,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        compose = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,6 +48,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.tooling.preview.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,4 +68,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.activity:activity-compose:1.10.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
 }
