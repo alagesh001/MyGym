@@ -8,7 +8,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.oxad.mygym.R
 import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.databinding.ActivityMainBinding

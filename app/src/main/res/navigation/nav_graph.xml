@@ -67,6 +67,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchfilfrag"
             app:destination="@id/searchfilfrag" />
+        <action
+            android:id="@+id/action_homeFragment_to_vCoachFrag"
+            app:destination="@id/vCoachFrag" />
     </fragment>
 
     <fragment
@@ -134,4 +137,8 @@
         android:id="@+id/filfrag"
         android:name="com.oxad.mygym.ui.MemberFilterCompose"
         tools:layout="@layout/fragment_member_filter_compose"/>
+    <fragment
+        android:id="@+id/vCoachFrag"
+        android:name="com.oxad.mygym.ui.GymGuideFragment"
+        tools:layout="@layout/fragment_gym_guide"/>
 </navigation>

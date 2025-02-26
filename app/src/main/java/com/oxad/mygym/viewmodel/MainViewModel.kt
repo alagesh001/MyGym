@@ -15,6 +15,7 @@ import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.TrainerModel
+import com.oxad.mygym.model.Workout
 import com.oxad.mygym.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,39 @@ class MainViewModel() : ViewModel() {
      var isLastPage = false
 
     private val _searchQuery = MutableLiveData<String>()
+    private val _workouts = MutableStateFlow<List<Workout>>(emptyList())
+    val workouts: StateFlow<List<Workout>> = _workouts
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+    private val _isExpanded = MutableStateFlow(false)
+    val isExpanded: StateFlow<Boolean> = _isExpanded
+    fun fetchWorkouts(muscleGroup: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val result = ApiRepository().getWorkoutsByMuscleGroup(muscleGroup)
+                result.onSuccess { response ->
+                    _workouts.value = response
+
+                }
+                result.onFailure { exception ->
+                    _workouts.value = emptyList() // Handle error case
+
+                }
+
+            //    Log.e("jdacjadf","res "+Gson().toJson(workouts))
+            } catch (e: Exception) {
+                _workouts.value = emptyList() // Handle error case
+               // Log.e("jdacjadf","catch "+e.message)
+
+            } finally {
+               // Log.e("jdacjadf","finally ")
+
+                _isLoading.value = false
+            }
+        }
+    }
     val members: LiveData<List<Member>> = _searchQuery.switchMap { query ->
         memberDao.searchMembersByName(query)
 

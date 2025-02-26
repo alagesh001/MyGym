@@ -5,6 +5,7 @@ import com.oxad.mygym.model.GetMyTrainersResponse
 import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.MyMemberListModel
 import com.oxad.mygym.model.UserRegisterModel
+import com.oxad.mygym.model.Workout
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -30,6 +31,10 @@ interface ApiService {
         @Query("page") page: Int
 
     ): MemberResponse
+
+    @GET("getdumbellworkout")
+    suspend fun getWorkoutsByMuscleGroup(@Query("muscle_group") muscleGroup: String): List<Workout>
+
 
     @GET("gettrainerdata") // Adjust this to match your backend endpoint
     suspend fun getmytrainer(@Query("gymid") gymid: Int): GetMyTrainersResponse

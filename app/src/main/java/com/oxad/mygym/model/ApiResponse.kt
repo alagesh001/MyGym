@@ -218,6 +218,14 @@ data class LoginResult(
     }
 
 }
+data class Workout(
+    val name: String,
+    val category: String,
+    val description: String,
+    val muscle_group: String,
+    val difficulty: String,
+    val duration: Int
+)
 data class GetMyTrainersResponse(   val success: Boolean,
 
                                     val message: String,

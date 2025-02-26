@@ -7,6 +7,7 @@ import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.UserRegisterModel
+import com.oxad.mygym.model.Workout
 import com.oxad.mygym.retrofit.RetrofitClient
 
 class ApiRepository() {
@@ -18,6 +19,15 @@ class ApiRepository() {
                 Result.failure(e) // Return failure with exception
             }
         }
+    suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<List<Workout>> {
+        return try {
+            val response = RetrofitClient.instance.getWorkoutsByMuscleGroup(muscleGroup)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
+
+    }
     suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String): Result<UserRegisterModel> {
         return try {
             val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)
@@ -82,6 +92,7 @@ class ApiRepository() {
         }
 
     }
+
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
         return try {
             val response = RetrofitClient.instance.getmytrainer(gymId)

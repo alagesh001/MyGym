@@ -74,7 +74,7 @@ class HomeFragment : Fragment(),OnClickListener {
         binding.mytrainerRl.setOnClickListener(this)
         binding.searchfilterRl.setOnClickListener(this)
         binding.myreferRl.setOnClickListener(this)
-        binding.complaintRl.setOnClickListener(this)
+        binding.virtualCoach.setOnClickListener(this)
         binding.myclientsRl.setOnClickListener(this)
         binding.clientaddIv.setOnClickListener(this)
         binding.traineraddIv.setOnClickListener(this)
@@ -87,7 +87,7 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.mytrainerRl -> code = 2
             binding.searchfilterRl -> code = 3
             binding.myreferRl -> code = 4
-            binding.complaintRl -> code = 5
+            binding.virtualCoach -> code = 5
             binding.clientaddIv -> code =6
             binding.traineraddIv -> code = 7
         }
@@ -102,6 +102,7 @@ class HomeFragment : Fragment(),OnClickListener {
             2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
             3 -> findNavController().navigate(R.id.action_homeFragment_to_searchfilfrag)
             4 -> findNavController().navigate(R.id.action_homeFragment_to_myreffrag)
+            5 -> findNavController().navigate(R.id.action_homeFragment_to_vCoachFrag)
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
 
