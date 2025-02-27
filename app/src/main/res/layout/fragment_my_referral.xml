@@ -12,6 +12,8 @@
         android:layout_height="@dimen/_200sdp"
         android:gravity="top|start"
         android:inputType="textMultiLine"
+        android:textColor="@color/primary_color"
+        android:backgroundTint="@color/tertiary_color"
         android:hint="Enter your referral message" />
 
     <Button
@@ -19,6 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save Message"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/secondary_color"
         android:layout_marginTop="8dp"/>
 </LinearLayout>

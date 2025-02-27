@@ -14,6 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Trainer Name"
+        android:textStyle="bold"
+        android:textColor="@color/primary_color"
         android:textSize="16sp" />
 
     <EditText
@@ -21,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Name"
+
         android:inputType="textPersonName" />
 
     <!-- Mobile Field -->
@@ -29,6 +32,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mobile"
+        android:textStyle="bold"
+
+        android:textColor="@color/primary_color"
+
         android:textSize="16sp" />
 
     <EditText
@@ -49,6 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
+        android:backgroundTint="@color/secondary_color"
         android:layout_gravity="center" />
     <Button
         android:id="@+id/update_button"
@@ -56,12 +64,16 @@
         android:layout_height="wrap_content"
         android:text="Update"
         android:visibility="gone"
+        android:backgroundTint="@color/secondary_color"
+
         android:layout_gravity="center" />
     <Button
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete"
+        android:backgroundTint="@color/tertiary_color"
+
         android:visibility="gone"
         android:layout_gravity="center" />
 

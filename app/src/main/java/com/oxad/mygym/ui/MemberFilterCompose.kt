@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -171,11 +172,12 @@ class MemberFilterCompose : Fragment() {
     // 🔹 UI for Birthday Item
     @Composable
     fun BirthdayItem(member: Member) {
+        val context = LocalContext.current
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFFDEDEC)), // Light Pink
+            colors = CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.tertiary_color))), // Light Pink
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -376,12 +378,13 @@ class MemberFilterCompose : Fragment() {
     }
     @Composable
     fun ExpandableSection(title: String, isExpanded: Boolean, count: Int, onClick: () -> Unit) {
+      val  context = LocalContext.current
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .clickable { onClick() },
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFD6EAF8)), // Light Blue
+            colors = CardDefaults.cardColors(containerColor =Color(context.getColor(R.color.tertiary_color))), // Light Blue
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Row(
@@ -404,7 +407,7 @@ class MemberFilterCompose : Fragment() {
                     modifier = Modifier
                         .size(36.dp) // Size of the circle
                         .clip(CircleShape) // Makes it round
-                        .background(Color(0xFFFFA726)) // Orange color
+                        .background(color = Color(context.getColor(R.color.secondary_color))) // Orange color
                 ) {
                     Text(
                         text = count.toString(),
@@ -419,12 +422,13 @@ class MemberFilterCompose : Fragment() {
     @Composable
     fun MemberItem(member: Member) {
         var expanded by remember { mutableStateOf(false) } // Track expansion state
+        val  context = LocalContext.current
 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            colors = if(expanded){CardDefaults.cardColors(containerColor = Color(0xFFFAF1EC))}else{
+            colors = if(expanded){CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.tertiary_color)))}else{
                 CardDefaults.elevatedCardColors()
             }, // For elevation effect
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)         ) {

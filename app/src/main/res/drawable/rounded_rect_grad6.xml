@@ -5,8 +5,8 @@
             <!-- Gradient Background -->
             <gradient
                 android:angle="0"
-                android:startColor="#0B0B0B"
-                android:endColor="#380000"
+                android:startColor="@color/tertiary_color"
+                android:endColor="@color/tertiary_color"
                 android:type="linear"/>
 
             <!-- Rounded Corners -->

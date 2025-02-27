@@ -74,5 +74,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
     implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+    implementation ("androidx.compose.foundation:foundation:1.7.8")
 
 }

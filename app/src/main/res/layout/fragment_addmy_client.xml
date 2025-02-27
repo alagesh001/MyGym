@@ -24,6 +24,7 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
+        android:textColor="@color/primary_color"
         android:textStyle="bold"
         android:textSize="16sp" />
 
@@ -48,6 +49,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:text="Mobile"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -59,13 +61,14 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:inputType="phone" />
 
             <!-- Email Field -->
-            z
+
             <TextView
                 android:id="@+id/email_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -81,6 +84,8 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:text="Referral Id"
                 android:textStyle="bold"
+                android:textColor="@color/primary_color"
+
                 android:textSize="16sp" />
 
             <EditText
@@ -95,6 +100,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:text="Date of birth"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -111,6 +117,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:text="Height (in cm)"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -127,6 +134,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:text="Weight (in kg)"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -154,6 +162,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                         android:layout_height="wrap_content"
                         android:text="Goal"
                         android:textSize="16sp"
+                        android:textColor="@color/primary_color"
 
                         android:textStyle="bold" />
 
@@ -178,6 +187,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                         android:layout_height="wrap_content"
                         android:text="Gender"
                         android:textSize="16sp"
+                        android:textColor="@color/primary_color"
 
                         android:textStyle="bold" />
 
@@ -199,6 +209,7 @@ android:layout_marginVertical="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Trainer"
                 android:textSize="16sp"
+                android:textColor="@color/primary_color"
 
                 android:textStyle="bold" />
 
@@ -230,6 +241,7 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:layout_height="wrap_content"
         android:text="Paid Months"
         android:textStyle="bold"
+        android:textColor="@color/primary_color"
 
         android:textSize="16sp" />
 
@@ -244,6 +256,7 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:layout_height="wrap_content"
         android:text="From Date"
         android:textStyle="bold"
+        android:textColor="@color/primary_color"
 
         android:textSize="16sp" />
     <LinearLayout
@@ -287,8 +300,9 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add"
+
         android:layout_marginTop="@dimen/_10sdp"
-        android:backgroundTint="#E40212"
+        android:backgroundTint="@color/secondary_color"
         android:layout_gravity="center" />
     <Button
         android:id="@+id/update_button"
@@ -297,7 +311,7 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:text="Update"
         android:visibility="gone"
         android:layout_marginTop="@dimen/_10sdp"
-        android:backgroundTint="#E40212"
+        android:backgroundTint="@color/secondary_color"
         android:layout_gravity="center" />
     <Button
         android:id="@+id/delete_button"
@@ -305,7 +319,7 @@ android:layout_marginVertical="@dimen/_20sdp"
         android:layout_height="wrap_content"
         android:text="Delete"
         android:layout_marginTop="@dimen/_10sdp"
-        android:backgroundTint="#E40212"
+        android:backgroundTint="@color/tertiary_color"
         android:visibility="gone"
         android:layout_gravity="center" />
     </LinearLayout>

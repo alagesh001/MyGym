@@ -6,8 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -95,24 +105,25 @@ class GymGuideFragment : Fragment() {
     }
     @Composable
     fun WorkoutScreen(  viewModelIs:MainViewModel ) {
+        val viewModel = viewModelIs
         var isExpanded by remember { mutableStateOf(false) }
 
 
-        val workouts by viewModelIs.workouts.collectAsState()
-        val isLoading by viewModelIs.isLoading.collectAsState()
+        val workouts by viewModel.workouts.collectAsState()
+        val isLoading by viewModel.isLoading.collectAsState()
         val workoutList by remember { mutableStateOf(workouts) }
-        Log.e("WorkoutList", "AAA $viewModelIs")
+        Log.e("WorkoutList", "AAA $viewModel")
         var selectedMuscleGroup by remember { mutableStateOf("Chest") }
 
         LaunchedEffect(selectedMuscleGroup) {
-            viewModelIs.fetchWorkouts(selectedMuscleGroup)
+            viewModel.fetchWorkouts(selectedMuscleGroup)
 
         }
 
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding( top = 40.dp)) {
+            .padding(16.dp, top = 30.dp)) {
 
             //   Text(text = "Select Muscle Group", style = MaterialTheme.typography.headlineSmall)
 
@@ -143,7 +154,7 @@ class GymGuideFragment : Fragment() {
             items(muscleGroups) { workoutName ->
 
                 val animatedColor by animateColorAsState(
-                    targetValue = if (selectedGroup == workoutName) Color(context.getColor(R.color.blue_700)) else Color.DarkGray,
+                    targetValue = if (selectedGroup == workoutName) Color(context.getColor(R.color.secondary_color)) else Color(context.getColor(R.color.primary_color)),
                     animationSpec = tween(durationMillis = 250)
                 )
 
@@ -184,24 +195,54 @@ class GymGuideFragment : Fragment() {
     fun WorkoutList(workouts: List<Workout>) {
         var checkForExpand by remember { mutableStateOf(workouts) }
 
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
+        LazyColumn {
             items(workouts) { workout ->
-                WorkoutItem(workout){
+                AnimationBox {
+                    WorkoutItem(workout){
 
-                    checkForExpand = it
+                        checkForExpand = it
 
-                }
+                    }            }
+
             }
         }
     }
+    @Composable
+    fun <T> T.AnimationBox(
+        enter: EnterTransition = expandVertically(animationSpec = tween(200)) + fadeIn(animationSpec = tween(500)),
+        exit: ExitTransition = fadeOut(animationSpec = tween(200)) + shrinkVertically(animationSpec = tween(300)),
+        content: @Composable T.() -> Unit
+    ) {
+        val state = remember {
+            MutableTransitionState(false).apply {
+                // Start the animation immediately.
+                targetState = true
+            }
+        }
 
+        AnimatedVisibility(
+            visibleState = state,
+            enter = enter,
+            exit = exit
+        ) { content() }
+    }
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun WorkoutItem(workout: Workout,onClickedCard: (List<Workout>) -> Unit) {
+        val context = LocalContext.current
+
         var isExpanded by remember { mutableStateOf(false) }
-        Card(
+
+        Card( colors = CardDefaults.cardColors(
+            containerColor = Color(context.getColor(R.color.tertiary_color)),
+            contentColor =  Color.White
+        ),
             modifier = Modifier
                 .fillMaxWidth()
+                .animateContentSize (animationSpec = keyframes {
+                    durationMillis = if (isExpanded) 70 else 50
+                }){ initialValue, targetValue ->
+                }
                 .clickable{
                     //   workouts.find { it.first.name == workout.first.name }.second
                     // isExpandedIs = !isExpandedIs
@@ -215,86 +256,69 @@ class GymGuideFragment : Fragment() {
 
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            if (isExpanded) {
-
-                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)){
+            AnimatedVisibility (isExpanded) {
+                Row (modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween, // or Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically ){
+                    Column{
                         Text(text = workout.name,
-                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, fontSize = 12.sp) )// Make text bold
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row (modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween, // or Arrangement.SpaceBetween
-                            verticalAlignment = Alignment.CenterVertically ){
-                            Column {
-                                Text(
-                                    text = "Category: ${workout.category}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontSize = 11.sp
-                                )
-                                Text(
-                                    text = "Muscle Group: ${workout.muscle_group}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontSize = 11.sp
-                                )
-                                Text(
-                                    text = "Difficulty: ${workout.difficulty}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontSize = 11.sp
-                                )
-                                Text(
-                                    text = "Duration: ${workout.duration} min",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontSize = 11.sp
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .size(70.dp) // Set the size of the image
-                                    .clip(CircleShape)
-                            ) {
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, fontSize = 16.sp) )// Make text bold
 
-                               GlideImage(
-                                    // model = R.drawable.pups,
-                                    model = "https://hips.hearstapps.com/hmg-prod/images/mh0418-fit-pul-01-1558554157.jpg?crop=0.750xw:1.00xh;0.250xw,0&resize=500:*",
-                                    contentDescription = "Image 1",
-                                    contentScale = ContentScale.Crop,
+                        Text(text = "Category: ${workout.category}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
+                        Text(text = "Muscle Group: ${workout.muscle_group}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
+                        Text(text = "Difficulty: ${workout.difficulty}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
+                        Text(text = "Duration: ${workout.duration} min", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(70.dp) // Set the size of the image
+                            .clip(CircleShape)
+                    ) {
+
+                        GlideImage(
+                            // model = R.drawable.pups,
+                            model = "https://hips.hearstapps.com/hmg-prod/images/mh0418-fit-pul-01-1558554157.jpg?crop=0.750xw:1.00xh;0.250xw,0&resize=500:*",
+                            contentDescription = "Image 1",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                        /*Image(
+                            painter = painterResource(id = R.drawable.pups),
+                            contentDescription = "Image of ${workout.name}",
+                            contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                )
-                            /*    Image(
-                                    painter = painterResource(id = R.drawable.pups),
-                                    contentDescription = "Image of ${workout.name}",
-                                    contentScale = ContentScale.Crop,
-                                            modifier = Modifier
-                                        .fillMaxSize()
-                                    //
-                                )*/
-                            }
+                                .fillMaxSize()
+                            //
+                        )*/
                     }
 
 
 
-
                 }
-            }else{
+            }
+            AnimatedVisibility (!isExpanded) {
                 Text(text = workout.name,
                     modifier = Modifier.padding(15.dp),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold) )
             }
 
 
+
         }
     }
-
     @Preview(showBackground = true)
     @Composable
     fun GreetingPreview() {
-        val workout =
-            Workout("Pull ups", "Body Workout", "Uses body for resistance", "All", "Hard", 25)
-            // WorkoutScreen(mainViewModel)
-               WorkoutItem(workout) {
-               }
+            val workout =  Workout("Pull ups","Body Workout","Uses body for resistance","All","Hard",25)
+            // WorkoutItem(workout){
+            WorkoutScreen(MainViewModel())
+            WorkoutItem(workout) {
+
+        }
 
     }
+
 }
 
 
