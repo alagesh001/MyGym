@@ -74,14 +74,61 @@
         android:layout_marginTop="-40dp"
         android:background="#4CE4E4E4"
         >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+
+            >
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    >
+    <ImageView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@drawable/baseline_call_24"
+        android:backgroundTint="@color/primary_color"/>
         <TextView
             android:id="@+id/tvMobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Mobile"
+            android:text="3589893493"
+            android:paddingHorizontal="@dimen/_5sdp"
             android:textColor="@color/primary_color"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:paddingVertical="@dimen/_5sdp"
+            />
+</LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:background="@drawable/baseline_star_purple500_24"
+                android:backgroundTint="@color/primary_color"/>
+            <TextView
+            android:id="@+id/tvGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weight Loss"
+            android:textColor="@color/primary_color"
+            android:textSize="16sp"
+                android:paddingHorizontal="@dimen/_5sdp"
+
+                android:paddingVertical="@dimen/_5sdp"
+
+            />
+        </LinearLayout>
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -5,6 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -121,6 +132,7 @@ class MemberFilterCompose : Fragment() {
                 item {
                     ExpandableSection(
                         title = goalName,
+
                         isExpanded = expandedGoal == goal,
                         count = goalMembers.size, // Pass count here
                         onClick = {
@@ -133,7 +145,10 @@ class MemberFilterCompose : Fragment() {
                 // 🔹 Show Members Under Trainer When Expanded
                 if (expandedGoal == goal) {
                     items(goalMembers) { member ->
-                        MemberItem(member)
+                        AnimationBox {
+                            MemberItem(member)
+
+                        }
                     }
                 }
             }
@@ -143,7 +158,7 @@ class MemberFilterCompose : Fragment() {
     fun UpcomingBirthdaysScreen() {
         val scope = rememberCoroutineScope()
         var memberList by remember { mutableStateOf<List<Member>>(emptyList()) }
-
+val context = LocalContext.current
         // 🔹 Fetch Members Once
         LaunchedEffect(Unit) {
             scope.launch {
@@ -158,6 +173,8 @@ class MemberFilterCompose : Fragment() {
             item {
                 Text(
                     text = "Upcoming Birthdays 🎂",
+                    color = Color(context.getColor(R.color.primary_color)),
+
                     style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(16.dp)
                 )
@@ -177,7 +194,7 @@ class MemberFilterCompose : Fragment() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.tertiary_color))), // Light Pink
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFFDEDEC)), // Light Pink
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -248,7 +265,10 @@ class MemberFilterCompose : Fragment() {
                 // 🔹 Show Members When Expanded
                 if (expandedGroup == ageGroup) {
                     items(members) { member ->
-                        MemberItem(member)
+                        AnimationBox {
+                            MemberItem(member)
+
+                        }
                     }
                 }
             }
@@ -275,7 +295,7 @@ class MemberFilterCompose : Fragment() {
         var trainerList by remember { mutableStateOf<List<TrainerModel>>(emptyList()) }
         var memberListIs by remember { mutableStateOf<List<Member>>(emptyList()) }
 
-      
+
         LaunchedEffect(Unit) {
             scope.launch {
                 trainerList = mainViewModel.getTrainerList()// Group members by trainer ID
@@ -313,7 +333,10 @@ class MemberFilterCompose : Fragment() {
 
                 if (expandedTrainer == trainerId) {
                     items(trainerMembers) { member ->
-                        MemberItem(member)
+                        AnimationBox {
+                            MemberItem(member)
+
+                        }
                     }
                 }
             }
@@ -333,7 +356,13 @@ class MemberFilterCompose : Fragment() {
 
                 if (expandedTrainer == -1L) {
                     unknownTrainers.values.flatten().forEach { member ->
-                        item { MemberItem(member) }
+                        item {
+
+                            AnimationBox {
+                                MemberItem(member)
+
+                            }
+                        }
                     }
                 }
             }
@@ -370,7 +399,8 @@ class MemberFilterCompose : Fragment() {
                 // 🔹 Show Members Under Trainer When Expanded
                 if (expandedGender == gender) {
                     items(genderMembers) { member ->
-                        MemberItem(member)
+                        AnimationBox {
+                            MemberItem(member)           }
                     }
                 }
             }
@@ -378,7 +408,8 @@ class MemberFilterCompose : Fragment() {
     }
     @Composable
     fun ExpandableSection(title: String, isExpanded: Boolean, count: Int, onClick: () -> Unit) {
-      val  context = LocalContext.current
+      val context = LocalContext.current
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -397,6 +428,8 @@ class MemberFilterCompose : Fragment() {
                 // 🔹 Title
                 Text(
                     text = title,
+                    color = Color.White,
+
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f) // Takes available space
                 )
@@ -420,6 +453,25 @@ class MemberFilterCompose : Fragment() {
         }
     }
     @Composable
+    fun <T> T.AnimationBox(
+        enter: EnterTransition = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(500)),
+        exit: ExitTransition = fadeOut(animationSpec = tween(500)) + shrinkVertically(animationSpec = tween(500)),
+        content: @Composable T.() -> Unit
+    ) {
+        val state = remember {
+            MutableTransitionState(false).apply {
+                // Start the animation immediately.
+                targetState = true
+            }
+        }
+
+        AnimatedVisibility(
+            visibleState = state,
+            enter = enter,
+            exit = exit
+        ) { content() }
+    }
+    @Composable
     fun MemberItem(member: Member) {
         var expanded by remember { mutableStateOf(false) } // Track expansion state
         val  context = LocalContext.current
@@ -427,10 +479,13 @@ class MemberFilterCompose : Fragment() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .animateContentSize (animationSpec = keyframes {
+                    durationMillis = if (expanded) 70 else 50
+                }){ initialValue, targetValue ->
+                }
                 .padding(8.dp),
-            colors = if(expanded){CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.tertiary_color)))}else{
-                CardDefaults.elevatedCardColors()
-            }, // For elevation effect
+
+            colors =  CardDefaults.elevatedCardColors(),// For elevation effect
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)         ) {
             Column{
                 // Clickable title to expand/collapse details
@@ -444,7 +499,8 @@ class MemberFilterCompose : Fragment() {
                 )
 
                 if (expanded) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)
+                        .clickable { expanded = !expanded }) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = buildAnnotatedString {

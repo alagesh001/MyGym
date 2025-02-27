@@ -9,6 +9,8 @@
     <color name="blue_700">#00ABA8</color>
 
     <color name="transparent">#00FFFFFF</color>
+    <color name="gray">#D5D5D5</color>
+    <color name="gray_dark">#5D5D5D</color>
 
     <color name="primary_color">#002042</color>
     <color name="secondary_color">#ED02B4</color>

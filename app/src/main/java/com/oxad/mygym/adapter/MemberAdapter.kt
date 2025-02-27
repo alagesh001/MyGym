@@ -66,6 +66,8 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
         private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
+        private val goalTextView: TextView = view.findViewById(R.id.tvGoal)
+
         private val renewalDateTextView: TextView = view.findViewById(R.id.tvRenewalDate)
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
         val expandableLayout: View = itemView.findViewById(R.id.expandableLayout)
@@ -77,6 +79,14 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
             numberTextView.text = (position + 1).toString() // Incrementing number
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()
+            goalTextView.text =  when(member.goal){
+                1 -> "Weight Loss"
+                2 -> "Weight Gain"
+                3 -> "Muscle Tone"
+                4 -> "Others"
+                else -> {"Others"}
+            }
+
             renewalDateTextView.text = "${member.renewal_date}"
             expandableLayout.visibility = if (member.isExpanded) View.VISIBLE else View.GONE
 

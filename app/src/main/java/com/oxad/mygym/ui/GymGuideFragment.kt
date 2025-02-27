@@ -123,7 +123,7 @@ class GymGuideFragment : Fragment() {
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, top = 30.dp)) {
+            .padding(top = 50.dp)) {
 
             //   Text(text = "Select Muscle Group", style = MaterialTheme.typography.headlineSmall)
 
@@ -257,42 +257,61 @@ class GymGuideFragment : Fragment() {
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             AnimatedVisibility (isExpanded) {
-                Row (modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, // or Arrangement.SpaceBetween
-                    verticalAlignment = Alignment.CenterVertically ){
-                    Column{
+
+                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)){
                         Text(text = workout.name,
                             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, fontSize = 16.sp) )// Make text bold
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(text = "Category: ${workout.category}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
-                        Text(text = "Muscle Group: ${workout.muscle_group}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
-                        Text(text = "Difficulty: ${workout.difficulty}", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
-                        Text(text = "Duration: ${workout.duration} min", style = MaterialTheme.typography.bodySmall, fontSize = 14.sp)
-                    }
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween, // or Arrangement.SpaceBetween
+                            verticalAlignment = Alignment.CenterVertically ) {
+                            Column {
+                                Text(
+                                    text = "Category: ${workout.category}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 11.sp
+                                )
+                                Text(
+                                    text = "Muscle Group: ${workout.muscle_group}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 11.sp
+                                )
+                                Text(
+                                    text = "Difficulty: ${workout.difficulty}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 11.sp
+                                )
+                                Text(
+                                    text = "Duration: ${workout.duration} min",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 11.sp
+                                )
+                            }
                     Box(
                         modifier = Modifier
                             .size(70.dp) // Set the size of the image
                             .clip(CircleShape)
                     ) {
 
-                        GlideImage(
+                     /*   GlideImage(
                             // model = R.drawable.pups,
                             model = "https://hips.hearstapps.com/hmg-prod/images/mh0418-fit-pul-01-1558554157.jpg?crop=0.750xw:1.00xh;0.250xw,0&resize=500:*",
                             contentDescription = "Image 1",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
-                        )
-                        /*Image(
+                        )*/
+                        Image(
                             painter = painterResource(id = R.drawable.pups),
                             contentDescription = "Image of ${workout.name}",
                             contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                 .fillMaxSize()
                             //
-                        )*/
+                        )
                     }
-
+                        }
 
 
                 }
