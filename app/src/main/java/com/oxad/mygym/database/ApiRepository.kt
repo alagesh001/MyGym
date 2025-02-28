@@ -10,104 +10,95 @@ import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.UserRegisterModel
 import com.oxad.mygym.model.Workout
 import com.oxad.mygym.retrofit.RetrofitClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ApiRepository() {
         suspend fun getMembers(gymId: Int, page: Int): Result<MemberResponse> {
-            return try {
-                val response = RetrofitClient.instance.getmymembers(gymId, page)
-                Result.success(response) // Return success
-            } catch (e: Exception) {
-                Result.failure(e) // Return failure with exception
+            return safeApiCall {
+                RetrofitClient.instance.getmymembers(gymId, page)
             }
         }
     suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
-        return try {
-            val response = RetrofitClient.instance.getWorkoutsByMuscleGroup(muscleGroup)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
-        }
+        return safeApiCall { RetrofitClient.instance.getWorkoutsByMuscleGroup(muscleGroup) }
 
     }
     suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
-        }
+        return safeApiCall {
+            RetrofitClient.instance.updatemymember(name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)        }
 
     }
     suspend fun updatemytrainer( name:String,mob:Long,gymid: Int,trainerId:Long): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.updatemytrainer(name,gymid,mob,trainerId)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.updatemytrainer(name,gymid,mob,trainerId)
         }
+
 
     }
     suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
-        }
+        return safeApiCall {
+            RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid)        }
+
 
     }
     suspend fun deletemymembers( gymid: Int,userid:Long): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.deletemymember(gymid,userid)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
-        }
+        return safeApiCall {
+            RetrofitClient.instance.deletemymember(gymid,userid)      }
 
     }
     suspend fun deletemytrainer( gymid: Int,trainerId:Long): Result<UserRegisterModel> {
-        return try {
-            Log.e("cadfaaasf","gid $gymid tid $trainerId")
-            val response = RetrofitClient.instance.deletemytrainer(gymid,trainerId)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.deletemytrainer(gymid,trainerId)
         }
 
     }
     suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.addmymember(name,email,gymid,mob,paidmonths,date,dob,height,weight, goal, trainerId,gender,referredBy)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.addmymember(
+                name,
+                email,
+                gymid,
+                mob,
+                paidmonths,
+                date,
+                dob,
+                height,
+                weight,
+                goal,
+                trainerId,
+                gender,
+                referredBy
+            )
         }
+
 
     }
     suspend fun addmytrainer(name:String, gymid: Int,mob:Long): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.addmytrainer(name,gymid,mob)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.addmytrainer(name,gymid,mob)
         }
+
 
     }
     suspend fun updategympass( gymid: Int,oldpass:String,newpass:String): Result<UserRegisterModel> {
-        return try {
-            val response = RetrofitClient.instance.updateGymPassword(gymid,oldpass,newpass)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.updateGymPassword(gymid,oldpass,newpass)
         }
+
 
     }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
-        return try {
-            val response = RetrofitClient.instance.getmytrainer(gymId)
-            Result.success(response) // Return success
-        } catch (e: Exception) {
-            Result.failure(e) // Return failure with exception
+        return safeApiCall {
+            RetrofitClient.instance.getmytrainer(gymId)
+        }
+    }
+    private suspend fun <T> safeApiCall(apiCall: suspend () -> T): Result<T> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(apiCall())
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 }
