@@ -3,6 +3,7 @@ package com.oxad.mygym.database
 import android.util.Log
 import com.google.gson.Gson
 import com.oxad.mygym.model.GetMyTrainersResponse
+import com.oxad.mygym.model.GymGuideResponse
 import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.MemberResponse
@@ -19,7 +20,7 @@ class ApiRepository() {
                 Result.failure(e) // Return failure with exception
             }
         }
-    suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<List<Workout>> {
+    suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
         return try {
             val response = RetrofitClient.instance.getWorkoutsByMuscleGroup(muscleGroup)
             Result.success(response) // Return success

@@ -145,10 +145,9 @@ class MemberFilterCompose : Fragment() {
                 // 🔹 Show Members Under Trainer When Expanded
                 if (expandedGoal == goal) {
                     items(goalMembers) { member ->
-                        AnimationBox {
                             MemberItem(member)
 
-                        }
+
                     }
                 }
             }
@@ -265,10 +264,9 @@ val context = LocalContext.current
                 // 🔹 Show Members When Expanded
                 if (expandedGroup == ageGroup) {
                     items(members) { member ->
-                        AnimationBox {
                             MemberItem(member)
 
-                        }
+
                     }
                 }
             }
@@ -333,10 +331,9 @@ val context = LocalContext.current
 
                 if (expandedTrainer == trainerId) {
                     items(trainerMembers) { member ->
-                        AnimationBox {
                             MemberItem(member)
 
-                        }
+
                     }
                 }
             }
@@ -358,10 +355,9 @@ val context = LocalContext.current
                     unknownTrainers.values.flatten().forEach { member ->
                         item {
 
-                            AnimationBox {
                                 MemberItem(member)
 
-                            }
+
                         }
                     }
                 }
@@ -399,8 +395,7 @@ val context = LocalContext.current
                 // 🔹 Show Members Under Trainer When Expanded
                 if (expandedGender == gender) {
                     items(genderMembers) { member ->
-                        AnimationBox {
-                            MemberItem(member)           }
+                            MemberItem(member)
                     }
                 }
             }

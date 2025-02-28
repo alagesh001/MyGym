@@ -2,8 +2,11 @@ package com.oxad.mygym.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.oxad.mygym.databinding.ActivityLoginBinding
@@ -54,11 +57,22 @@ initUI()
         }
     }
     private fun login(){
-        apiManager.loginAdmin( 8148602102,"ags0071")
-      /*  if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
 
-           // apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString())
-             apiManager.loginAdmin( 8148602102,"ags123")
+        apiManager.loginAdmin( 8148602102,"ags0071")
+        binding.btnLogin .isEnabled = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.btnLogin .isEnabled = true
+        }, 3000)
+        // Simulate network delay
+
+       /* if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
+            apiManager.loginAdmin( 8148602102,"ags0071")
+            binding.progressBar.visibility = View.VISIBLE
+            binding.btnLogin .isEnabled = false
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.progressBar.visibility = View.GONE
+                binding.btnLogin .isEnabled = true
+            }, 3000)
 
 
         }else{
@@ -70,7 +84,7 @@ initUI()
 
 
         if(adminLoginModel.success) {
-            Utils.showToast(this,"Success")
+            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             intent.putParcelableArrayListExtra("gym_list",adminLoginModel.result)
             startActivity(intent)

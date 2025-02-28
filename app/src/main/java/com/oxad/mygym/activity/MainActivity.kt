@@ -2,6 +2,7 @@ package com.oxad.mygym.activity
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
-
+        mainViewModel.workoutDao = AppDatabase.getDatabase(application).workoutDao()
 
         initUi()
     }

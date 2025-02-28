@@ -218,7 +218,15 @@ data class LoginResult(
     }
 
 }
+data class GymGuideResponse(
+    val success: Boolean,
+    val result: List<Workout>,
+    val message: String
+
+)
+@Entity(tableName = "workouts")
 data class Workout(
+    @PrimaryKey val id: Int,
     val name: String,
     val category: String,
     val description: String,

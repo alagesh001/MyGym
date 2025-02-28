@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.oxad.mygym.database.ApiRepository
 import com.oxad.mygym.database.AppDatabase
 import com.oxad.mygym.database.MemberDao
+import com.oxad.mygym.database.WorkoutDao
 import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.LoginResult
 import com.oxad.mygym.model.Member
@@ -29,6 +30,8 @@ class MainViewModel() : ViewModel() {
     private val _memberList = MutableStateFlow<List<Member>>(emptyList())
     val memberList: StateFlow<List<Member>> = _memberList
     lateinit var memberDao: MemberDao
+    lateinit var workoutDao: WorkoutDao
+
     private val _trainerList = MutableStateFlow<List<TrainerModel>>(emptyList())
     val trainerList: StateFlow<List<TrainerModel>> = _trainerList
 
@@ -44,13 +47,62 @@ class MainViewModel() : ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
     val isExpanded: StateFlow<Boolean> = _isExpanded
+    fun fetchgymGuide(muscleGroup:String) {
+        viewModelScope.launch {
+            val cachedWorkouts = workoutDao.getWorkoutstype(muscleGroup)
+           //Log.e("jdacjadf","cachwor  "+Gson().toJson(cachedWorkouts))
+
+            _isLoading.value = true
+            if (cachedWorkouts.isNotEmpty()) {
+              //  Log.e("jdacjadf","Not Empty $muscleGroup  ")
+                _isLoading.value = false
+
+                _workouts.value =  cachedWorkouts // Return cached data
+                //Log.e("jdacjadf","cachwor AA "+Gson().toJson(workouts))
+
+            } else {
+               // Log.e("jdacjadf"," Empty $muscleGroup ")
+
+                try {
+                   // Log.e("jdacjadf","Calling api  ")
+
+                    val result = ApiRepository().getWorkoutsByMuscleGroup("")
+                    result.onSuccess { response ->
+                        if(response.result.isNotEmpty()) {
+                           // _workouts.value = response.result
+                            fetchgymGuide(muscleGroup)
+                            workoutDao.insertWorkouts(response.result)
+                        }
+                    }
+                    result.onFailure { exception ->
+                        _workouts.value = emptyList() // Handle error case
+
+                    }
+
+                  //      Log.e("jdacjadf","ApiRepository "+Gson().toJson(workouts))
+                } catch (e: Exception) {
+                    _workouts.value = emptyList() // Handle error case
+                  //   Log.e("jdacjadf","ApiRepository catch "+e.message)
+
+                } finally {
+                     //Log.e("jdacjadf","ApiRepository finally ")
+
+                    _isLoading.value = false
+                }
+
+        }
+
+        }
+
+    }
+
     fun fetchWorkouts(muscleGroup: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val result = ApiRepository().getWorkoutsByMuscleGroup(muscleGroup)
                 result.onSuccess { response ->
-                    _workouts.value = response
+                    _workouts.value = response.result
 
                 }
                 result.onFailure { exception ->

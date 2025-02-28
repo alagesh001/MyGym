@@ -78,6 +78,8 @@ class HomeFragment : Fragment(),OnClickListener {
         binding.myclientsRl.setOnClickListener(this)
         binding.clientaddIv.setOnClickListener(this)
         binding.traineraddIv.setOnClickListener(this)
+        binding.settingsIv.setOnClickListener(this)
+
 
     }
     override fun onClick(p0: View?) {
@@ -90,6 +92,7 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.virtualCoach -> code = 5
             binding.clientaddIv -> code =6
             binding.traineraddIv -> code = 7
+            binding.settingsIv -> code =8
         }
         openFragment(code)
     }
@@ -105,6 +108,7 @@ class HomeFragment : Fragment(),OnClickListener {
             5 -> findNavController().navigate(R.id.action_homeFragment_to_vCoachFrag)
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
+            8 -> findNavController().navigate(R.id.action_homeFragment_to_gymprofilefragment)
 
 
         }

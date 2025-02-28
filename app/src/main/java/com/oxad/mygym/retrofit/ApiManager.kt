@@ -11,6 +11,7 @@ import com.oxad.mygym.utils.RsConstants.Companion.REGISTER_USER
 import com.oxad.mygym.utils.RsConstants.Companion.SAVE_USER
 import com.oxad.mygym.utils.SessionManager
 import com.oxad.mygym.model.UserRegisterModel
+import com.oxad.mygym.utils.ProgressDialogUtil
 import com.oxad.mygym.utils.RsConstants
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,6 +21,7 @@ class ApiManager(context: Context,apiInterface: ApiInterface) {
 private val contextA = context
     private val apiInterfaceIs = apiInterface
     private val sessionManager = SessionManager(contextA)
+    private val progressDialogUtil: ProgressDialogUtil = ProgressDialogUtil(contextA)
 
 /*
         fun getmyTrainers(gymid: Int) {
@@ -109,12 +111,14 @@ private val contextA = context
     }
     fun loginAdmin( mob: Long, pass: String) {
         //Log.w("checkresponss","call api registeruser }")
+        progressDialogUtil.showLoadingDialog()
 
         RetrofitClient.instance.loginAdmin(mob,pass)
             .enqueue(object : Callback<AdminLoginModel> {
 
                 override fun onResponse(call: Call<AdminLoginModel>, response: Response<AdminLoginModel>) {
                    // Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                    progressDialogUtil.hideLoadingDialog()
 
                     if(response.body()!=null) {
                         if (response.body()!!.success) {
@@ -129,6 +133,8 @@ private val contextA = context
 
                 override fun onFailure(call: Call<AdminLoginModel>, t: Throwable) {
                    // Log.e("checkresponss", "Error: ${t.message}")
+                    progressDialogUtil.hideLoadingDialog()
+
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })

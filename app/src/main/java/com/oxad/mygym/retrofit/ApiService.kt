@@ -2,6 +2,7 @@ package com.oxad.mygym.retrofit
 
 import com.oxad.mygym.model.AdminLoginModel
 import com.oxad.mygym.model.GetMyTrainersResponse
+import com.oxad.mygym.model.GymGuideResponse
 import com.oxad.mygym.model.MemberResponse
 import com.oxad.mygym.model.MyMemberListModel
 import com.oxad.mygym.model.UserRegisterModel
@@ -33,7 +34,7 @@ interface ApiService {
     ): MemberResponse
 
     @GET("getdumbellworkout")
-    suspend fun getWorkoutsByMuscleGroup(@Query("muscle_group") muscleGroup: String): List<Workout>
+    suspend fun getWorkoutsByMuscleGroup(@Query("muscle_group") muscleGroup: String): GymGuideResponse
 
 
     @GET("gettrainerdata") // Adjust this to match your backend endpoint

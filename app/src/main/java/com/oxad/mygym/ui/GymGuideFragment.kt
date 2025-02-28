@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.model.Workout
 import com.oxad.mygym.viewmodel.MainViewModel
@@ -112,12 +113,13 @@ class GymGuideFragment : Fragment() {
         val workouts by viewModel.workouts.collectAsState()
         val isLoading by viewModel.isLoading.collectAsState()
         val workoutList by remember { mutableStateOf(workouts) }
-        Log.e("WorkoutList", "AAA $viewModel")
+        //Log.e("WorkoutList", "AAA $viewModel")
         var selectedMuscleGroup by remember { mutableStateOf("Chest") }
+       // Log.e("jdacjadf","fetchinggg  "+ Gson().toJson(workouts))
 
         LaunchedEffect(selectedMuscleGroup) {
-            viewModel.fetchWorkouts(selectedMuscleGroup)
-
+           // viewModel.fetchWorkouts(selectedMuscleGroup)
+            viewModel.fetchgymGuide(selectedMuscleGroup)
         }
 
 
@@ -197,12 +199,11 @@ class GymGuideFragment : Fragment() {
 
         LazyColumn {
             items(workouts) { workout ->
-                AnimationBox {
                     WorkoutItem(workout){
 
                         checkForExpand = it
 
-                    }            }
+                    }
 
             }
         }
@@ -329,7 +330,7 @@ class GymGuideFragment : Fragment() {
     @Preview(showBackground = true)
     @Composable
     fun GreetingPreview() {
-            val workout =  Workout("Pull ups","Body Workout","Uses body for resistance","All","Hard",25)
+            val workout =  Workout(1,"Pull ups","Body Workout","Uses body for resistance","All","Hard",25)
             // WorkoutItem(workout){
             WorkoutScreen(MainViewModel())
             WorkoutItem(workout) {
