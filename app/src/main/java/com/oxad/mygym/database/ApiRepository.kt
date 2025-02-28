@@ -93,7 +93,15 @@ class ApiRepository() {
         }
 
     }
+    suspend fun updategympass( gymid: Int,oldpass:String,newpass:String): Result<UserRegisterModel> {
+        return try {
+            val response = RetrofitClient.instance.updateGymPassword(gymid,oldpass,newpass)
+            Result.success(response) // Return success
+        } catch (e: Exception) {
+            Result.failure(e) // Return failure with exception
+        }
 
+    }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
         return try {
             val response = RetrofitClient.instance.getmytrainer(gymId)

@@ -193,17 +193,18 @@ val context = LocalContext.current
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFFDEDEC)), // Light Pink
+            colors = CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.tertiary_color))), // Light Pink
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
+                    color = Color.White,
                     text = member.name,
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-                Text("🎉 Birthday: ${formatDate(member.dob)}")
-                Text("📅 Days Left: ${getDaysUntilNextBirthday(member.dob)} days")
+                Text("🎉 Birthday: ${formatDate(member.dob)}",  color = Color.White,)
+                Text("📅 Days Left: ${getDaysUntilNextBirthday(member.dob)} days",  color = Color.White,)
             }
         }
     }

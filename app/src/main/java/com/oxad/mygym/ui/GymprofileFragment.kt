@@ -34,7 +34,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.oxad.mygym.R
+import com.oxad.mygym.database.ApiRepository
+import com.oxad.mygym.datastore.DataStoreManager
+import com.oxad.mygym.utils.Utils
+import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +67,7 @@ class GymprofileFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -187,6 +197,20 @@ class GymprofileFragment : Fragment() {
                 Button(colors = ButtonDefaults.buttonColors(Color(context.getColor(R.color.secondary_color))), onClick = {
                     if (newPassword == confirmPassword) {
                         errorMessage = ""
+                        lifecycleScope.launch {
+                           val result = ApiRepository().updategympass(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,oldPassword,confirmPassword)
+                            result.onSuccess { response ->
+                                if(response.success){
+                                    Utils.showToast(context, response.message)
+                                }else{
+                                        Utils.showToast(context, response.message)
+                                }
+                            }
+
+                            result.onFailure { exception ->
+                                exception.message ?: "Something went wrong!"
+                            }
+                        }
                         onDismiss()
                     } else {
                         errorMessage = "Passwords do not match"

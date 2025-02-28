@@ -132,6 +132,14 @@ interface ApiService {
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
     ): UserRegisterModel
+    @FormUrlEncoded
+    @POST("updategymownerpassword") // Adjust this to match your backend endpoint
+    suspend fun updateGymPassword(
+        @Field("gymid") gymid: Int,
+        @Field("oldpass") oldpass: String,
+        @Field("newpass") newpass: String,
+
+        ): UserRegisterModel
 }
 
 
