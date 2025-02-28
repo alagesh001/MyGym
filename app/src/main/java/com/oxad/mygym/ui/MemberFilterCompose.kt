@@ -16,6 +16,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,10 +46,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -92,13 +96,26 @@ class MemberFilterCompose : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                when( arguments?.getString("type_is")){
-                    "gender" -> MemberScreen()
-                    "trainer" -> TrainerListScreen()
-                    "age" -> AgeGroupedMemberListScreen()
-                    "dob" -> UpcomingBirthdaysScreen()
-                    "goal" -> GoalListScreen()
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray) // Set background color
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bg_app2), // Replace with your image
+                        contentDescription = "Background",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize()
+                    )
 
+                    when (arguments?.getString("type_is")) {
+                        "gender" -> MemberScreen()
+                        "trainer" -> TrainerListScreen()
+                        "age" -> AgeGroupedMemberListScreen()
+                        "dob" -> UpcomingBirthdaysScreen()
+                        "goal" -> GoalListScreen()
+
+                    }
                 }
 
             }
@@ -172,7 +189,7 @@ val context = LocalContext.current
             item {
                 Text(
                     text = "Upcoming Birthdays 🎂",
-                    color = Color(context.getColor(R.color.primary_color)),
+                    color = Color.White,
 
                     style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(16.dp)
@@ -481,24 +498,27 @@ val context = LocalContext.current
                 }
                 .padding(8.dp),
 
-            colors =  CardDefaults.elevatedCardColors(),// For elevation effect
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)         ) {
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White.copy(alpha = 0.3f)) ,
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)         ) {
             Column{
                 // Clickable title to expand/collapse details
                 Text(
                     text = member.name,
+                    fontSize = 18.sp,
+color = Color.White,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { expanded = !expanded }
-                        .padding(8.dp)
+                        .padding(12.dp)
                 )
 
                 if (expanded) {
                     Column(modifier = Modifier.padding(16.dp)
-                        .clickable { expanded = !expanded }) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                       ) {
                         Text(
+                            color = Color.White,
                             text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Expiry: ")
@@ -509,6 +529,8 @@ val context = LocalContext.current
                         )
                         Spacer(modifier = Modifier.height(8.dp)) // Space between items
                         Text(
+                            color = Color.White,
+
                             text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Mobile: ")
@@ -519,6 +541,8 @@ val context = LocalContext.current
                         )
                         Spacer(modifier = Modifier.height(8.dp)) // Space between items
                         Text(
+                            color = Color.White,
+
                             text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Height: ")
@@ -529,6 +553,8 @@ val context = LocalContext.current
                         )
                         Spacer(modifier = Modifier.height(8.dp)) // Space between items
                         Text(
+                            color = Color.White,
+
                             text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Weight: ")

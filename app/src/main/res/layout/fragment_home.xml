@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:src="@drawable/gym_pic"
     android:alpha="0.6"
-    android:visibility="invisible"
+    android:visibility="visible"
     android:scaleType="centerCrop"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

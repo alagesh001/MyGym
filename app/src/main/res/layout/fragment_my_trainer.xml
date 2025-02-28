@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.MyClientFragment"
     android:paddingTop="@dimen/_50sdp"
+    android:background="@drawable/bg_app"
     >
 
     <androidx.recyclerview.widget.RecyclerView

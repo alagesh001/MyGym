@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:background="@color/white"
+    android:background="@drawable/bg_app2"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout

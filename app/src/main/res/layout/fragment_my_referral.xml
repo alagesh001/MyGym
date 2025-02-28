@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/bg_app2"
+    >
 
     <EditText
         android:id="@+id/editTextReferral"
@@ -12,8 +14,11 @@
         android:layout_height="@dimen/_200sdp"
         android:gravity="top|start"
         android:inputType="textMultiLine"
-        android:textColor="@color/primary_color"
-        android:backgroundTint="@color/tertiary_color"
+        android:textColor="@color/black"
+        android:background="@drawable/roun_rad_rect"
+        android:backgroundTint="@color/white"
+        android:textColorHint="#818181"
+        android:padding="@dimen/_15sdp"
         android:hint="Enter your referral message" />
 
     <Button
