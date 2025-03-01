@@ -11,6 +11,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -43,13 +44,14 @@ class HomeFragment : Fragment(),OnClickListener {
     private var param2: String? = null
     private lateinit var binding: FragmentHomeBinding
     private val mainViewModel: MainViewModel by activityViewModels()
-
+private lateinit var navController:NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        navController = findNavController()
     }
 
     override fun onCreateView(
@@ -110,7 +112,15 @@ class HomeFragment : Fragment(),OnClickListener {
             binding.mytrainerRl -> code = 2
             binding.searchfilterRl -> code = 3
             binding.myreferRl -> code = 4
-            binding.virtualCoach -> code = 5
+            binding.virtualCoach -> {
+                code = 5
+                val startTime = System.currentTimeMillis()
+                navController.navigate(R.id.action_homeFragment_to_vCoachFrag,null, NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .build())
+                val endTime = System.currentTimeMillis()
+                Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+            }
             binding.clientaddIv -> code =6
             binding.traineraddIv -> code = 7
             binding.settingsIv -> code =8
@@ -124,34 +134,34 @@ class HomeFragment : Fragment(),OnClickListener {
         {
             1 ->  {
               //  val startTime = System.currentTimeMillis()
-                findNavController().navigate(R.id.action_homeFragment_to_myclientfragment,null, NavOptions.Builder()
+                navController.navigate(R.id.action_homeFragment_to_myclientfragment,null, NavOptions.Builder()
                     .setLaunchSingleTop(true)
                     .build())
               //  val endTime = System.currentTimeMillis()
                // Log.d("FragmentTiming", "Client took: ${endTime - startTime} ms")
 
             }
-            2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
-            3 -> findNavController().navigate(R.id.action_homeFragment_to_searchfilfrag)
+            2 ->navController.navigate(R.id.action_homeFragment_to_myTrainerFragment)
+            3 -> navController.navigate(R.id.action_homeFragment_to_searchfilfrag)
             4 -> {
               //  val startTime = System.currentTimeMillis()
-                findNavController().navigate(R.id.action_homeFragment_to_myreffrag,null, NavOptions.Builder()
+                navController.navigate(R.id.action_homeFragment_to_myreffrag,null, NavOptions.Builder()
                     .setLaunchSingleTop(true)
                     .build())
               //  val endTime = System.currentTimeMillis()
              //   Log.d("FragmentTiming", "Navigation took: ${endTime - startTime} ms")
             }
             5 -> {
-                  val startTime = System.currentTimeMillis()
-                findNavController().navigate(R.id.action_homeFragment_to_vCoachFrag,null, NavOptions.Builder()
+              /*    val startTime = System.currentTimeMillis()
+                navController.navigate(R.id.action_homeFragment_to_vCoachFrag,null, NavOptions.Builder()
                     .setLaunchSingleTop(true)
                     .build())
                   val endTime = System.currentTimeMillis()
-                   Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+                   Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")*/
             }
-            6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
-            7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
-            8 -> findNavController().navigate(R.id.action_homeFragment_to_gymprofilefragment,null, NavOptions.Builder()
+            6 -> navController.navigate(R.id.action_homeFragment_to_addmyclientfragment)
+            7 -> navController.navigate(R.id.action_homeFragment_to_addmytrainerfragment)
+            8 -> navController.navigate(R.id.action_homeFragment_to_gymprofilefragment,null, NavOptions.Builder()
                 .setLaunchSingleTop(true)
                 .build())
 

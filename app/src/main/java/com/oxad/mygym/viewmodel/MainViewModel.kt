@@ -31,6 +31,7 @@ class MainViewModel() : ViewModel() {
     val memberList: StateFlow<List<Member>> = _memberList
     lateinit var memberDao: MemberDao
     lateinit var workoutDao: WorkoutDao
+    var gymCoachOpenedFirsttime = false
 
     private val _trainerList = MutableStateFlow<List<TrainerModel>>(emptyList())
     val trainerList: StateFlow<List<TrainerModel>> = _trainerList

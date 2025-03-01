@@ -30,6 +30,7 @@
             app:destination="@id/profileFragment"
 
             />
+
         <action
             android:id="@+id/action_homeFragment_to_myclientfragment"
             app:destination="@id/myclientfragment" />
@@ -70,6 +71,7 @@
         <action
             android:id="@+id/action_homeFragment_to_vCoachFrag"
             app:destination="@id/vCoachFrag" />
+
     </fragment>
 
     <fragment

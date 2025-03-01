@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.gson.Gson
@@ -74,31 +75,20 @@ import com.oxad.mygym.model.Workout
 import com.oxad.mygym.utils.DarkBackgroundView
 import com.oxad.mygym.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [GymGuideFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class GymGuideFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentGymGuideBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -107,12 +97,38 @@ class GymGuideFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentGymGuideBinding.inflate(inflater, container, false)
-        return binding.composeView.apply {
-            binding.composeView.setContent {
-                MyComposeUI()
-            }
+        return binding.root
+      /*  return binding.composeView.apply {
 
+
+        }*/
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+if (!viewModel.gymCoachOpenedFirsttime) {
+    viewModel.gymCoachOpenedFirsttime = true
+    viewLifecycleOwner.lifecycleScope.launch {
+        delay(15) // 1-second delay
+        val composeView = binding.composeStub.inflate().findViewById<ComposeView>(R.id.composeView)
+        composeView.setContent {
+            MyComposeUI()
         }
+    }
+}else{
+    val composeView = binding.composeStub.inflate().findViewById<ComposeView>(R.id.composeView)
+    composeView.setContent {
+        MyComposeUI()
+    }
+}
+        /*viewLifecycleOwner.lifecycleScope.launch {
+            binding.composeView.setContent {
+
+                //MyComposeUI()
+
+            }*/
+   //     }
+
     }
         @Composable
         fun MyComposeUI() {
