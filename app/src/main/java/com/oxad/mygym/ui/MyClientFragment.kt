@@ -30,10 +30,12 @@ import com.oxad.mygym.retrofit.ApiManager
 
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 
 // TODO: Rename parameter arguments, choose names that match
@@ -83,9 +85,11 @@ activity?.let {
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
     binding.recyclerView.adapter =  memberAdapter
-    viewLifecycleOwner.lifecycleScope.launch {
+    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
         mainViewModel.memberList.collectLatest { members ->
-            memberAdapter.submitList(members)
+            withContext(Dispatchers.Main) {
+                memberAdapter.submitList(members)
+            }
         }
 
     }

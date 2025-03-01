@@ -63,10 +63,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.activityViewModels
 import com.oxad.mygym.R
 import com.oxad.mygym.model.Member
 import com.oxad.mygym.model.TrainerModel
+import com.oxad.mygym.utils.DarkBackgroundView
 import com.oxad.mygym.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -101,10 +103,8 @@ class MemberFilterCompose : Fragment() {
                         .fillMaxSize()
                         .background(Color.LightGray) // Set background color
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bg_app2), // Replace with your image
-                        contentDescription = "Background",
-                        contentScale = ContentScale.Crop,
+                    AndroidView(
+                        factory = { context -> DarkBackgroundView(context, null) },
                         modifier = Modifier.matchParentSize()
                     )
 

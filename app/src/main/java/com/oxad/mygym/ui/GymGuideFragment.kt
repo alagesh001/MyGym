@@ -62,13 +62,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.gson.Gson
 import com.oxad.mygym.R
+import com.oxad.mygym.databinding.FragmentGymGuideBinding
+import com.oxad.mygym.databinding.FragmentSearchFilterBinding
 import com.oxad.mygym.model.Workout
+import com.oxad.mygym.utils.DarkBackgroundView
 import com.oxad.mygym.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,7 +90,8 @@ class GymGuideFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by activityViewModels()
+    private lateinit var binding: FragmentGymGuideBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,27 +106,36 @@ class GymGuideFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        return ComposeView(requireContext()).apply {
-            setContent {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray) // Set background color
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bg_app), // Replace with your image
-                        contentDescription = "Background",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.matchParentSize()
-                    )
-                    WorkoutScreen(mainViewModel)
-                }
+        binding = FragmentGymGuideBinding.inflate(inflater, container, false)
+        return binding.composeView.apply {
+            binding.composeView.setContent {
+                MyComposeUI()
             }
+
         }
     }
-    @Composable
-    fun WorkoutScreen(  viewModelIs:MainViewModel ) {
-        val viewModel = viewModelIs
+        @Composable
+        fun MyComposeUI() {
+            val context = LocalContext.current
+            val darkBackgroundView = remember { DarkBackgroundView(context, null) }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            ) {
+
+                AndroidView(
+                    factory = { darkBackgroundView },
+                    modifier = Modifier.matchParentSize()
+                )
+
+                WorkoutScreen() // Ensure this is optimized too
+            }
+        }
+
+        @Composable
+    fun WorkoutScreen(   ) {
         var isExpanded by remember { mutableStateOf(false) }
 
 
@@ -132,7 +148,9 @@ class GymGuideFragment : Fragment() {
 
         LaunchedEffect(selectedMuscleGroup) {
            // viewModel.fetchWorkouts(selectedMuscleGroup)
-            viewModel.fetchgymGuide(selectedMuscleGroup)
+            withContext(Dispatchers.IO) {
+                viewModel.fetchgymGuide(selectedMuscleGroup)
+            }
         }
 
 
@@ -345,10 +363,10 @@ class GymGuideFragment : Fragment() {
     fun GreetingPreview() {
             val workout =  Workout(1,"Pull ups","Body Workout","Uses body for resistance","All","Hard",25)
             // WorkoutItem(workout){
-            WorkoutScreen(MainViewModel())
-            WorkoutItem(workout) {
+            //WorkoutScreen()
+            //WorkoutItem(workout) {
 
-        }
+
 
     }
 

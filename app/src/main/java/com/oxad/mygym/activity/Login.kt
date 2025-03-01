@@ -1,25 +1,40 @@
 package com.oxad.mygym.activity
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.oxad.mygym.R
 import com.oxad.mygym.databinding.ActivityLoginBinding
+import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.model.AdminLoginModel
 import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
 import com.oxad.mygym.utils.RsConstants
 import com.oxad.mygym.utils.Utils
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var apiManager: ApiManager
+    private lateinit var dataStoreManager: DataStoreManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,12 +43,46 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         setContentView(binding.root)
         binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
             .setBlurRadius(12f)
+        dataStoreManager = DataStoreManager(application)
+        lifecycleScope.launch(Dispatchers.IO) {
+val mob = dataStoreManager.mobileNumber.first()
+            val passs = dataStoreManager.password.first()
+              //  Log.d("UserSession", "Mobile Number: $mobile")
+                if(mob !=null && passs !=null) {
+                    withContext(Dispatchers.Main) {
+                        apiManager.loginAdmin(mob.toLong(), passs)
+                        return@withContext
+                    }
+                }else {
+                    withContext(Dispatchers.Main) {
+                        initUI()
 
-initUI()
+                    }
+                }
+
+            }
+
+           
+            
+            
+
     }
 
     private fun initUI() {
         setclicklistener()
+        Glide.with(this@Login)
+            .load(R.drawable.bggymml)
+            .centerCrop()
+            .transition(DrawableTransitionOptions.withCrossFade(1500)) // 500ms fade-in// Or a URL: "https://yourimageurl.com"
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    binding.bgViewLogin.background = resource
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    binding.bgViewLogin.background = placeholder
+                }
+            })
     }
 
     private fun setclicklistener() {
@@ -57,7 +106,6 @@ initUI()
         }
     }
     private fun login(){
-
         apiManager.loginAdmin( 8148602102,"ags0071")
         binding.btnLogin .isEnabled = false
         Handler(Looper.getMainLooper()).postDelayed({
@@ -84,6 +132,8 @@ initUI()
 
 
         if(adminLoginModel.success) {
+
+            loginUser("8148602102","ags0071")
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             intent.putParcelableArrayListExtra("gym_list",adminLoginModel.result)
@@ -93,5 +143,10 @@ initUI()
         }
 
 
+    }
+   private fun loginUser(mobile: String, password: String) {
+        lifecycleScope.launch {
+            dataStoreManager.saveUserCredentials(mobile, password) // Securely store credentials
+        }
     }
 }

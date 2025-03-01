@@ -75,5 +75,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
     implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
     implementation ("androidx.compose.foundation:foundation:1.7.8")
-
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06") // Encryption
 }

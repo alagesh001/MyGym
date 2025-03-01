@@ -1,6 +1,7 @@
 package com.oxad.mygym.ui
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,7 +11,12 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
 import com.oxad.mygym.R
 import com.oxad.mygym.databinding.FragmentHomeBinding
@@ -57,6 +63,21 @@ class HomeFragment : Fragment(),OnClickListener {
     private fun initUi(){
         mainViewModel.loadMembers()
 
+        context?.let {
+            Glide.with(it)
+                .load(R.drawable.gym_pic)
+                .centerCrop()
+                .transition(DrawableTransitionOptions.withCrossFade(1500)) // 500ms fade-in// Or a URL: "https://yourimageurl.com"
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        binding.bgViewIv.background = resource
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        binding.bgViewIv.background = placeholder
+                    }
+                })
+        }
         activity?.lifecycleScope?.launch {
           Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
 
@@ -101,14 +122,38 @@ class HomeFragment : Fragment(),OnClickListener {
 
         when(code)
         {
-            1 ->  findNavController().navigate(R.id.action_homeFragment_to_myclientfragment)
+            1 ->  {
+              //  val startTime = System.currentTimeMillis()
+                findNavController().navigate(R.id.action_homeFragment_to_myclientfragment,null, NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .build())
+              //  val endTime = System.currentTimeMillis()
+               // Log.d("FragmentTiming", "Client took: ${endTime - startTime} ms")
+
+            }
             2 ->findNavController().navigate(R.id.action_homeFragment_to_myTrainerFragment)
             3 -> findNavController().navigate(R.id.action_homeFragment_to_searchfilfrag)
-            4 -> findNavController().navigate(R.id.action_homeFragment_to_myreffrag)
-            5 -> findNavController().navigate(R.id.action_homeFragment_to_vCoachFrag)
+            4 -> {
+              //  val startTime = System.currentTimeMillis()
+                findNavController().navigate(R.id.action_homeFragment_to_myreffrag,null, NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .build())
+              //  val endTime = System.currentTimeMillis()
+             //   Log.d("FragmentTiming", "Navigation took: ${endTime - startTime} ms")
+            }
+            5 -> {
+                  val startTime = System.currentTimeMillis()
+                findNavController().navigate(R.id.action_homeFragment_to_vCoachFrag,null, NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .build())
+                  val endTime = System.currentTimeMillis()
+                   Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+            }
             6 -> findNavController().navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> findNavController().navigate(R.id.action_homeFragment_to_addmytrainerfragment)
-            8 -> findNavController().navigate(R.id.action_homeFragment_to_gymprofilefragment)
+            8 -> findNavController().navigate(R.id.action_homeFragment_to_gymprofilefragment,null, NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .build())
 
 
         }

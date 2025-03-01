@@ -1,31 +1,40 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp"
-    android:background="@drawable/bg_app2"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
 
+    <com.oxad.mygym.utils.DarkBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <EditText
         android:id="@+id/editTextReferral"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/_200sdp"
         android:gravity="top|start"
         android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:background="@drawable/roun_rad_rect"
         android:backgroundTint="@color/white"
+        android:layout_marginHorizontal="@dimen/_12sdp"
         android:textColorHint="#818181"
         android:padding="@dimen/_15sdp"
-        android:hint="Enter your referral message" />
+        android:hint="Enter your referral message"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/buttonSave"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Save Message"
         android:backgroundTint="@color/secondary_color"
-        android:layout_marginTop="8dp"/>
-</LinearLayout>
+        android:layout_marginHorizontal="@dimen/_12sdp"
+
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/editTextReferral"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

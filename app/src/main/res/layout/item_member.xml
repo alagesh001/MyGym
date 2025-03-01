@@ -171,7 +171,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Send Referral Code"
                 android:textAlignment="center"
-                android:backgroundTint="@color/secondary_color"
+                android:backgroundTint="@color/blue_700"
                 android:textColor="@color/white"
                 android:padding="@dimen/_10sdp"
 

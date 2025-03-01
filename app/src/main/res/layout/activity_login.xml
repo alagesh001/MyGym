@@ -8,14 +8,16 @@
     tools:context=".activity.Login"
     android:background="@color/black">
 
-
     <ImageView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:src="@drawable/lscreenbg"
-    android:scaleType="centerCrop"
-    android:alpha="0.8"
-    app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/bg_viewLogin"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:alpha="0.8"
+        android:adjustViewBounds="true"
+app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
 
     />

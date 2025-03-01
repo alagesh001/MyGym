@@ -110,14 +110,14 @@ private val contextA = context
             })*/
     }
     fun loginAdmin( mob: Long, pass: String) {
-        //Log.w("checkresponss","call api registeruser }")
+        Log.w("checkresponss","call api registeruser }")
         progressDialogUtil.showLoadingDialog()
 
         RetrofitClient.instance.loginAdmin(mob,pass)
             .enqueue(object : Callback<AdminLoginModel> {
 
                 override fun onResponse(call: Call<AdminLoginModel>, response: Response<AdminLoginModel>) {
-                   // Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                    Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
                     progressDialogUtil.hideLoadingDialog()
 
                     if(response.body()!=null) {
@@ -132,7 +132,7 @@ private val contextA = context
                 }
 
                 override fun onFailure(call: Call<AdminLoginModel>, t: Throwable) {
-                   // Log.e("checkresponss", "Error: ${t.message}")
+                    Log.e("checkresponss", "Error: ${t.message}")
                     progressDialogUtil.hideLoadingDialog()
 
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
