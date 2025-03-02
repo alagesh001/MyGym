@@ -29,6 +29,8 @@ import com.oxad.mygym.retrofit.ApiInterface
 import com.oxad.mygym.retrofit.ApiManager
 
 import com.oxad.mygym.utils.RsConstants
+import com.oxad.mygym.utils.generateQRCode
+import com.oxad.mygym.utils.shareBitmapToWhatsApp
 import com.oxad.mygym.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -154,6 +156,12 @@ activity?.let {
 private lateinit var dataStoreManager: DataStoreManager
     override fun onWhatsappSend(member: Member) {
         viewLifecycleOwner.lifecycleScope.launch {
+
+         /*   if (bitmapFile != null) {
+                activity?.let{
+                    shareBitmapToWhatsApp(requireContext(),bitmapFile,"918148602102")
+                }
+            }*/
             if (::dataStoreManager.isInitialized) {
                 dataStoreManager.referralMessage.collect { savedMessage ->
                     val fullmsg = savedMessage + " The Referral Code is ${member.referral_id}."
