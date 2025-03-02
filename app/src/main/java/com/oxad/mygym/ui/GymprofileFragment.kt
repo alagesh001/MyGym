@@ -54,6 +54,7 @@ import com.oxad.mygym.R
 import com.oxad.mygym.database.ApiRepository
 import com.oxad.mygym.datastore.DataStoreManager
 import com.oxad.mygym.utils.Utils
+import com.oxad.mygym.utils.encryptHere
 import com.oxad.mygym.utils.generateQRCode
 import com.oxad.mygym.utils.shareBitmapToWhatsApp
 import com.oxad.mygym.viewmodel.MainViewModel
@@ -169,7 +170,8 @@ class GymprofileFragment : Fragment() {
             }
 
             if (showDialog ) {
-                bitmapFile  = generateQRCode(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString())
+
+                bitmapFile  = generateQRCode(encryptHere(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString()))
 
                 AlertDialog(
 
