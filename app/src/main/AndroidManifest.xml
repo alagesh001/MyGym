@@ -39,7 +39,7 @@
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.oxad.mygym.provider"
+            android:authorities="fitox.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

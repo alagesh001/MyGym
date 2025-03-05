@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/gymSelectFragment"
-        android:name="com.oxad.mygym.ui.GymSelectFragment"
+        android:name="com.oxad.fitox.ui.GymSelectFragment"
         tools:layout="@layout/fragment_gym_select">
 
         <action
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.oxad.mygym.ui.HomeFragment"
+        android:name="com.oxad.fitox.ui.HomeFragment"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_profileFragment3"
@@ -76,11 +76,11 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.oxad.mygym.ui.ProfileFragment"
+        android:name="com.oxad.fitox.ui.ProfileFragment"
         tools:layout="@layout/fragment_profile"/>
     <fragment
         android:id="@+id/myclientfragment"
-        android:name="com.oxad.mygym.ui.MyClientFragment"
+        android:name="com.oxad.fitox.ui.MyClientFragment"
         tools:layout="@layout/fragment_my_client">
         <action
             android:id="@+id/action_myclientfragment_to_addmyclientfragment"
@@ -88,11 +88,11 @@
     </fragment>
     <fragment
         android:id="@+id/addmyclientfragment"
-        android:name="com.oxad.mygym.ui.AddmyClientFragment"
+        android:name="com.oxad.fitox.ui.AddmyClientFragment"
         tools:layout="@layout/fragment_addmy_client"/>
     <fragment
         android:id="@+id/myTrainerFragment"
-        android:name="com.oxad.mygym.ui.MyTrainersFragment"
+        android:name="com.oxad.fitox.ui.MyTrainersFragment"
         tools:layout="@layout/fragment_my_trainer">
         <action
             android:id="@+id/action_myTrainerFragment_to_addmytrainerfragment"
@@ -100,36 +100,36 @@
     </fragment>
     <fragment
         android:id="@+id/addmytrainerfragment"
-        android:name="com.oxad.mygym.ui.AddmyTrainerFragment"
+        android:name="com.oxad.fitox.ui.AddmyTrainerFragment"
         tools:layout="@layout/fragment_addmy_trainer"/>
     <fragment
         android:id="@+id/addmyproductfragment"
-        android:name="com.oxad.mygym.ui.AddmyProductFragment"
+        android:name="com.oxad.fitox.ui.AddmyProductFragment"
         tools:layout="@layout/fragment_addmy_product"/>
     <fragment
         android:id="@+id/myProductFragment"
-        android:name="com.oxad.mygym.ui.MyProductsFragment"
+        android:name="com.oxad.fitox.ui.MyProductsFragment"
         tools:layout="@layout/fragment_my_products"/>
     <fragment
         android:id="@+id/myofferfragment"
-        android:name="com.oxad.mygym.ui.MyOffersFragment"
+        android:name="com.oxad.fitox.ui.MyOffersFragment"
         tools:layout="@layout/fragment_my_offers"/>
     <fragment
         android:id="@+id/addmyofferfragment"
-        android:name="com.oxad.mygym.ui.AddmyOfferFragment"
+        android:name="com.oxad.fitox.ui.AddmyOfferFragment"
         tools:layout="@layout/fragment_addmy_offer"/>
     <fragment
         android:id="@+id/gymprofilefragment"
-        android:name="com.oxad.mygym.ui.GymprofileFragment"
+        android:name="com.oxad.fitox.ui.GymprofileFragment"
         tools:layout="@layout/fragment_gymprofile"/>
 
     <fragment
         android:id="@+id/myreffrag"
-        android:name="com.oxad.mygym.ui.MyReferralFragment"
+        android:name="com.oxad.fitox.ui.MyReferralFragment"
         tools:layout="@layout/fragment_my_referral"/>
     <fragment
         android:id="@+id/searchfilfrag"
-        android:name="com.oxad.mygym.ui.SearchFilterFragment"
+        android:name="com.oxad.fitox.ui.SearchFilterFragment"
         tools:layout="@layout/fragment_search_filter">
         <action
             android:id="@+id/action_searchfilfrag_to_filfrag"
@@ -137,10 +137,10 @@
     </fragment>
     <fragment
         android:id="@+id/filfrag"
-        android:name="com.oxad.mygym.ui.MemberFilterCompose"
+        android:name="com.oxad.fitox.ui.MemberFilterCompose"
         tools:layout="@layout/fragment_member_filter_compose"/>
     <fragment
         android:id="@+id/vCoachFrag"
-        android:name="com.oxad.mygym.ui.GymGuideFragment"
+        android:name="com.oxad.fitox.ui.GymGuideFragment"
         tools:layout="@layout/fragment_gym_guide"/>
 </navigation>

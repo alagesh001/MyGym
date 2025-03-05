@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical">
-    <com.oxad.mygym.utils.DarkBackgroundView
+    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.oxad.mygym"
+    namespace = "com.oxad.fitox"
     compileSdk = 35
     viewBinding{
         enable = true
     }
     defaultConfig {
-        applicationId = "com.oxad.mygym"
+        applicationId = "com.oxad.fitox"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

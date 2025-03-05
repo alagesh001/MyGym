@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".ui.MyClientFragment"
     >
-    <com.oxad.mygym.utils.DarkBackgroundView
+    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <RelativeLayout
@@ -19,7 +19,7 @@
 
         >
 
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.MyClientFragment"
     >
-    <com.oxad.mygym.utils.DarkBackgroundView
+    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <androidx.recyclerview.widget.RecyclerView
