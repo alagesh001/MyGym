@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,7 +44,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -113,6 +116,7 @@ class GymprofileFragment : Fragment() {
         val primefontcolor =  Color(context.getColor(R.color.primary_color))
         val secfontcolor =  Color(context.getColor(R.color.secondary_color))
         val terfontcolor =  Color(context.getColor(R.color.tertiary_color))
+        var showDialogDelete by remember { mutableStateOf(false) }
 
         Column(
             modifier = Modifier
@@ -165,6 +169,7 @@ class GymprofileFragment : Fragment() {
             ) {
                 Text("Attendance QR")
             }
+
             if (showChangePasswordDialog) {
                 ChangePasswordDialog(onDismiss = { showChangePasswordDialog = false })
             }
@@ -222,7 +227,133 @@ class GymprofileFragment : Fragment() {
                     }
                 )}*/
         }
+        Column ( modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.Start
+
+        ){
+
+            TextButton(onClick = { /* Handle click */ },
+                modifier =  Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Log Out",
+                    textDecoration = TextDecoration.Underline,
+                    color = Color.Red
+
+                )
+            }
+            TextButton(onClick = {
+
+showDialogDelete = true
+            },
+                modifier =  Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Delete my account",
+                    textDecoration = TextDecoration.Underline,
+                    color = Color.Gray
+                )
+            }
+            if (showDialogDelete) {
+                DeleteAccountDialog(
+                    onDismiss = { showDialogDelete = false },
+                    onConfirm = { gymId, mobile, reason ->
+                        // Handle delete account logic here
+                        Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
+                    }
+                )
+            }
+
+        }
     }
+    @Composable
+    fun DeleteAccountDialogPreview() {
+        DeleteAccountDialog(
+            onDismiss = {},
+            onConfirm = { gymId, mobile, reason ->
+                Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
+            }
+        )
+    }
+    @Composable
+    fun DeleteAccountDialog(
+        onDismiss: () -> Unit,
+        onConfirm: (String, String, String) -> Unit
+    ) {
+        var gymId by remember { mutableStateOf("") }
+        var mobile by remember { mutableStateOf("") }
+        var reason by remember { mutableStateOf("") }
+        val context = LocalContext.current
+        val customOutlineColor = Color(0xFF6200EE) // Custom outline color (Purple)
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(text = "Delete Account") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = gymId,
+                        onValueChange = { gymId = it },
+                        label = { Text("Gym ID") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = customOutlineColor,
+                            unfocusedBorderColor = Color(context.getColor(R.color.tertiary_color))
+                        ),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+
+
+                    )
+                    OutlinedTextField(
+                        value = mobile,
+                        onValueChange = { mobile = it },
+                        label = { Text("Mobile Number") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = customOutlineColor,
+                            unfocusedBorderColor = Color(context.getColor(R.color.secondary_color))
+                        ),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone)
+                    )
+                    OutlinedTextField(
+                        value = reason,
+                        onValueChange = { reason = it },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = customOutlineColor,
+                            unfocusedBorderColor = Color(context.getColor(R.color.secondary_color))
+                        ),
+                        label = { Text("Reason for Deletion") },
+                        singleLine = false,  // Allows multiple lines
+                        maxLines = 5,  // Limits to 5 lines
+                        modifier = Modifier.height(120.dp)  // Adjusts the height
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                   colors =
+                    ButtonDefaults.buttonColors(Color(context.getColor(R.color.secondary_color))),
+                    modifier = Modifier.width(100.dp),
+
+                    onClick = {
+                        onConfirm(gymId, mobile, reason)
+                        onDismiss()
+                    }
+                ) {
+                    Text("Submit")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss,
+                    Modifier.width(100.dp),
+                    colors = ButtonDefaults.buttonColors(Color(context.getColor(R.color.tertiary_color)))) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
 
     @Composable
     fun ChangePasswordDialog(onDismiss: () -> Unit) {
@@ -350,7 +481,12 @@ class GymprofileFragment : Fragment() {
     @Preview(showBackground = true)
     @Composable
     fun PreviewProfileScreen() {
-        ProfileScreen()
+        //ProfileScreen()
+        DeleteAccountDialog(onDismiss = {
+
+        }, onConfirm = {a,b,v ->
+
+        })
         //ChangePasswordDialog(){
 
 
