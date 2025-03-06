@@ -46,8 +46,10 @@ class DataStoreManager(private val context: Context) {
     fun getCoaches(): Flow<List<TrainerModel>> {
         return context.dataStore.data.map { preferences ->
             val json = preferences[COACHES_KEY] ?: "[]"
-            val type = object : TypeToken<List<TrainerModel>>() {}.type
-            Gson().fromJson(json, type) ?: emptyList()
+            val type = TypeToken.getParameterized(List::class.java, TrainerModel::class.java).type
+            Gson().fromJson<List<TrainerModel>>(json, type) ?: emptyList()
+           /* val type = object : TypeToken<List<TrainerModel>>() {}.type
+            Gson().fromJson(json, type) ?: emptyList()*/
         }
     }
     suspend fun clearCoaches() {

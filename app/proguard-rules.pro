@@ -19,3 +19,38 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+ -keep,allowobfuscation,allowshrinking interface retrofit2.Call
+ -keep,allowobfuscation,allowshrinking class retrofit2.Response
+
+ -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+-keep class com.oxad.fitox.retrofit.ApiManager { *; }
+-keep class com.oxad.fitox.model.** { *; }
+-keep class com.oxad.fitox.retrofit.** { *; }
+-keep class com.oxad.fitox.database.** { *; }
+-keep class com.oxad.fitox.model.ResponseModels.** { *; }
+
+-keepnames class com.oxad.fitox.activity.Login
+# Keep Retrofit classes
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keep interface retrofit2.** { *; }
+
+# Keep CallAdapter.Factory (needed for handling return types)
+-keep class retrofit2.CallAdapter { *; }
+
+# Keep Kotlin coroutine adapter if using suspend functions
+-keep class kotlinx.coroutines.** { *; }
+# Keep Room Database Entities
+-keep class androidx.room.Entity { *; }
+-keep class androidx.room.Dao { *; }
+-keep class androidx.room.Database { *; }
+-keep class androidx.room.RoomDatabase { *; }
+# Keep all DataStore-related classes
+-keep class androidx.datastore.** { *; }
+# Keep all Gson TypeToken-related classes
+-keep class com.google.gson.reflect.TypeToken { *; }
+
+# Preserve generic type information in Gson models
+-keepattributes Signature
+# Keep classes annotated with @SerializedName (for Gson)
+-keep class com.google.gson.annotations.SerializedName { *; }
