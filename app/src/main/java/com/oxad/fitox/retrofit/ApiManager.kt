@@ -132,8 +132,8 @@ private val contextA = context
                 override fun onFailure(call: Call<AdminLoginModel>, t: Throwable) {
                    // Log.e("checkresponss", "Error: ${t.message}")
                     progressDialogUtil.hideLoadingDialog()
-
-                    Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    apiInterfaceIs.onError("Network error")
+                   // Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }

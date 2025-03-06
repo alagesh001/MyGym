@@ -32,7 +32,10 @@ class DataStoreManager(private val context: Context) {
                 private val PASSWORD = stringPreferencesKey("password")
         private const val AES_MODE = "AES/GCM/NoPadding"
         private const val SECRET_KEY_ALIAS = "encrypted_key"
+        private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+
     }
+
 
     // ✅ Save coaches list
     suspend fun saveCoaches(coaches: List<TrainerModel>) {
@@ -78,6 +81,7 @@ class DataStoreManager(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[MOBILE_NUMBER] = encryptedNumber
             prefs[PASSWORD] = encryptedPassword
+            prefs[IS_LOGGED_IN] = true
         }
     }
 
@@ -91,6 +95,10 @@ class DataStoreManager(private val context: Context) {
         .catch { emit(emptyPreferences()) }
         .map { prefs -> prefs[PASSWORD]?.let { decryptData(it) } }
 
+    val isLoggedInFlow: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[IS_LOGGED_IN] ?: false // Default value is `false`
+        }
     // ✅ Clear Stored Credentials (Logout)
     suspend fun clearUserData() {
         context.dataStore.edit { it.clear() }

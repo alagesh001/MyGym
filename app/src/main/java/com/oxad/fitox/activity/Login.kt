@@ -7,7 +7,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnClickListener
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -48,21 +50,28 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         dataStoreManager = DataStoreManager(application)
         initUI()
         lifecycleScope.launch(Dispatchers.IO) {
-            val mob = dataStoreManager.mobileNumber.first()
-            val passs = dataStoreManager.password.first()
-              //  Log.d("UserSession", "Mobile Number: $mobile")
+            if(!dataStoreManager.isLoggedInFlow.first()){
+                withContext(Dispatchers.Main) {
+                    binding.loginLay.visibility = VISIBLE
+
+                    binding.btnLogin.isEnabled = true
+                }
+            }else{
+                val mob = dataStoreManager.mobileNumber.first()
+                val passs = dataStoreManager.password.first()
+                //  Log.d("UserSession", "Mobile Number: $mobile")
                 if(mob !=null && passs !=null) {
+                    binding.loginLay.visibility = GONE
+
                     withContext(Dispatchers.Main) {
                         binding.btnLogin.isEnabled = false
                         isLoggedIn = true
                         apiManager.loginAdmin(mob.toLong(), passs)
                         return@withContext
                     }
-                }else{
-                    withContext(Dispatchers.Main) {
-                        binding.btnLogin.isEnabled = true
-                    }
                 }
+            }
+
 
 
             }
@@ -101,6 +110,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     }
 
     override fun onError(error: String) {
+        binding.loginLay.visibility = VISIBLE
         Utils.showToast(this,error)
         binding.btnLogin .isEnabled = true
         isLoggedIn = false
@@ -147,6 +157,8 @@ if(!isLoggedIn) {
             finish()
 
         }else{
+                binding.loginLay.visibility = VISIBLE
+
 
         }
 
