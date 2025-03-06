@@ -19,7 +19,7 @@ class MemberPagingSource(private val apiService: ApiService,private val gymId: I
 
             val response = apiService.getmymembers(gymId,page)
             val members = response.result
-Log.e("chckeca B ",""+Gson().toJson(members))
+//Log.e("chckeca B ",""+Gson().toJson(members))
             LoadResult.Page(
                 data = members,
                 prevKey = if (page == 1) null else page - 1,

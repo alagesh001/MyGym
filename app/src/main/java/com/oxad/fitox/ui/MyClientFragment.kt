@@ -132,7 +132,7 @@ activity?.let {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.w("isdestroyc","Yes")
+      //  Log.w("isdestroyc","Yes")
     }
 
     override fun onUpdateClick(member: Member,isRenew:Boolean) {

@@ -134,7 +134,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     private fun registerSuccess(response: Any){
         val adminLoginModel =  response as AdminLoginModel
 
-        Log.e("adfadf",""+ Gson().toJson(adminLoginModel))
+        //Log.e("adfadf",""+ Gson().toJson(adminLoginModel))
 
         if(adminLoginModel.success) {
 if(!isLoggedIn) {

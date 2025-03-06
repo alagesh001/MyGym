@@ -49,7 +49,7 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
         initUi()
         return binding.root     }
     private fun initUi(){
-        Log.e("checkfra","Yes")
+       // Log.e("checkfra","Yes")
 
         activity?.lifecycleScope?.launch {
             mainViewModel.clearmembers()

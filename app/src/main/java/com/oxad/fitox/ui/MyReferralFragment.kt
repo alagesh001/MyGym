@@ -52,7 +52,7 @@ class MyReferralFragment : Fragment() {
             referralDataStore.referralMessage.collect { savedMessage ->
                 withContext(Dispatchers.Main) {
                     editTextReferral.text = savedMessage.toEditable()
-                    Log.e("jhajfadsf", "Yes collect ")
+                 //   Log.e("jhajfadsf", "Yes collect ")
                 }
 
 

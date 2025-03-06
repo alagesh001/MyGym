@@ -139,7 +139,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         }
 
         binding.spinnerTypeGender.selectedItem.toString()
-        Log.d("AddMyClientFragment", "Received Member: ${memberData?.name}, Age: ${memberData?.mobile}")
+       // Log.d("AddMyClientFragment", "Received Member: ${memberData?.name}, Age: ${memberData?.mobile}")
         if(memberData!=null){
             binding.deleteButton.visibility = VISIBLE
             if(isRenew == true){
@@ -160,7 +160,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 binding.weightInput.text = Editable.Factory.getInstance().newEditable(memberData?.weight?.toString())
 
                 val selectionGoal = (memberData?.goal)?.minus(1)
-                Log.e("adsfadf","pos $memberData?.goal")
+              //  Log.e("adsfadf","pos $memberData?.goal")
                 try {
                     binding.spinnerType.setSelection(selectionGoal?:0)
 
@@ -247,7 +247,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         val mysqlDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val formattedDate = mysqlDateFormat.format(selectedDate.time)
         dateIs = formattedDate.format(selectedDate.time)
-        Log.e("checkhere","yes $dateIs")
+       // Log.e("checkhere","yes $dateIs")
     }
     private fun setclicklistener(){
         binding.submitButton.setOnClickListener(this)

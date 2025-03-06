@@ -136,7 +136,7 @@ class GymprofileFragment : Fragment() {
     }
 
     private fun logout(){
-        Log.e("chadjfadf","Yesss")
+      //  Log.e("chadjfadf","Yesss")
 activity?.let {
     val intent = Intent(requireContext(), Login::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -445,7 +445,7 @@ fun DeleteAccountDialogPreview() {
     DeleteAccountDialog(
         onDismiss = {},
         onConfirm = { gymId, mobile, reason ->
-            Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
+           // Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
         }
     )
 }

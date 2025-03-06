@@ -79,7 +79,7 @@ private lateinit var navController:NavController
                 })
         }
         activity?.lifecycleScope?.launch {
-          Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
+        //  Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
 
         }
         binding.title.text = getString(R.string.welcometitle,mainViewModel.gymResult[mainViewModel.currentGymSelected].GymName,mainViewModel.gymResult[mainViewModel.currentGymSelected].Location)
@@ -117,7 +117,7 @@ private lateinit var navController:NavController
                     .setLaunchSingleTop(true)
                     .build())
                 val endTime = System.currentTimeMillis()
-                Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+           //     Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
             }
             binding.clientaddIv -> code =6
             binding.traineraddIv -> code = 7

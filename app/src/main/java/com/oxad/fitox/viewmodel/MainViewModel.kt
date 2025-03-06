@@ -156,7 +156,7 @@ class MainViewModel() : ViewModel() {
     fun loadTrainerData(dataStoreManager: DataStoreManager){
     viewModelScope.launch {
 
-                Log.d("DataStoreA", "Not Stored")
+              //  Log.d("DataStoreA", "Not Stored")
 
                 val result = ApiRepository().getTrainers(gymResult[currentGymSelected].GymId)
                // Log.e("chadka",""+ Gson().toJson(result))

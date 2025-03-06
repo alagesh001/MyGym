@@ -42,9 +42,9 @@ fun encryptHere(value:String):String {
     val secretKey = "4gLr0RG835dSTNsEO0IUAyXG3Hf8vnBs7bpsyERPulQ=" // Generate and store securely!
     val iv = "ViAUchQdzQmO0lQaThADXA==" // New IV for each encryption
     val encryptedText = encryptAES(value, secretKey, iv)
-    Log.e("Keyschecka","Value: $value")
-    Log.e("Keyschecka","Encrypted: $encryptedText")
-    Log.e("Keyschecka","Secret Key: $secretKey") // Store this safely!
-    Log.e("Keyschecka","IV: $iv") // Send IV along with encrypted data
+  //  Log.e("Keyschecka","Value: $value")
+   // Log.e("Keyschecka","Encrypted: $encryptedText")
+   // Log.e("Keyschecka","Secret Key: $secretKey") // Store this safely!
+   // Log.e("Keyschecka","IV: $iv") // Send IV along with encrypted data
     return encryptedText
 }
