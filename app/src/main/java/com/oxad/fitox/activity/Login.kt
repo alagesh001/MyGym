@@ -48,13 +48,15 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
             .setBlurRadius(12f)
         dataStoreManager = DataStoreManager(application)
-        initUI()
+
         lifecycleScope.launch(Dispatchers.IO) {
+            Log.e("dafasfd","Check login ${dataStoreManager.isLoggedInFlow.first()}")
             if(!dataStoreManager.isLoggedInFlow.first()){
+
                 withContext(Dispatchers.Main) {
                     binding.loginLay.visibility = VISIBLE
-
                     binding.btnLogin.isEnabled = true
+                    initUI()
                 }
             }else{
                 val mob = dataStoreManager.mobileNumber.first()
@@ -110,10 +112,12 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     }
 
     override fun onError(error: String) {
+
         binding.loginLay.visibility = VISIBLE
         Utils.showToast(this,error)
         binding.btnLogin .isEnabled = true
         isLoggedIn = false
+        initUI()
     }
 
     override fun onClick(p0: View?) {
@@ -158,7 +162,7 @@ if(!isLoggedIn) {
 
         }else{
                 binding.loginLay.visibility = VISIBLE
-
+            initUI()
 
         }
 

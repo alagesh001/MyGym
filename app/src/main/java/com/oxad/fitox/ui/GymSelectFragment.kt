@@ -75,8 +75,8 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
 
     override fun onItemSelected(item: Int) {
         mainViewModel.currentGymSelected = item
-        if(context!=null) {
-            mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+        activity?.let { ctx ->
+            mainViewModel.loadTrainerData(DataStoreManager(ctx))
         }
         findNavController().navigate(R.id.action_gymSelectFragment_to_homeFragment)
     }

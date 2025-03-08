@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -94,12 +95,12 @@ class MemberFilterCompose : Fragment() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.LightGray) // Set background color
+                        .background(Color.White) // Set background color
                 ) {
-                    AndroidView(
+                   /* AndroidView(
                         factory = { context -> DarkBackgroundView(context, null) },
                         modifier = Modifier.matchParentSize()
-                    )
+                    )*/
 
                     when (arguments?.getString("type_is")) {
                         "gender" -> MemberScreen()
@@ -182,7 +183,7 @@ val context = LocalContext.current
             item {
                 Text(
                     text = "Upcoming Birthdays 🎂",
-                    color = Color.White,
+                    color = colorResource(id = R.color.primary_color),
 
                     style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(16.dp)
@@ -214,7 +215,7 @@ val context = LocalContext.current
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text("🎉 Birthday: ${formatDate(member.dob)}",  color = Color.White,)
-                Text("📅 Days Left: ${getDaysUntilNextBirthday(member.dob)} days",  color = Color.White,)
+                Text("📅 Days Left: ${getDaysUntilNextBirthday(member.dob)}",  color = Color.White,)
             }
         }
     }
@@ -227,7 +228,7 @@ val context = LocalContext.current
 
         var nextBirthday = birthDate.withYear(today.year) // Set this year's birthday
 
-        if (nextBirthday.isBefore(today) || nextBirthday.isEqual(today)) {
+        if (nextBirthday.isBefore(today) ) {
             nextBirthday = nextBirthday.plusYears(1) // Move to next year if passed
         }
 
@@ -446,11 +447,11 @@ val context = LocalContext.current
                     modifier = Modifier
                         .size(36.dp) // Size of the circle
                         .clip(CircleShape) // Makes it round
-                        .background(color = Color(context.getColor(R.color.secondary_color))) // Orange color
+                        .background(color = Color(context.getColor(R.color.primary_color))) // Orange color
                 ) {
                     Text(
                         text = count.toString(),
-                        color = Color.White,
+                        color =Color(context.getColor(R.color.fourth_color)),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
@@ -492,7 +493,8 @@ val context = LocalContext.current
                 .padding(8.dp),
 
             colors = CardDefaults.cardColors(
-                containerColor = Color.White.copy(alpha = 0.3f)) ,
+                containerColor = colorResource(id = R.color.secondary_color),
+            ) ,
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)         ) {
             Column{
                 // Clickable title to expand/collapse details

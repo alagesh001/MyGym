@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.oxad.fitox.R
 import com.oxad.fitox.activity.Login
 import com.oxad.fitox.database.ApiRepository
@@ -116,13 +119,14 @@ class GymprofileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (!viewModel.gymProfileOpenedFirsttime) {
             viewModel.gymProfileOpenedFirsttime = true
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(15)
                 val composeView = binding.composeStub.inflate().findViewById<ComposeView>(R.id.composeView)
                 composeView.setContent {
-                    ProgressBarExample()
+                    DelayedComposeWithPlaceholder()
                 }
              //   delay(10) // 1-second delay
 
@@ -134,7 +138,30 @@ class GymprofileFragment : Fragment() {
             }
         }
     }
+    @Composable
+    fun DelayedComposeWithPlaceholder() {
+        var isLoaded by remember { mutableStateOf(false) }
 
+        LaunchedEffect(Unit) {
+            delay(500) // Simulate loading
+            isLoaded = true
+        }
+
+        if (isLoaded) {
+            ProfileScreen()
+        } else {
+            LoadingScreen() // Show placeholder UI
+        }
+    }
+    @Composable
+    fun LoadingScreen() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = colorResource(id = R.color.tertiary_color))
+        }
+    }
     private fun logout(){
       //  Log.e("chadjfadf","Yesss")
 activity?.let {
@@ -142,8 +169,7 @@ activity?.let {
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
     lifecycleScope.launch {
-        DataStoreManager(requireContext()).clearUserData()
-
+        mainViewModel.dataStoreManagerVM.clearUserData()
     }
     requireActivity().finish()
 

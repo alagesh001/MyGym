@@ -40,7 +40,7 @@ class MainViewModel() : ViewModel() {
     private val _searchQuery = MutableLiveData<String>()
     private val _workouts = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workouts
-
+    lateinit var dataStoreManagerVM:DataStoreManager
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
@@ -154,8 +154,9 @@ class MainViewModel() : ViewModel() {
     }
 
     fun loadTrainerData(dataStoreManager: DataStoreManager){
-    viewModelScope.launch {
 
+    viewModelScope.launch {
+        dataStoreManagerVM  = dataStoreManager
               //  Log.d("DataStoreA", "Not Stored")
 
                 val result = ApiRepository().getTrainers(gymResult[currentGymSelected].GymId)
@@ -163,10 +164,10 @@ class MainViewModel() : ViewModel() {
                 result.onSuccess { response ->
                     if(response.success){
                         _trainerList.value = response.result
-                        dataStoreManager.saveCoaches(response.result)
+                        dataStoreManagerVM.saveCoaches(response.result)
                     }else{
                         _trainerList.value = emptyList()
-                        dataStoreManager.saveCoaches(emptyList())
+                        dataStoreManagerVM.saveCoaches(emptyList())
                     }
                 }
 

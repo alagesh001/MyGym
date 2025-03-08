@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ if (!viewModel.gymCoachOpenedFirsttime) {
         delay(15) // 1-second delay
         val composeView = binding.composeStub.inflate().findViewById<ComposeView>(R.id.composeView)
         composeView.setContent {
-            MyComposeUI()
+            DelayedComposeWithPlaceholder()
         }
     }
 }else{
@@ -121,21 +122,45 @@ if (!viewModel.gymCoachOpenedFirsttime) {
    //     }
 
     }
+    @Composable
+    fun DelayedComposeWithPlaceholder() {
+        var isLoaded by remember { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            delay(500) // Simulate loading
+            isLoaded = true
+        }
+
+        if (isLoaded) {
+            MyComposeUI()
+        } else {
+            LoadingScreen() // Show placeholder UI
+        }
+    }
+    @Composable
+    fun LoadingScreen() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = colorResource(id = R.color.tertiary_color))
+        }
+    }
         @Composable
         fun MyComposeUI() {
             val context = LocalContext.current
-            val darkBackgroundView = remember { DarkBackgroundView(context, null) }
+          //  val darkBackgroundView = remember { DarkBackgroundView(context, null) }
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
+                    .background(Color.White)
             ) {
 
-                AndroidView(
+              /*  AndroidView(
                     factory = { darkBackgroundView },
                     modifier = Modifier.matchParentSize()
-                )
+                )*/
 
                 WorkoutScreen() // Ensure this is optimized too
             }

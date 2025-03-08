@@ -64,7 +64,7 @@ private lateinit var navController:NavController
         mainViewModel.loadMembers()
 
         context?.let {
-            Glide.with(it)
+           Glide.with(it)
                 .load(R.drawable.gym_pic)
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade(1500)) // 500ms fade-in// Or a URL: "https://yourimageurl.com"
@@ -159,9 +159,23 @@ private lateinit var navController:NavController
             }
             6 -> navController.navigate(R.id.action_homeFragment_to_addmyclientfragment)
             7 -> navController.navigate(R.id.action_homeFragment_to_addmytrainerfragment)
-            8 -> navController.navigate(R.id.action_homeFragment_to_gymprofilefragment,null, NavOptions.Builder()
-                .setLaunchSingleTop(true)
-                .build())
+            8 -> {
+
+
+                val startTime = System.currentTimeMillis()
+
+             /* activity?.supportFragmentManager?.beginTransaction()
+                  ?.replace(R.id.gymprofilefragment, GymprofileFragment()) // Replace existing fragment
+                    ?.addToBackStack(null) // Adds to back stack so the user can go back
+                    ?.commit()*/
+                navController.navigate(
+                    R.id.action_homeFragment_to_gymprofilefragment, null, NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .build()
+                )
+                val endTime = System.currentTimeMillis()
+                Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+            }
 
 
         }

@@ -2,11 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
   >
 
-    <com.oxad.fitox.utils.DarkBackgroundView
+<!--    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"/>-->
     <EditText
         android:id="@+id/editTextReferral"
         android:layout_width="0dp"
@@ -15,9 +16,9 @@
         android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:background="@drawable/roun_rad_rect"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="#DEDEDE"
         android:layout_marginHorizontal="@dimen/_12sdp"
-        android:textColorHint="#818181"
+        android:textColorHint="#4D4D4D"
         android:padding="@dimen/_15sdp"
         android:hint="Enter your referral message"
         app:layout_constraintTop_toTopOf="parent"

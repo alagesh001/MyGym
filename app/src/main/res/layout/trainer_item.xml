@@ -56,7 +56,7 @@
         android:padding="10dp"
         android:visibility="visible"
         android:layout_marginTop="-40dp"
-        android:background="#88BFBFBF">
+        android:background="#7BCDBCA8">
         <TextView
             android:id="@+id/update_tv"
             android:layout_width="@dimen/_60sdp"
@@ -86,7 +86,7 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:background="@drawable/baseline_call_24"
-                android:backgroundTint="@color/white" />
+                android:backgroundTint="@color/primary_color" />
 
             <TextView
                 android:id="@+id/tvDetails"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/_5sdp"
                 android:text="Mobile"
-                android:textColor="@color/white"
+                android:textColor="@color/primary_color"
                 android:textSize="16sp" />
         </LinearLayout>
 
