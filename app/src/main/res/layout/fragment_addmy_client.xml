@@ -36,6 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Name"
+        android:textColor="@color/black"
+        android:textColorHint="#ADADAD"
+        android:backgroundTint="@color/tertiary_color"
         android:inputType="textPersonName" />
 
         <!-- Paid Months Field -->
@@ -61,6 +64,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Mobile Number"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:inputType="phone" />
 
             <!-- Email Field -->
@@ -80,6 +86,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Email Address"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:inputType="textEmailAddress" />
             <TextView
                 android:id="@+id/refer_label"
@@ -96,6 +105,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Referral Id"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:inputType="text" />
             <TextView
                 android:id="@+id/dob_label"
@@ -112,6 +124,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select Date of Birth"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:focusable="false" />
 
             <TextView
@@ -129,6 +144,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Height"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:inputType="numberDecimal" />
 
             <TextView
@@ -145,6 +163,9 @@
                 android:id="@+id/weight_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
                 android:hint="Enter Weight"
                 android:inputType="numberDecimal" />
 
@@ -200,7 +221,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"
                         android:background="@drawable/custom_spinner"
-                        android:entries="@array/gender_types"
 
                         android:padding="@dimen/_5sdp" />
                 </RelativeLayout>
@@ -252,6 +272,9 @@
         android:id="@+id/paidmonths_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textColorHint="#ADADAD"
+
         android:hint="Enter Number of Paid Months"
         android:inputType="number" />
     <TextView
@@ -274,6 +297,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:datePickerMode="spinner"
+            android:theme="@style/CustomDatePickerTheme"
             android:calendarViewShown="false"/>
         <TextView
             android:id="@+id/textViewSelectedDate"
@@ -285,6 +309,51 @@
             android:visibility="gone"
             android:text="" />
     </LinearLayout>
+            <TextView
+                android:id="@+id/total_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount to be paid"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color"
+
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/total_amount_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+
+                android:hint="Enter the amount to be paid"
+                android:inputType="number" />
+            <TextView
+                android:id="@+id/amount_paid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount paid"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color"
+
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/amount_paid_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter the amount paid"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+                android:inputType="number" />
+            <TextView
+                android:id="@+id/due_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Due amount:"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Submit Button -->
@@ -296,6 +365,8 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:backgroundTint="#E40212"
         android:layout_gravity="center"
+        android:textColor="@color/white"
+
         android:visibility="gone"
         />
     <Button
@@ -303,6 +374,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add"
+        android:textColor="@color/white"
 
         android:layout_marginTop="@dimen/_10sdp"
         android:backgroundTint="@color/secondary_color"
@@ -315,12 +387,15 @@
         android:visibility="gone"
         android:layout_marginTop="@dimen/_10sdp"
         android:backgroundTint="@color/secondary_color"
+        android:textColor="@color/white"
+
         android:layout_gravity="center" />
     <Button
         android:id="@+id/delete_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete"
+        android:textColor="@color/white"
         android:layout_marginTop="@dimen/_10sdp"
         android:backgroundTint="@color/tertiary_color"
         android:visibility="gone"

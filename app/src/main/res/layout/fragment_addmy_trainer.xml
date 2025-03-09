@@ -23,6 +23,8 @@ android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Name"
+        android:textColor="@color/black"
+        android:textColorHint="#ADADAD"
 
         android:inputType="textPersonName" />
 
@@ -43,6 +45,8 @@ android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Mobile Number"
+        android:textColor="@color/black"
+        android:textColorHint="#ADADAD"
         android:inputType="phone" />
 
 
@@ -56,6 +60,7 @@ android:background="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
+        android:textColor="@color/white"
         android:backgroundTint="@color/secondary_color"
         android:layout_gravity="center" />
     <Button
@@ -65,6 +70,7 @@ android:background="@color/white"
         android:text="Update"
         android:visibility="gone"
         android:backgroundTint="@color/secondary_color"
+        android:textColor="@color/white"
 
         android:layout_gravity="center" />
     <Button
@@ -73,6 +79,7 @@ android:background="@color/white"
         android:layout_height="wrap_content"
         android:text="Delete"
         android:backgroundTint="@color/tertiary_color"
+        android:textColor="@color/white"
 
         android:visibility="gone"
         android:layout_gravity="center" />

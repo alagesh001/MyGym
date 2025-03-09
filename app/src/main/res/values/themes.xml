@@ -11,4 +11,11 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
     <style name="Theme.MyGym" parent="Base.Theme.MyGym" />
+        <style name="CustomDatePickerTheme" parent="Theme.MaterialComponents.DayNight">
+            <item name="colorAccent">@color/fourth_color</item>
+            <item name="android:textColorPrimary">@color/primary_color</item>
+            <item name="android:textColorSecondary">@color/secondary_color</item>
+            <item name="android:background">@color/white</item>
+        </style>
+
 </resources>

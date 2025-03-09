@@ -10,8 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -24,6 +22,7 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -64,8 +63,8 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        memberData = arguments?.getParcelable("member_data",)
-        isRenew = arguments?.getBoolean("is_renew",)
+        memberData = arguments?.getParcelable("member_data")
+        isRenew = arguments?.getBoolean("is_renew")
 
 
     }
@@ -122,7 +121,34 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     private   var dobPreSet:Calendar ? = null
    private var trainerData:List<TrainerModel> ? =null
     private fun initUi(){
+        binding.totalAmountInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // Not needed
+            }
 
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                updateDueAmount()
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                // Not needed
+            }
+        })
+        binding.amountPaidInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // Not needed
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                updateDueAmount()
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                // Not needed
+            }
+        })
+        val genderarray= resources.getStringArray(R.array.gender_types)
+        val usertypearray= resources.getStringArray(R.array.user_types)
 
         activity?.let {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -130,12 +156,33 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     trainerData = trainers
                     val adapter = ArrayAdapter(
                         requireContext(),
-                        android.R.layout.simple_spinner_dropdown_item,
+                       R.layout.spinner_item,
                         trainers.map { it.name })
+                    adapter.setDropDownViewResource(R.layout.spinner_item)
+
                     binding.spinnerTypeTrainer.adapter = adapter
 
                 }
             }
+
+            // Create an ArrayAdapter with the custom layout
+            val adapter2 = ArrayAdapter(
+                requireContext(),
+                R.layout.spinner_item,  // Custom layout for Spinner items
+                genderarray
+            )
+            adapter2.setDropDownViewResource(R.layout.spinner_item)
+
+            binding.spinnerTypeGender.adapter = adapter2
+
+            val adapter3 = ArrayAdapter(
+                requireContext(),
+                R.layout.spinner_item,  // Custom layout for Spinner items
+                usertypearray
+            )
+            adapter3.setDropDownViewResource(R.layout.spinner_item)
+
+            binding.spinnerType.adapter = adapter3
         }
 
         binding.spinnerTypeGender.selectedItem.toString()
@@ -185,7 +232,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
 
 
-                val genderarray= resources.getStringArray(R.array.gender_types)
+
                 binding.spinnerTypeGender.setSelection(genderarray.indexOf(memberData?.gender?:"Male"))
                 binding.etDateOfBirth.text = memberData?.dob.toString().toEditable()
                 if(memberData?.dob !=null) {
@@ -227,6 +274,13 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
 
 
+    }
+    private fun updateDueAmount() {
+        val totalAmount = binding.totalAmountInput.text.toString().toIntOrNull() ?: 0
+        val amountPaid = binding.amountPaidInput.text.toString().toIntOrNull() ?: 0
+        val dueAmount = totalAmount - amountPaid
+
+        binding.dueAmount.text = "Due amount: $dueAmount"
     }
     fun convertToCalendar(dateString: String, format: String = "yyyy-MM-dd"): Calendar? {
         val dateFormat = SimpleDateFormat(format, Locale.getDefault())
@@ -444,14 +498,15 @@ private fun dataAdd(isUpdate:Boolean){
                 }else{
                     memberData?.userid?.let {
                         trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid?.let { it1 ->
-                            ApiRepository().updatemymembers(binding.nameInput.text.toString(),
+                            ApiRepository().updatemymembers(
+                                binding.nameInput.text.toString(),
                                 binding.emailInput.text.toString(),
                                 mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                                 binding.mobInput.text.toString().toLong(),
                                 it, binding.etDateOfBirth.text.toString(),
                                 binding.heightInput.text.toString().toFloat(),
                                 binding.weightInput.text.toString().toFloat(),
-                                binding.spinnerType.selectedItemPosition  + 1,
+                                binding.spinnerType.selectedItemPosition + 1,
                                 it1,
                                 binding.spinnerTypeGender.selectedItem.toString(),
 
