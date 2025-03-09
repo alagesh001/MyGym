@@ -1,6 +1,10 @@
 package com.oxad.fitox.ui
 
+import android.animation.ValueAnimator
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -42,6 +46,7 @@ class HomeFragment : Fragment(),OnClickListener {
     private var param2: String? = null
     private lateinit var binding: FragmentHomeBinding
     private val mainViewModel: MainViewModel by activityViewModels()
+    private var isbgApplied = false
 private lateinit var navController:NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,21 +68,37 @@ private lateinit var navController:NavController
     private fun initUi(){
         mainViewModel.loadMembers()
 
-        context?.let {
+     /*   context?.let {
            Glide.with(it)
+               .asBitmap()
                 .load(R.drawable.gym_pic)
                 .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade(1500)) // 500ms fade-in// Or a URL: "https://yourimageurl.com"
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        binding.bgViewIv.background = resource
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        val drawable = BitmapDrawable(context?.resources, resource).apply {
+                            // Set initial alpha to 0 for fade-in effect
+                            alpha = 0
+                        }
+
+                        // Set the drawable as the background
+                        binding.bgViewIv.background = drawable
+
+                        // Animate the alpha for fade-in
+                        val fadeInAnimator = ValueAnimator.ofInt(0, 255).apply {
+                            duration = 100 // 4 seconds fade-in duration
+                            addUpdateListener { animator ->
+                                drawable.alpha = animator.animatedValue as Int
+                                binding.bgViewIv.invalidate() // Redraw the view
+                            }
+                        }
+                        fadeInAnimator.start()
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
                         binding.bgViewIv.background = placeholder
                     }
                 })
-        }
+        }*/
         activity?.lifecycleScope?.launch {
         //  Log.e("storetraninda",""+Gson().toJson(getCoachesList()))
 

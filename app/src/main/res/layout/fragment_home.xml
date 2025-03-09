@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:background="@drawable/gradbg"
+    android:background="@color/transparent"
     android:orientation="vertical">
    <!-- <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
