@@ -275,11 +275,18 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
 
     }
+    private var dueAmount = 0
+
     private fun updateDueAmount() {
         val totalAmount = binding.totalAmountInput.text.toString().toIntOrNull() ?: 0
         val amountPaid = binding.amountPaidInput.text.toString().toIntOrNull() ?: 0
-        val dueAmount = totalAmount - amountPaid
-
+         dueAmount = totalAmount - amountPaid
+if(dueAmount <0){
+   activity?.let {
+       Utils.showToast(requireContext(),"Amount paid is more than total amount")
+       binding.amountPaidInput.text = "".toEditable()
+   }
+}
         binding.dueAmount.text = "Due amount: $dueAmount"
     }
     fun convertToCalendar(dateString: String, format: String = "yyyy-MM-dd"): Calendar? {
@@ -319,7 +326,8 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             binding.submitButton -> {
               //  Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
 
-                if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty()) {
+                if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
+                    && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
 
                     dataAdd(false)
                 } else {
@@ -342,7 +350,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             }
 
             binding.renewButton -> {
-            if ( dateIs != "" && binding.paidmonthsInput.text.isNotEmpty()) {
+            if ( dateIs != "" && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
                 dataAdd(true)
             } else {
                 if (context != null) {
@@ -485,14 +493,17 @@ private fun dataAdd(isUpdate:Boolean){
                             binding.spinnerType.selectedItemPosition  + 1,
                             it,
                             binding.spinnerTypeGender.selectedItem.toString(),
-                            binding.referInput.text.toString().trim()
+                            binding.referInput.text.toString().trim(),
+                            binding.amountPaidInput.text.toString().trim().toInt(),
+                            dueAmount
                         )
                     }
             }else{
                 if(isRenew == true){
                     memberData?.userid?.let {
                         ApiRepository().renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
-                            it
+                            it,  binding.amountPaidInput.text.toString().trim().toInt(),
+                            dueAmount
                         )
                     }
                 }else{

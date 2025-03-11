@@ -71,7 +71,9 @@ interface ApiService {
         @Field("goal") goal: Int,
         @Field("trainer") trainerId: Long,
         @Field("gender") gender: String,
-        @Field("referredBy") referredBy: String
+        @Field("referredBy") referredBy: String,
+        @Field("amount_paid") amount_paid: Int,
+        @Field("due_amount") due_amount: Int,
 
 
     ): UserRegisterModel
@@ -109,6 +111,8 @@ interface ApiService {
         @Field("date") date: String,
         @Field("userid") userid: Long,
         @Field("isRenew") isRenew: Int =1,
+        @Field("amount_paid") amount_paid: Int,
+        @Field("due_amount") due_amount: Int,
 
     ): UserRegisterModel
     @FormUrlEncoded

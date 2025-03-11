@@ -30,9 +30,9 @@ class ApiRepository() {
 
 
     }
-    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long): Result<UserRegisterModel> {
+    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid)        }
+            RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
 
 
     }
@@ -47,7 +47,7 @@ class ApiRepository() {
         }
 
     }
-    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String): Result<UserRegisterModel> {
+    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
         return safeApiCall {
             RetrofitClient.instance.addmymember(
                 name,
@@ -62,7 +62,9 @@ class ApiRepository() {
                 goal,
                 trainerId,
                 gender,
-                referredBy
+                referredBy,
+                amount_paid,
+                due_amount
             )
         }
 
