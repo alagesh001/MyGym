@@ -1,8 +1,11 @@
 package com.oxad.fitox.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,17 +42,32 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         }else if(isDateCloseToExpiry(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
         }else{
-            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green)
         }
+        Log.e("afafascA",member.name)
 
+        if(member.due_amount!! >0){
+    Log.e("afafascB",member.name)
+    holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
+holder.dueTextView.visibility = VISIBLE
+}else{
+            holder.dueTextView.visibility = GONE
+
+        }
         holder.rootLlView.setOnClickListener {
             member.isExpanded = !member.isExpanded
             notifyItemChanged(position) // Refresh item view
         }
-        holder.updateTextView.setOnClickListener {
+        holder.updateTextView.setOnClickListener { member.isExpanded = !member.isExpanded
+            notifyItemChanged(position)
             listener.onUpdateClick(member,false)
         }
-        holder.renewTextView.setOnClickListener {
+        holder.dueTextView.setOnClickListener { member.isExpanded = !member.isExpanded
+            notifyItemChanged(position)
+            listener.onDueClick(member)
+        }
+        holder.renewTextView.setOnClickListener { member.isExpanded = !member.isExpanded
+            notifyItemChanged(position)
             listener.onUpdateClick(member,true)
         }
         holder.sendwtsapp_tv.setOnClickListener {
@@ -71,6 +89,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         val updateTextView: TextView = itemView.findViewById(R.id.update_tv)
         val renewTextView: TextView = itemView.findViewById(R.id.renew_tv)
         val sendwtsapp_tv: TextView = itemView.findViewById(R.id.sendwtsapp_tv)
+        val dueTextView: TextView = itemView.findViewById(R.id.due_tv)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
@@ -129,6 +148,8 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
     }
     interface MemberAdapterListener{
         fun onUpdateClick(member:Member,isRenew:Boolean)
+        fun onDueClick(member:Member)
+
         fun onWhatsappSend(member:Member)
 
     }

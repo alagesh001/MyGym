@@ -52,6 +52,8 @@ data class Member(
     val goal: Int = 1,
     val gender: String? = "Male",
     val referred_by: String? = "",
+    val due_amount: Int? = 0
+
 
     ):Parcelable {
     constructor(parcel: Parcel) : this(

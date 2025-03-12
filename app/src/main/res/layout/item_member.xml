@@ -152,6 +152,21 @@
             android:background ="@drawable/roun_rad_rect"
             android:textSize="16sp" />
             <TextView
+                android:id="@+id/due_tv"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Due Pay"
+                android:visibility="gone"
+                android:textAlignment="center"
+                android:backgroundTint="@color/red"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"
+
+                android:background ="@drawable/roun_rad_rect"
+                android:textSize="16sp" />
+
+            <TextView
                 android:id="@+id/renew_tv"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="wrap_content"

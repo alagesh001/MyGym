@@ -60,11 +60,13 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var memberData:Member?  = null
     private var isRenew:Boolean?  = false
+    private var isDue:Boolean?  = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         memberData = arguments?.getParcelable("member_data")
         isRenew = arguments?.getBoolean("is_renew")
+        isDue = arguments?.getBoolean("is_due")
 
 
     }
@@ -191,11 +193,25 @@ class AddmyClientFragment : Fragment(),OnClickListener {
             binding.deleteButton.visibility = VISIBLE
             if(isRenew == true){
                 binding.nameInput.isEnabled = false
+                binding.deleteButton.visibility = GONE
                 binding.renewLl.visibility = VISIBLE
                 binding.editLl.visibility = GONE
                 binding.updateButton.visibility = GONE
                 binding.renewButton.visibility = VISIBLE
             }else{
+                if(isDue == true){
+                    binding.nameInput.isEnabled = false
+                    binding.totalAmountInput.isEnabled = false
+                    binding.totalAmountInput.text = memberData?.due_amount.toString().toEditable()
+                    binding.renewLl.visibility = VISIBLE
+                    binding.editLl.visibility = GONE
+                    binding.paidmonthsInput.visibility = GONE
+                    binding.paidmonthsLabel.visibility = GONE
+                    binding.datePicker.visibility = GONE
+                    binding.frmDateTv.visibility = GONE
+                    binding.deleteButton.visibility = GONE
+
+                }else{
                 binding.renewLl.visibility = GONE
                 binding.editLl.visibility = VISIBLE
                 binding.updateButton.visibility = VISIBLE
@@ -239,7 +255,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     dobPreSet = convertToCalendar(memberData!!.dob)?:Calendar.getInstance()
                 }
                 binding.referInput.text = memberData?.referred_by?.toEditable()
-            }
+            }}
             binding.submitButton.visibility = GONE
             binding.nameInput.text = memberData?.name?.toEditable()
 

@@ -140,10 +140,20 @@ activity?.let {
             putParcelable("member_data", member)
             putBoolean("is_renew", isRenew)
         }
+        findNavController().navigate(R.id.action_myclientfragment_to_addmyclientfragment,bundle)
+
+    }
+
+    override fun onDueClick(member: Member) {
+        val bundle = Bundle().apply {
+            putParcelable("member_data", member)
+            putBoolean("is_due", true)
+        }
 
         findNavController().navigate(R.id.action_myclientfragment_to_addmyclientfragment,bundle)
     }
-private lateinit var dataStoreManager: DataStoreManager
+
+    private lateinit var dataStoreManager: DataStoreManager
     override fun onWhatsappSend(member: Member) {
         viewLifecycleOwner.lifecycleScope.launch {
 
