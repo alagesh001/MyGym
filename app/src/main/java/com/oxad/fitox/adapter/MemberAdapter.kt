@@ -44,10 +44,8 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         }else{
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green)
         }
-        Log.e("afafascA",member.name)
 
         if(member.due_amount!! >0){
-    Log.e("afafascB",member.name)
     holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
 holder.dueTextView.visibility = VISIBLE
 }else{

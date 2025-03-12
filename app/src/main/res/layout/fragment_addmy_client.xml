@@ -370,6 +370,16 @@ android:layout_gravity="center"
 
         android:visibility="gone"
         />
+        <Button
+            android:id="@+id/due_payButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Due Update"
+            android:textColor="@color/white"
+android:visibility="gone"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:backgroundTint="@color/secondary_color"
+            android:layout_gravity="center" />
     <Button
         android:id="@+id/submit_button"
         android:layout_width="match_parent"

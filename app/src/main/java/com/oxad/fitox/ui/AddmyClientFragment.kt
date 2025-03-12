@@ -210,6 +210,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     binding.datePicker.visibility = GONE
                     binding.frmDateTv.visibility = GONE
                     binding.deleteButton.visibility = GONE
+                    binding.duePayButton.visibility = VISIBLE
 
                 }else{
                 binding.renewLl.visibility = GONE
