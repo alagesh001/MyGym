@@ -333,21 +333,36 @@ if(dueAmount <0){
         binding.renewButton.setOnClickListener(this)
         binding.deleteButton.setOnClickListener(this)
         binding.etDateOfBirth.setOnClickListener(this)
+        binding.duePayButton.setOnClickListener(this)
+
 
     }
     override fun onClick(p0: View?) {
 
         when (p0) {
             binding.etDateOfBirth ->    showDatePickerDialog(binding.etDateOfBirth)
-
+            binding.duePayButton ->{
+                if(isLoading){return}
+                isLoading = true
+                if ( binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
+                    duePay()
+                } else {
+                    isLoading = false
+                    if (context != null) {
+                        Utils.showToast(requireContext(), "Fill all the fields")
+                    }
+                }
+            }
             binding.submitButton -> {
               //  Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
-
+                if(isLoading){return}
+                isLoading = true
                 if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
                     && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
 
                     dataAdd(false)
                 } else {
+                    isLoading = false
                     if (context != null) {
                         Utils.showToast(requireContext(), "Fill all the fields")
                     }
@@ -357,9 +372,12 @@ if(dueAmount <0){
             }
 
             binding.updateButton -> {
+                if(isLoading){return}
+                isLoading = true
                 if (binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ) {
                     dataAdd(true)
                 } else {
+                    isLoading = false
                     if (context != null) {
                         Utils.showToast(requireContext(), "Fill all the fields")
                     }
@@ -367,15 +385,20 @@ if(dueAmount <0){
             }
 
             binding.renewButton -> {
+                if(isLoading){return}
+                isLoading = true
             if ( dateIs != "" && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
                 dataAdd(true)
             } else {
+                isLoading = false
                 if (context != null) {
                     Utils.showToast(requireContext(), "Fill all the fields")
                 }
             }
         }
             binding.deleteButton -> activity?.let{
+                if(isLoading){return}
+                isLoading = true
                 showCustomDialog(requireContext()) { deleteMember() }
 
             }
@@ -471,7 +494,7 @@ activity?.let {
 
         }
     }
-
+private var isLoading = false
     private fun showCustomDialog(context: Context, onConfirm: () -> Unit) {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_custom)
@@ -489,6 +512,42 @@ activity?.let {
         }
 
         dialog.show()
+    }
+    private fun duePay(){
+        lifecycleScope.launch {
+            val result =  memberData?.userid?.let {
+                ApiRepository().duePay(
+                    binding.nameInput.text.toString(),
+                    mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
+                    it, binding.amountPaidInput.text.toString().trim().toInt(),
+                    dueAmount
+                )
+            }
+            result?.onSuccess { response ->
+                isLoading = false
+                if(response.success){
+
+
+                    if(context !=null) {
+                        mainViewModel.refreshMembers()
+
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                    findNavController().popBackStack()
+                }else{
+
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                }
+            }
+
+            result?.onFailure { exception ->
+                isLoading = false
+                Utils.showToast(requireContext(), "Failed")
+                exception.message ?: "Something went wrong!"
+            }
+        }
     }
 private fun dataAdd(isUpdate:Boolean){
     if(trainerData?.isEmpty() == true){
@@ -547,6 +606,7 @@ private fun dataAdd(isUpdate:Boolean){
             }
             //Log.e("chadka",""+ Gson().toJson(result))
             result?.onSuccess { response ->
+                isLoading = false
                if(response.success){
 
                    if(context !=null) {
@@ -563,6 +623,7 @@ private fun dataAdd(isUpdate:Boolean){
             }
 
             result?.onFailure { exception ->
+                isLoading = false
                 Utils.showToast(requireContext(), "Failed")
                 exception.message ?: "Something went wrong!"
             }

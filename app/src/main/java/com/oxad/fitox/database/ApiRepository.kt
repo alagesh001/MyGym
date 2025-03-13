@@ -30,6 +30,12 @@ class ApiRepository() {
 
 
     }
+    suspend fun duePay( name:String,gymid: Int,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
+        return safeApiCall {
+            RetrofitClient.instance.duePay(name,gymid,userid, amount_paid,due_amount)        }
+
+
+    }
     suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
         return safeApiCall {
             RetrofitClient.instance.renewmymember(gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }

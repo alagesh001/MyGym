@@ -103,6 +103,17 @@ interface ApiService {
         @Field("mob") mob: Long,
         @Field("trainer") trainerId: Long,
         ): UserRegisterModel
+
+    @FormUrlEncoded
+    @POST("updatedueamt") // Adjust this to match your backend endpoint
+    suspend fun duePay(
+        @Field("name") name: String,
+        @Field("gymid") gymid: Int,
+        @Field("userid") userid: Long,
+        @Field("amount_paid") amount_paid: Int,
+        @Field("due_amount") due_amount: Int,
+        ): UserRegisterModel
+
     @FormUrlEncoded
     @POST("updatetable") // Adjust this to match your backend endpoint
     suspend fun renewmymember(

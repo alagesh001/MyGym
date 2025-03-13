@@ -150,7 +150,7 @@ class GymprofileFragment : Fragment() {
         if (isLoaded) {
             ProfileScreen()
         } else {
-            LoadingScreen() // Show placeholder UI
+            ProgressBar() // Show placeholder UI
         }
     }
     @Composable
@@ -177,7 +177,7 @@ activity?.let {
 
     }
     @Composable
-    fun ProgressBarExample() {
+    fun ProgressBar() {
         var isLoading by remember { mutableStateOf(true) }
         var progress by remember { mutableStateOf(0.0f) }
 
@@ -185,7 +185,7 @@ activity?.let {
             // Simulate progress
             while (progress < 1.0f) {
                 progress += 0.01f
-                delay(10)
+                delay(2)
             }
             isLoading = false
         }
