@@ -245,8 +245,8 @@ activity?.let {
     }*/
     @Composable
     fun ProfileScreen() {
-        var name by remember { mutableStateOf("John Doe") }
-        var location by remember { mutableStateOf("New York, USA") }
+        var name = viewModel.gymResult[viewModel.currentGymSelected].GymName
+        var location = viewModel.gymResult[viewModel.currentGymSelected].Location
         val plan = "Annual Plan - Expires on March 30, 2026" // Static for now, can be fetched dynamically
         var showChangePasswordDialog by remember { mutableStateOf(false) }
         val context = LocalContext.current

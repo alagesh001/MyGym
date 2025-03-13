@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context=".ui.MyClientFragment"
-    >
+    tools:context=".ui.MyClientFragment">
 <!--    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>-->
@@ -27,6 +27,7 @@
             android:queryHint="Search Members..."
             android:backgroundTint="@color/gray"
             android:background="@drawable/roun_rad_rect"
+            app:theme="@style/SearchViewTheme"
             />
 
         <androidx.recyclerview.widget.RecyclerView
