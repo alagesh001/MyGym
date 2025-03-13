@@ -247,7 +247,7 @@ activity?.let {
     fun ProfileScreen() {
         var name = viewModel.gymResult[viewModel.currentGymSelected].GymName
         var location = viewModel.gymResult[viewModel.currentGymSelected].Location
-        val plan = "Annual Plan - Expires on March 30, 2026" // Static for now, can be fetched dynamically
+        val plan = "Annual Plan - Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
         var showChangePasswordDialog by remember { mutableStateOf(false) }
         val context = LocalContext.current
         val primefontcolor =  Color(context.getColor(R.color.primary_color))

@@ -185,7 +185,8 @@ data class LoginResult(
     val Location: String,
 
     val GymId: Int,
-    val membercount: Int
+    val membercount: Int,
+    val renewaldate: String
 
 ) :Parcelable {
     constructor(parcel: Parcel) : this(
@@ -193,8 +194,10 @@ data class LoginResult(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readInt(),
-        parcel.readInt()
-    ) {
+        parcel.readInt(),
+        parcel.readString() ?: "",
+
+        ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -203,6 +206,7 @@ data class LoginResult(
         parcel.writeString(Location)
         parcel.writeInt(GymId)
         parcel.writeInt(membercount)
+        parcel.writeString(renewaldate)
     }
 
     override fun describeContents(): Int {
