@@ -590,33 +590,43 @@ color = Color.White,
         var page by remember { mutableStateOf(1) }
         val listState = rememberLazyListState()
         // Observe transactions from the ViewModel
-        LaunchedEffect(Unit) {
-            mainViewModel.transacList.collectLatest { transac ->
-                transactions = transactions + transac // Append new items
-                isLoading = false // Update loading state after items are added
-            }
-        }
+
         LaunchedEffect(page) {
 
-            isLoading = true
-            Log.e("checktloa","C $isLoading")
+
+          //  Log.e("checktloa","loadTransacHistory $page")
 
             mainViewModel.loadTransacHistory(page)
 //Log.e("checkatra","A page: $page")
 
         }
+        LaunchedEffect(Unit) {
+            mainViewModel.transacList.collect { transac ->
+              //  Log.e("chejkaf","collect ${Gson().toJson(transac)}")
+                // Log.e("chejkaf","Before B ${Gson().toJson(transactions)}")
 
+                transactions = transactions + transac // Append new items
+              //  Log.e("chejkaf","collect add ${Gson().toJson(transactions)}")
+
+                isLoading = false // Update loading state after items are added
+                // Log.e("chejkaf","After A ${Gson().toJson(transac)}")
+                // Log.e("chejkaf","After B ${Gson().toJson(transactions)}")
+
+            }
+        }
         // Detect scrolling to the bottom of the list
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
                     if (lastVisibleItemIndex != null) {
-                      //  Log.e("checkatra","lastindex: : ${transactions.lastIndex} isLoading: $isLoading totalpage: ${mainViewModel.totalTransacPage}")
-Log.e("checktloa","A $isLoading")
+                        Log.e("checktloa","lastindex: : ${transactions.lastIndex} isLoading: $isLoading totalpage: ${mainViewModel.totalTransacPage}")
+//Log.e("checktloa","A $isLoading")
                         if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
-                            Log.e("checktloa","B $isLoading")
-
+                         //   Log.e("checktloa","B $isLoading")
+                            isLoading = true
                             page++
+                          //  Log.e("checktloa","page added $page")
+
                         }
                     }
                 }

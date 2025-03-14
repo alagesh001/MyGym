@@ -247,6 +247,7 @@ data class GetMyTransacHist(   val success: Boolean,
 
                                     val result: ArrayList<Transaction>)
 data class Transaction(
+    val id: Int,
     val name: String,
     val amount: Int,
     val date: String,

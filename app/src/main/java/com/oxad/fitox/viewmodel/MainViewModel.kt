@@ -187,6 +187,8 @@ class MainViewModel() : ViewModel() {
 }
     fun loadTransacHistory(page:Int) {
       //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+       // Log.e("checktloa","viewmodrel api  $page")
+
         if(page == 1){
             _transacList.value = emptyList()
         }
@@ -197,11 +199,12 @@ if(page in 1..totalTransacPage) {
 
         val result = ApiRepository().getTransacHist(gymResult[currentGymSelected].GymId, page)
         result.onSuccess { response ->
-       //     Log.e("caaca","Apicall resp ${Gson().toJson(response)}")
 
             if (response.success) {
-                _transacList.value = (_transacList.value ?: emptyList())+ response.result
+                _transacList.value = response.result
                 totalTransacPage = response.total_pages
+              //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
             }else{
                     _transacList.value = emptyList()
             }
