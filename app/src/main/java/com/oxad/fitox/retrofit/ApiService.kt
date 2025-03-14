@@ -2,6 +2,7 @@ package com.oxad.fitox.retrofit
 
 import com.oxad.fitox.model.AdminLoginModel
 import com.oxad.fitox.model.GetMyTrainersResponse
+import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.UserRegisterModel
@@ -35,6 +36,12 @@ interface ApiService {
     suspend fun getWorkoutsByMuscleGroup(@Query("muscle_group") muscleGroup: String): GymGuideResponse
 
 
+    @GET("gettransachistory") // Adjust this to match your backend endpoint
+    suspend fun getTransacHist(
+        @Query("gymid") gymid: Int,
+        @Query("page") page: Int
+
+    ): GetMyTransacHist
     @GET("gettrainerdata") // Adjust this to match your backend endpoint
     suspend fun getmytrainer(@Query("gymid") gymid: Int): GetMyTrainersResponse
 

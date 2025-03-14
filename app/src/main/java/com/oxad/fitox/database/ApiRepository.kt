@@ -1,6 +1,7 @@
 package com.oxad.fitox.database
 
 import com.oxad.fitox.model.GetMyTrainersResponse
+import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.UserRegisterModel
@@ -89,6 +90,11 @@ class ApiRepository() {
         }
 
 
+    }
+    suspend fun getTransacHist(gymId: Int, page: Int): Result<GetMyTransacHist> {
+        return safeApiCall {
+            RetrofitClient.instance.getTransacHist(gymId, page)
+        }
     }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
         return safeApiCall {

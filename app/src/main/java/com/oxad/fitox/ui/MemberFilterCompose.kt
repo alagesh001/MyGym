@@ -1,6 +1,7 @@
 package com.oxad.fitox.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,11 +31,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +49,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,11 +67,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.activityViewModels
+import com.google.gson.Gson
 import com.oxad.fitox.R
+import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.TrainerModel
+import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.utils.DarkBackgroundView
 import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Period
@@ -82,6 +95,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class MemberFilterCompose : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
+    private var gymId:Int = 0
 
 
     override fun onCreateView(
@@ -101,13 +115,14 @@ class MemberFilterCompose : Fragment() {
                         factory = { context -> DarkBackgroundView(context, null) },
                         modifier = Modifier.matchParentSize()
                     )*/
-
+                    gymId = mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId
                     when (arguments?.getString("type_is")) {
                         "gender" -> MemberScreen()
                         "trainer" -> TrainerListScreen()
                         "age" -> AgeGroupedMemberListScreen()
                         "dob" -> UpcomingBirthdaysScreen()
                         "goal" -> GoalListScreen()
+                        "transac" -> PaginatedTransactionListScreen()
 
                     }
                 }
@@ -566,10 +581,104 @@ color = Color.White,
             }
         }
     }
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun PaginatedTransactionListScreen() {
+        var transactions by remember { mutableStateOf(listOf<Transaction>()) }
+        var isLoading by remember { mutableStateOf(false) }
+        var page by remember { mutableStateOf(1) }
+        val listState = rememberLazyListState()
+
+        // Observe transactions from the ViewModel
+        LaunchedEffect(page) {
+            isLoading = true
+            mainViewModel.loadTransacHistory(page)
+
+            mainViewModel.transacList.collect { transac ->
+                transactions = transactions + transac
+                isLoading = false
+
+            }
+
+        }
+
+        // Detect scrolling to the bottom of the list
+        LaunchedEffect(listState) {
+            snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                .collect { lastVisibleItemIndex ->
+                    if (lastVisibleItemIndex != null) {
+                        if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page <= mainViewModel.totalTransacPage) {
+                            page++
+                        }
+                    }
+                }
+        }
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Transaction History") }
+                )
+            }
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(transactions) { transaction ->
+                    TransactionItem(transaction)
+                }
+                item {
+                    if (isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun TransactionItem(transaction: Transaction) {
+        val typeIs = when(transaction.type){
+            0 -> "Delete"
+            1 -> "New"
+            2 -> "Renew"
+            3 -> "Due Pay"
+            else -> "Unknown"
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "+ ₹${transaction.amount}", fontWeight = FontWeight.Bold)
+                Text(text = "Name: ${transaction.name}")
+                Text(text = "Date: ${transaction.date}")
+                Text(text = "Transaction Type: $typeIs")
+            }
+        }
+    }
+
+
+    @Composable
+    fun PreviewPaginatedTransactionList() {
+        MaterialTheme {
+            PaginatedTransactionListScreen()
+        }
+    }
     @Preview(showBackground = true)
     @Composable
-    fun PreviewMemberScreen() {
-        TrainerListScreen()
+    fun PreviewProfileScreen() {
+        // ProfileScreen()
+     //   PreviewPaginatedTransactionList()
+        //ChangePasswordDialog(){
+
 
     }
 }

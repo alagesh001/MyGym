@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.MemberDao
 import com.oxad.fitox.database.WorkoutDao
@@ -13,6 +14,7 @@ import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.TrainerModel
+import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.model.Workout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +27,9 @@ class MainViewModel() : ViewModel() {
     var currentGymSelected: Int = 0
     private val _memberList = MutableStateFlow<List<Member>>(emptyList())
     val memberList: StateFlow<List<Member>> = _memberList
+    var totalTransacPage = 1
+    private val _transacList = MutableStateFlow<List<Transaction>>(emptyList())
+    val transacList: StateFlow<List<Transaction>> = _transacList
     lateinit var memberDao: MemberDao
     lateinit var workoutDao: WorkoutDao
     var gymCoachOpenedFirsttime = false
@@ -180,6 +185,31 @@ class MainViewModel() : ViewModel() {
 
 
 }
+    fun loadTransacHistory(page:Int) {
+        Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+if(page in 1..totalTransacPage) {
+    Log.e("caaca","Apicall")
+
+    viewModelScope.launch {
+
+        val result = ApiRepository().getTransacHist(gymResult[currentGymSelected].GymId, page)
+        result.onSuccess { response ->
+            if (response.success) {
+                _transacList.value = response.result
+                totalTransacPage = response.total_pages
+            }else{
+                _transacList.value = emptyList()
+            }
+        }
+        result.onFailure { exception ->
+            exception.message ?: "Something went wrong!"
+            _transacList.value = emptyList()
+        }
+
+
+    }
+}
+    }
     fun loadMembers() {
 
         viewModelScope.launch {

@@ -240,6 +240,18 @@ data class Workout(
     val difficulty: String,
     val duration: Int
 )
+data class GetMyTransacHist(   val success: Boolean,
+                              val total_pages: Int,
+
+                                    val message: String,
+
+                                    val result: ArrayList<Transaction>)
+data class Transaction(
+    val name: String,
+    val amount: Int,
+    val date: String,
+    val type: Int
+)
 data class GetMyTrainersResponse(   val success: Boolean,
 
                                     val message: String,
