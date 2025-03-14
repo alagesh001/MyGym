@@ -586,7 +586,7 @@ color = Color.White,
     @Composable
     fun PaginatedTransactionListScreen() {
         var transactions by remember { mutableStateOf(listOf<Transaction>()) }
-        var isLoading by remember { mutableStateOf(false) }
+        var isLoading by remember { mutableStateOf(true) }
         var page by remember { mutableStateOf(1) }
         val listState = rememberLazyListState()
         // Observe transactions from the ViewModel
@@ -595,20 +595,24 @@ color = Color.White,
 
 
           //  Log.e("checktloa","loadTransacHistory $page")
-
+//delay(2000)
             mainViewModel.loadTransacHistory(page)
 //Log.e("checkatra","A page: $page")
 
         }
+
         LaunchedEffect(Unit) {
+
             mainViewModel.transacList.collect { transac ->
               //  Log.e("chejkaf","collect ${Gson().toJson(transac)}")
                 // Log.e("chejkaf","Before B ${Gson().toJson(transactions)}")
 
                 transactions = transactions + transac // Append new items
               //  Log.e("chejkaf","collect add ${Gson().toJson(transactions)}")
-
-                isLoading = false // Update loading state after items are added
+if(transactions.isNotEmpty()) {
+    isLoading = false
+}
+// Update loading state after items are added
                 // Log.e("chejkaf","After A ${Gson().toJson(transac)}")
                 // Log.e("chejkaf","After B ${Gson().toJson(transactions)}")
 
@@ -632,6 +636,7 @@ color = Color.White,
                 }
         }
 
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -639,6 +644,7 @@ color = Color.White,
                 )
             }
         ) { padding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -655,6 +661,8 @@ color = Color.White,
                     }
                 }
             }
+
+
         }
     }
 
