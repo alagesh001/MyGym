@@ -186,24 +186,29 @@ class MainViewModel() : ViewModel() {
 
 }
     fun loadTransacHistory(page:Int) {
-        Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+      //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        if(page == 1){
+            _transacList.value = emptyList()
+        }
 if(page in 1..totalTransacPage) {
-    Log.e("caaca","Apicall")
+   // Log.e("caaca","Apicall")
 
     viewModelScope.launch {
 
         val result = ApiRepository().getTransacHist(gymResult[currentGymSelected].GymId, page)
         result.onSuccess { response ->
+       //     Log.e("caaca","Apicall resp ${Gson().toJson(response)}")
+
             if (response.success) {
-                _transacList.value = response.result
+                _transacList.value = (_transacList.value ?: emptyList())+ response.result
                 totalTransacPage = response.total_pages
             }else{
-                _transacList.value = emptyList()
+                    _transacList.value = emptyList()
             }
         }
         result.onFailure { exception ->
             exception.message ?: "Something went wrong!"
-            _transacList.value = emptyList()
+          //  _transacList.value = emptyList()
         }
 
 

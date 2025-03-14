@@ -103,6 +103,7 @@ class MemberFilterCompose : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        mainViewModel.totalTransacPage = 1
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -501,9 +502,9 @@ val context = LocalContext.current
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize (animationSpec = keyframes {
+                .animateContentSize(animationSpec = keyframes {
                     durationMillis = if (expanded) 70 else 50
-                }){ initialValue, targetValue ->
+                }) { initialValue, targetValue ->
                 }
                 .padding(8.dp),
 
@@ -588,17 +589,20 @@ color = Color.White,
         var isLoading by remember { mutableStateOf(false) }
         var page by remember { mutableStateOf(1) }
         val listState = rememberLazyListState()
-
         // Observe transactions from the ViewModel
-        LaunchedEffect(page) {
-            isLoading = true
-            mainViewModel.loadTransacHistory(page)
-
-            mainViewModel.transacList.collect { transac ->
-                transactions = transactions + transac
-                isLoading = false
-
+        LaunchedEffect(Unit) {
+            mainViewModel.transacList.collectLatest { transac ->
+                transactions = transactions + transac // Append new items
+                isLoading = false // Update loading state after items are added
             }
+        }
+        LaunchedEffect(page) {
+
+            isLoading = true
+            Log.e("checktloa","C $isLoading")
+
+            mainViewModel.loadTransacHistory(page)
+//Log.e("checkatra","A page: $page")
 
         }
 
@@ -607,7 +611,11 @@ color = Color.White,
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
                     if (lastVisibleItemIndex != null) {
-                        if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page <= mainViewModel.totalTransacPage) {
+                      //  Log.e("checkatra","lastindex: : ${transactions.lastIndex} isLoading: $isLoading totalpage: ${mainViewModel.totalTransacPage}")
+Log.e("checktloa","A $isLoading")
+                        if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
+                            Log.e("checktloa","B $isLoading")
+
                             page++
                         }
                     }
