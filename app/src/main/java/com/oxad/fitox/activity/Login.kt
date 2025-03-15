@@ -10,6 +10,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.OnClickListener
 import android.view.View.VISIBLE
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -87,13 +88,15 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     private fun initUI() {
         setclicklistener()
         Glide.with(this@Login)
-            .load(R.drawable.bggymml)
+            .load(R.drawable.abcd)
             .centerCrop()
             .transition(DrawableTransitionOptions.withCrossFade(1500)) // 500ms fade-in// Or a URL: "https://yourimageurl.com"
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    binding.bgViewLogin.background = resource
-                }
+                    binding.bgViewLogin.apply {
+                        scaleType = ImageView.ScaleType.CENTER_CROP // Ensures the image is center-cropped
+                        setImageDrawable(resource)
+                    }                }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
                     binding.bgViewLogin.background = placeholder

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -39,12 +40,15 @@ class MainActivity : AppCompatActivity() {
     private fun initUi(){
         this.let {
             Glide.with(it)
-                .asBitmap()
-                .load(R.drawable.gym_pic)
+                .load(R.drawable.aaa)
                 .centerCrop()
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        val drawable = BitmapDrawable(resources, resource).apply {
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        binding.bgViewIv.apply {
+                            scaleType = ImageView.ScaleType.CENTER_CROP // Ensures the image is center-cropped
+                            setImageDrawable(resource)
+                        }
+                      /*  val drawable = BitmapDrawable(resources, resource).apply {
                             // Set initial alpha to 0 for fade-in effect
                             alpha = 0
                         }
@@ -60,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                                 binding.bgViewIv.invalidate() // Redraw the view
                             }
                         }
-                        fadeInAnimator.start()
+                        fadeInAnimator.start()*/
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
