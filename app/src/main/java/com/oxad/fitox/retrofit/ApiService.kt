@@ -12,6 +12,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 // User data model
 
@@ -19,41 +20,51 @@ import retrofit2.http.Query
 // API service interface
 interface ApiService {
     @FormUrlEncoded
-    @POST("registerusers.php") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     fun registerUser(
+        @Url url: String,
         @Field("name") name: String,
         @Field("email") email: String
     ): Call<UserRegisterModel>
 
-    @GET("getmemberdata") // Adjust this to match your backend endpoint
+    @GET // Adjust this to match your backend endpoint
     suspend fun getmymembers(
+        @Url url: String,
         @Query("gymid") gymid: Int,
         @Query("page") page: Int
 
     ): MemberResponse
 
-    @GET("getdumbellworkout")
-    suspend fun getWorkoutsByMuscleGroup(@Query("muscle_group") muscleGroup: String): GymGuideResponse
+    @GET
+    suspend fun getWorkoutsByMuscleGroup(        @Url url: String,
+                                                 @Query("muscle_group") muscleGroup: String): GymGuideResponse
 
 
-    @GET("gettransachistory") // Adjust this to match your backend endpoint
+    @GET // Adjust this to match your backend endpoint
     suspend fun getTransacHist(
+        @Url url: String,
+
         @Query("gymid") gymid: Int,
         @Query("page") page: Int
 
     ): GetMyTransacHist
-    @GET("gettrainerdata") // Adjust this to match your backend endpoint
-    suspend fun getmytrainer(@Query("gymid") gymid: Int): GetMyTrainersResponse
+    @GET // Adjust this to match your backend endpoint
+    suspend fun getmytrainer(
+        @Url url: String,
 
-    @GET("getgymlist") // Adjust this to match your backend endpoint
+        @Query("gymid") gymid: Int): GetMyTrainersResponse
+
+    @GET // Adjust this to match your backend endpoint
     fun loginAdmin(
+        @Url url: String,
         @Query("mobile") mob: Long,
         @Query("password") pass: String
     ): Call<AdminLoginModel>
 
     @FormUrlEncoded
-    @POST("updatetable.php") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     fun saveprofiledata(
+        @Url url: String,
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("age") age: Int,
@@ -64,8 +75,9 @@ interface ApiService {
     ): Call<UserRegisterModel>
 
     @FormUrlEncoded
-    @POST("addnewcustomer") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun addmymember(
+        @Url url: String,
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("gymid") gymid: Int,
@@ -85,8 +97,9 @@ interface ApiService {
 
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("updatetable") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun updatemymember(
+        @Url url: String,
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("gymid") gymid: Int,
@@ -103,8 +116,9 @@ interface ApiService {
 
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("updatetrainer") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun updatemytrainer(
+        @Url url: String,
         @Field("name") name: String,
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
@@ -112,8 +126,9 @@ interface ApiService {
         ): UserRegisterModel
 
     @FormUrlEncoded
-    @POST("updatedueamt") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun duePay(
+        @Url url: String,
         @Field("name") name: String,
         @Field("gymid") gymid: Int,
         @Field("userid") userid: Long,
@@ -122,8 +137,9 @@ interface ApiService {
         ): UserRegisterModel
 
     @FormUrlEncoded
-    @POST("updatetable") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun renewmymember(
+        @Url url: String,
         @Field("gymid") gymid: Int,
         @Field("paidmonths") paidmonths: Int,
         @Field("date") date: String,
@@ -134,27 +150,31 @@ interface ApiService {
 
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("deletemycustomer") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun deletemymember(
+        @Url url: String,
         @Field("gymid") gymid: Int,
         @Field("userid") userid: Long,
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("removetrainer") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun deletemytrainer(
+        @Url url: String,
         @Field("gymid") gymid: Int,
         @Field("coachid") coachid: Long,
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("addmytrainer") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun addmytrainer(
+        @Url url: String,
         @Field("name") name: String,
         @Field("gymid") gymid: Int,
         @Field("mob") mob: Long,
     ): UserRegisterModel
     @FormUrlEncoded
-    @POST("updategymownerpassword") // Adjust this to match your backend endpoint
+    @POST // Adjust this to match your backend endpoint
     suspend fun updateGymPassword(
+        @Url url: String,
         @Field("gymid") gymid: Int,
         @Field("oldpass") oldpass: String,
         @Field("newpass") newpass: String,
