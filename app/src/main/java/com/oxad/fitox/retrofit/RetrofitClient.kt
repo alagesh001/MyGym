@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://oxadmedia.in/" // Replace with your API URL
+    private val BASE_URL = ApiHelper.getretroUrL()// Replace with your API URL
 
     private val gson = GsonBuilder()
         .setLenient()
