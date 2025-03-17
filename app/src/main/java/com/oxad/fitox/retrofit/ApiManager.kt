@@ -111,7 +111,7 @@ private val contextA = context
       //  Log.w("checkresponss","call api registeruser }")
         progressDialogUtil.showLoadingDialog()
 
-        RetrofitClient.instance.loginAdmin(mob,pass)
+        RetrofitClient.instance.loginAdmin(ApiHelper.enterInUrl(),mob,pass)
             .enqueue(object : Callback<AdminLoginModel> {
 
                 override fun onResponse(call: Call<AdminLoginModel>, response: Response<AdminLoginModel>) {
@@ -140,7 +140,7 @@ private val contextA = context
      fun registerUser( profileUrl:String,name: String, email: String) {
         // Log.w("checkresponss","call api registeruser }")
 
-        RetrofitClient.instance.registerUser(name,email)
+        RetrofitClient.instance.registerUser(ApiHelper.getUserregUrl(),name,email)
             .enqueue(object : Callback<UserRegisterModel> {
 
                 override fun onResponse(call: Call<UserRegisterModel>, response: Response<UserRegisterModel>) {
@@ -166,7 +166,7 @@ private val contextA = context
     fun saveUserData(name: String, email: String,age: Int, gender: String,weight: Double, height: Double,type: Int) {
         //Log.e("checkresponss", "saveUserData: $age $gender $weight $height $type $name $email")
 
-        RetrofitClient.instance.saveprofiledata(name,email,age,gender,type,height, weight)
+        RetrofitClient.instance.saveprofiledata(ApiHelper.guTableUrl(),name,email,age,gender,type,height, weight)
             .enqueue(object : Callback<UserRegisterModel> {
                 override fun onResponse(call: Call<UserRegisterModel>, response: Response<UserRegisterModel>) {
                    // Log.e("checkresponss", "saveUserData: ${response.body()}")
