@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.retrofit.ApiHelper
 import com.oxad.fitox.retrofit.ApiService
 import retrofit2.HttpException
 import java.io.IOException
@@ -17,7 +18,7 @@ class MemberPagingSource(private val apiService: ApiService,private val gymId: I
         return try {
             Log.e("chckeca A ","$gymId $page")
 
-            val response = apiService.getmymembers(gymId,page)
+            val response = apiService.getmymembers(ApiHelper.gDatamembUrl(),gymId,page)
             val members = response.result
 //Log.e("chckeca B ",""+Gson().toJson(members))
             LoadResult.Page(

@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
         mainViewModel.workoutDao = AppDatabase.getDatabase(application).workoutDao()
-        val key = ApiHelper.getZeepLiveThimblesCoinIvKey()
-        Log.e("sefsef","Native Key: $key")
         initUi()
     }
 
