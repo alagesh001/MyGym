@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -19,6 +20,7 @@ import com.oxad.fitox.R
 import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
 import com.oxad.fitox.model.LoginResult
+import com.oxad.fitox.retrofit.ApiHelper
 import com.oxad.fitox.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +35,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
         mainViewModel.workoutDao = AppDatabase.getDatabase(application).workoutDao()
-
+        val key = ApiHelper.getZeepLiveThimblesCoinIvKey()
+        Log.e("sefsef","Native Key: $key")
         initUi()
     }
 

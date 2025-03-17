@@ -11,6 +11,12 @@ android {
     viewBinding{
         enable = true
     }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")  // ✅ Requires `file()`
+            version = "3.18.1"
+        }
+    }
     defaultConfig {
         applicationId = "com.oxad.fitox"
         minSdk = 26
@@ -19,6 +25,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
+        }
     }
     buildFeatures {
         compose = true
