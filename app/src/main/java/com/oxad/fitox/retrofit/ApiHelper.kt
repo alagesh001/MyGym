@@ -8,6 +8,8 @@ object ApiHelper {
     external fun getretroUrL(): String
     external fun getUserregUrl(): String
     external fun enterInUrl(): String
+    external fun lkeyFetch(): String
+
     external fun gDatamembUrl(): String
     external fun vcoachUrl(): String
     external fun transCheckUrl(): String

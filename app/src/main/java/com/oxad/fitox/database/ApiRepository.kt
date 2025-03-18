@@ -12,9 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ApiRepository() {
-        suspend fun getMembers(gymId: Int, page: Int): Result<MemberResponse> {
+        suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
             return safeApiCall {
-                RetrofitClient.instance.getmymembers(ApiHelper.gDatamembUrl(),gymId, page)
+                RetrofitClient.instance.getmymembers(ApiHelper.gDatamembUrl(),aKeyIs,gymId, page)
             }
         }
     suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
