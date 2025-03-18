@@ -22,6 +22,12 @@ Java_com_oxad_fitox_retrofit_ApiHelper_enterInUrl(JNIEnv *env, jclass clazz) {
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_lkeyFetch(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "ags10109512001AoX";
+    return env->NewStringUTF(baseURL.c_str());
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_gDatamembUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "getmemberdata";
     return env->NewStringUTF(baseURL.c_str());

@@ -10,8 +10,8 @@ import com.oxad.fitox.retrofit.ApiService
 import retrofit2.HttpException
 import java.io.IOException
 
-class MemberPagingSource(private val apiService: ApiService,private val gymId: Int) : PagingSource<Int, Member>() {
-
+/*class MemberPagingSource(private val apiService: ApiService,private val gymId: Int) : PagingSource<Int, Member>() {
+    *//*
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Member> {
         var page = params.key ?: 1 // Start from page 1
 
@@ -35,5 +35,10 @@ class MemberPagingSource(private val apiService: ApiService,private val gymId: I
 
     override fun getRefreshKey(state: PagingState<Int, Member>): Int? {
         return state.anchorPosition
+    }*//*
+    override fun getRefreshKey(state: PagingState<Int, Member>): Int? {
     }
-}
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Member> {
+    }
+}*/
