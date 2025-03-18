@@ -80,6 +80,8 @@ holder.dueTextView.visibility = VISIBLE
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
         private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
         private val goalTextView: TextView = view.findViewById(R.id.tvGoal)
+        private val tvAttendCount: TextView = view.findViewById(R.id.tvAttendCount)
+        private val tvlastAttend: TextView = view.findViewById(R.id.tvlastAttend)
 
         private val renewalDateTextView: TextView = view.findViewById(R.id.tvRenewalDate)
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
@@ -93,6 +95,8 @@ holder.dueTextView.visibility = VISIBLE
             numberTextView.text = (position + 1).toString() // Incrementing number
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()
+            tvAttendCount.text = "Attendance - ${member.attendance_count}"
+            tvlastAttend.text = "Last marked - ${member.last_attend}"
             goalTextView.text =  when(member.goal){
                 1 -> "Weight Loss"
                 2 -> "Weight Gain"

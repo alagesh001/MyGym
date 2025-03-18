@@ -126,6 +126,57 @@
 
             />
         </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:visibility="gone"
+
+                    android:background="@drawable/baseline_star_purple500_24"
+                    android:backgroundTint="@color/primary_color"/>
+                <TextView
+                    android:id="@+id/tvAttendCount"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="wrap_content"
+                    android:text="Attendance - "
+                    android:textColor="@color/primary_color"
+                    android:textSize="16sp"
+                    android:paddingHorizontal="@dimen/_5sdp"
+
+                    android:paddingVertical="@dimen/_5sdp"
+
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:visibility="gone"
+                    android:background="@drawable/baseline_star_purple500_24"
+                    android:backgroundTint="@color/primary_color"/>
+                <TextView
+                    android:id="@+id/tvlastAttend"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="wrap_content"
+                    android:text="Last attended "
+                    android:textColor="@color/primary_color"
+                    android:textSize="16sp"
+                    android:paddingHorizontal="@dimen/_5sdp"
+
+                    android:paddingVertical="@dimen/_5sdp"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

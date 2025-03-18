@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.Workout
 
-@Database(entities = [Member::class,Workout::class], version = 1, exportSchema = false)
+@Database(entities = [Member::class,Workout::class], version = 2, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun memberDao(): MemberDao

@@ -52,7 +52,9 @@ data class Member(
     val goal: Int = 1,
     val gender: String? = "Male",
     val referred_by: String? = "",
-    val due_amount: Int? = 0
+    val due_amount: Int = 0,
+    val attendance_count: Int = 0,
+    val last_attend: String,
 
 
     ):Parcelable {
@@ -75,7 +77,9 @@ data class Member(
         parcel.readInt(),
         parcel.readString(),
         parcel.readString() ?: "",
-
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString() ?: ""
         ) {
     }
 
@@ -94,6 +98,11 @@ data class Member(
         parcel.writeInt(goal)
         parcel.writeString(gender)
         parcel.writeString(referred_by)
+        parcel.writeInt(due_amount)
+        parcel.writeInt(attendance_count)
+        parcel.writeString(last_attend)
+
+
     }
 
     override fun describeContents(): Int {
