@@ -57,6 +57,7 @@ interface ApiService {
     @GET // Adjust this to match your backend endpoint
     fun loginAdmin(
         @Url url: String,
+        @Query("hashKey") hashIs: String,
         @Query("mobile") mob: Long,
         @Query("password") pass: String
     ): Call<AdminLoginModel>

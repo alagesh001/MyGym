@@ -107,15 +107,15 @@ private val contextA = context
                 }
             })*/
     }
-    fun loginAdmin( mob: Long, pass: String) {
-      //  Log.w("checkresponss","call api registeruser }")
+    fun loginAdmin( mob: Long, pass: String,hashIs:String) {
+       //Log.w("checkresponss","call api registeruser } ")
         progressDialogUtil.showLoadingDialog()
 
-        RetrofitClient.instance.loginAdmin(ApiHelper.enterInUrl(),mob,pass)
+        RetrofitClient.instance.loginAdmin(ApiHelper.enterInUrl(),hashIs,mob,pass)
             .enqueue(object : Callback<AdminLoginModel> {
 
                 override fun onResponse(call: Call<AdminLoginModel>, response: Response<AdminLoginModel>) {
-                  //  Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                   // Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
                     progressDialogUtil.hideLoadingDialog()
 
                     if(response.body()!=null) {

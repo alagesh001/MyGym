@@ -1,10 +1,13 @@
 package com.oxad.fitox.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.View.GONE
@@ -13,6 +16,7 @@ import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -33,6 +37,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     private lateinit var binding: ActivityLoginBinding
@@ -49,7 +55,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
             .setBlurRadius(12f)
         dataStoreManager = DataStoreManager(application)
-
+       mHash =  getAppSignature()
         lifecycleScope.launch(Dispatchers.IO) {
             Log.e("dafasfd","Check login ${dataStoreManager.isLoggedInFlow.first()}")
             if(!dataStoreManager.isLoggedInFlow.first()){
@@ -69,7 +75,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
                     withContext(Dispatchers.Main) {
                         binding.btnLogin.isEnabled = false
                         isLoggedIn = true
-                        apiManager.loginAdmin(mob.toLong(), passs)
+                        apiManager.loginAdmin(mob.toLong(), passs,mHash)
                         return@withContext
                     }
                 }
@@ -83,6 +89,35 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
             
             
 
+    }
+    private var mHash: String = ""
+
+    private fun getAppSignature(): String {
+        return try {
+            val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+            val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.signingInfo!!.apkContentsSigners
+            } else {
+                @Suppress("DEPRECATION")
+                packageInfo.signatures
+            }
+            val md = MessageDigest.getInstance("SHA")
+            md.update(signatures?.get(0)!!.toByteArray())
+
+            Base64.encodeToString(md.digest(), Base64.NO_WRAP).also {
+              //  mHash = it
+             //    Log.e("haskesa", it)
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            ""
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            ""
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     private fun initUI() {
@@ -137,7 +172,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         // Simulate network delay*/
 
         if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
-            apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString())
+            apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString(),mHash)
             binding.btnLogin .isEnabled = false
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.btnLogin .isEnabled = true
