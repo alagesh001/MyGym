@@ -10,6 +10,7 @@ import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -30,6 +31,7 @@ interface ApiService {
     @GET // Adjust this to match your backend endpoint
     suspend fun getmymembers(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Query("gymid") gymid: Int,
         @Query("page") page: Int
 
@@ -57,6 +59,7 @@ interface ApiService {
     @GET // Adjust this to match your backend endpoint
     fun loginAdmin(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Query("hashKey") hashIs: String,
         @Query("mobile") mob: Long,
         @Query("password") pass: String

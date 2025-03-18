@@ -133,6 +133,7 @@ data class AdminLoginModel(
     val success: Boolean,
 
     val message: String,
+    val a_key: String,
 
     val result: ArrayList<LoginResult>
 
@@ -142,6 +143,7 @@ data class AdminLoginModel(
 
         parcel.readByte() != 0.toByte(),
 
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
 
         parcel.createTypedArrayList(LoginResult.CREATOR) ?: arrayListOf()
@@ -154,6 +156,7 @@ data class AdminLoginModel(
         parcel.writeByte(if (success) 1 else 0)
 
         parcel.writeString(message)
+        parcel.writeString(a_key)
 
         parcel.writeTypedList(result)
 
