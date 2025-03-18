@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <string>
-
+#include <sstream>
 extern "C" {
 
 JNIEXPORT jstring JNICALL
@@ -23,8 +23,10 @@ Java_com_oxad_fitox_retrofit_ApiHelper_enterInUrl(JNIEnv *env, jclass clazz) {
 
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_lkeyFetch(JNIEnv *env, jclass clazz) {
-    std::string baseURL = "ags10109512001AoX";
-    return env->NewStringUTF(baseURL.c_str());
+    std::stringstream ss;
+    ss << "ags" << "10109512" << "001AoX";  // Append using stream
+
+    return env->NewStringUTF(ss.str().c_str());
 }
 
 JNIEXPORT jstring JNICALL
