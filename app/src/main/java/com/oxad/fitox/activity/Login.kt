@@ -195,6 +195,7 @@ if(!isLoggedIn) {
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             intent.putParcelableArrayListExtra("gym_list",adminLoginModel.result)
+            intent.putExtra("keyCall_Is",adminLoginModel.a_key)
             startActivity(intent)
             finish()
 

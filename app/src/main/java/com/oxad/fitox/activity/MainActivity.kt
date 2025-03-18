@@ -74,8 +74,12 @@ class MainActivity : AppCompatActivity() {
                 })
         }
         val gymList: ArrayList<LoginResult>? = intent.getParcelableArrayListExtra("gym_list")
+        val a_keyis: String = intent.getStringExtra("keyCall_Is").toString()
+
         if (gymList != null) {
             mainViewModel.gymResult = gymList
+            mainViewModel.a_keyIs = a_keyis
+
         }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController

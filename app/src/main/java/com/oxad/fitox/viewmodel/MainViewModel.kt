@@ -24,6 +24,8 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel() : ViewModel() {
     var gymResult: ArrayList<LoginResult> = ArrayList()
+    var a_keyIs: String = ""
+
     var currentGymSelected: Int = 0
     private val _memberList = MutableStateFlow<List<Member>>(emptyList())
     val memberList: StateFlow<List<Member>> = _memberList
@@ -228,7 +230,7 @@ if(page in 1..totalTransacPage) {
                 _memberList.value =  cachedMembers // Return cached data
             } else {
 
-                val result = ApiRepository().getMembers(gymResult[currentGymSelected].GymId,currentPage)
+                val result = ApiRepository().getMembers(gymResult[currentGymSelected].GymId,currentPage,a_keyIs)
                 result.onSuccess { response ->
                    // Log.e("chadka", "" + Gson().toJson(response))
                     if (response.success) {
