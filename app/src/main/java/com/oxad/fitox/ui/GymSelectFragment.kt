@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.fitox.R
 import com.oxad.fitox.databinding.FragmentGymSelectBinding
 import com.oxad.fitox.datastore.DataStoreManager
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -75,9 +78,20 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
 
     override fun onItemSelected(item: Int) {
         mainViewModel.currentGymSelected = item
+        val renewalDateString = mainViewModel.gymResult[mainViewModel.currentGymSelected].renewaldate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val renewalDate = dateFormat.parse(renewalDateString)?.time
+
         activity?.let { ctx ->
-            mainViewModel.loadTrainerData(DataStoreManager(ctx))
+            if (renewalDate != null) {
+                if(renewalDate < System.currentTimeMillis()){
+                    Utils.showToast(ctx,"Kindly renew to enter.")
+                }else{
+                    mainViewModel.loadTrainerData(DataStoreManager(ctx))
+                    findNavController().navigate(R.id.action_gymSelectFragment_to_homeFragment)
+                }
+            }
         }
-        findNavController().navigate(R.id.action_gymSelectFragment_to_homeFragment)
+
     }
 }

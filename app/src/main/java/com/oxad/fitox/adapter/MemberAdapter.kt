@@ -96,7 +96,7 @@ holder.dueTextView.visibility = VISIBLE
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()
             tvAttendCount.text = "Attendance - ${member.attendance_count}"
-            tvlastAttend.text = "Last marked - ${member.last_attend}"
+            tvlastAttend.text = "Last marked ${member.last_attend}"
             goalTextView.text =  when(member.goal){
                 1 -> "Weight Loss"
                 2 -> "Weight Gain"

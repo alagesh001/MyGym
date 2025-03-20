@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@color/white"
-        android:visibility="visible"
+        android:visibility="gone"
         >
         <TextView
             android:id="@+id/titleRegister"
