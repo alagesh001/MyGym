@@ -15,6 +15,7 @@ object ApiHelper {
     external fun transCheckUrl(): String
     external fun gtDataUrl(): String
     external fun guTableUrl(): String
+    external fun plusNewGymUrl(): String
     external fun plusNewCUrl(): String
     external fun gutrainerUrl(): String
     external fun gudueUrl(): String

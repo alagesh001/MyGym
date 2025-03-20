@@ -77,7 +77,17 @@ interface ApiService {
         @Field("height") height: Double,
         @Field("weight") weight: Double,
     ): Call<UserRegisterModel>
-
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun registerNewGym(
+        @Url url: String,
+        @Field("owner") owner: String,
+        @Field("gymname") gymname: String,
+        @Field("mob") mob: String,
+        @Field("plantype") paidmonths: String ,
+        @Field("location") location: String,
+        @Field("email") email: String,
+        ): UserRegisterModel
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint
     suspend fun addmymember(

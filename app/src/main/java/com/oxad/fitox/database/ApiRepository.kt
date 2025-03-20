@@ -56,6 +56,20 @@ class ApiRepository() {
         }
 
     }
+    suspend fun registerNewGym(owner:String,gymname:String, mob:String,plantype:String,location:String,email:String): Result<UserRegisterModel> {
+        return safeApiCall {
+            RetrofitClient.instance.registerNewGym(ApiHelper.plusNewGymUrl(),
+                owner,
+                gymname,
+                mob,
+                plantype,
+                location,
+                email,
+            )
+        }
+
+
+    }
     suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
         return safeApiCall {
             RetrofitClient.instance.addmymember(ApiHelper.plusNewCUrl(),

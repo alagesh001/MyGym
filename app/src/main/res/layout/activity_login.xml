@@ -90,7 +90,7 @@
                 android:textColor="@color/primary_color"
 
                 android:inputType="phone"
-                android:maxLength="10"/>
+             />
 
             <!-- Email -->
             <EditText
