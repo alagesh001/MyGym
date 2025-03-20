@@ -15,10 +15,12 @@ import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -52,6 +54,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         apiManager = ApiManager(this, this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        backpressInit()
         binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
             .setBlurRadius(12f)
         dataStoreManager = DataStoreManager(application)
@@ -89,6 +92,17 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
             
             
 
+    }
+    private fun backpressInit(){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+              if(isRegisterLay){
+                  registerLay(false)
+              }else{
+                  finish()
+              }
+            }
+        })
     }
     private var mHash: String = ""
 
@@ -141,6 +155,10 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
 
     private fun setclicklistener() {
         binding.btnLogin.setOnClickListener(this)
+        binding.btnRegister.setOnClickListener(this)
+        binding.btnCancel.setOnClickListener(this)
+        binding.btnSubmit.setOnClickListener(this)
+
     }
 
     override fun onSuccess(response: Any, serviceCode: Int) {
@@ -161,7 +179,42 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
     override fun onClick(p0: View?) {
         when (p0) {
             binding.btnLogin ->login()
+            binding.btnRegister -> registerLay(true)
+            binding.btnSubmit -> newRegisterSubmit()
+                binding.btnCancel -> registerLay(false)
         }
+    }
+    private var isRegisterLay =false
+    private fun registerLay(value:Boolean){
+        if(value) {
+            isRegisterLay = true
+            binding.registerLay.visibility = VISIBLE
+            binding.loginLay.visibility = GONE
+        }else{
+            isRegisterLay = false
+            binding.registerLay.visibility = GONE
+            binding.loginLay.visibility = VISIBLE
+        }
+
+
+    }
+
+    private fun  newRegisterSubmit(){
+        val owner = binding.etOwner.text.toString().trim()
+        val gymName = binding.etGymName.text.toString().trim()
+        val location = binding.etLocation.text.toString().trim()
+        val mobile = binding.etMobileRegister.text.toString().trim()
+        val email = binding.etEmail.text.toString().trim()
+        val months = binding.etMonths.text.toString().trim()
+
+        if (owner.isNotEmpty() && gymName.isNotEmpty() && location.isNotEmpty()
+            && mobile.isNotEmpty() && email.contains("@") && months.isNotEmpty()) {
+
+            Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
+        }
+
     }
     private fun login(){
     /*    apiManager.loginAdmin( 8148602102,"ags0071")
