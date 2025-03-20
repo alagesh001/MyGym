@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
 import com.oxad.fitox.R
+import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.ActivityLoginBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.AdminLoginModel
@@ -39,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.Util
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -209,8 +211,23 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
 
         if (owner.isNotEmpty() && gymName.isNotEmpty() && location.isNotEmpty()
             && mobile.isNotEmpty() && email.contains("@") && months.isNotEmpty()) {
-
-            Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val result =  ApiRepository().registerNewGym(owner,gymName,mobile,months,location,email
+                )
+                result.onSuccess { response ->
+                    if(response.success){
+                        Utils.showToast(this@Login,"Registration Successful!")
+                        registerLay(false)
+                    }else{
+                        Utils.showToast(this@Login,response.message)
+                    }
+                }
+                result.onFailure { exception ->
+                    Utils.showToast(this@Login, "Failed")
+                    exception.message ?: "Something went wrong!"
+                    Log.e("mafdsa","${exception.message}")
+                }
+            }
         } else {
             Toast.makeText(this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
         }

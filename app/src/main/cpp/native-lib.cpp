@@ -62,7 +62,11 @@ Java_com_oxad_fitox_retrofit_ApiHelper_plusNewCUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "addnewcustomer";
     return env->NewStringUTF(baseURL.c_str());
 }
-
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_plusNewGymUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "addnewgym";
+    return env->NewStringUTF(baseURL.c_str());
+}
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_gutrainerUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "updatetrainer";
