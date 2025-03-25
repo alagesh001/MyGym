@@ -1,10 +1,13 @@
 package com.oxad.fitox.ui
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,6 +24,7 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -292,6 +296,46 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
 
     }
+    // new - 0, renew - 1, duepay - 2
+    private fun showShareDialog(type:Int) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Share")
+            .setMessage("Do you want to share this on WhatsApp?")
+            .setPositiveButton("Share") { _, _ ->
+                shareInWhatsapp(type)
+            }
+            .setNegativeButton("Cancel")  { _, _ ->
+                findNavController().popBackStack()
+            }
+            .show()
+    }
+    private fun shareInWhatsapp(type:Int){
+        viewLifecycleOwner.lifecycleScope.launch {
+            val fullmsg = when(type){
+                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration effective from date ${binding.textViewSelectedDate.text}for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                    1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal effective from date ${binding.textViewSelectedDate.text}for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                    2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${binding.textViewSelectedDate.text}."
+                else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
+            }
+
+
+            sendWhatsAppMessage(fullmsg, "91" +  binding.mobInput.text.toString().replace(" ", ""))
+        }
+
+    }
+
+
+private fun sendWhatsAppMessage(message: String, phoneNumber: String) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("https://wa.me/$phoneNumber?text=" + Uri.encode(message))
+        startActivity(intent)
+    } catch (e: Exception) {
+        activity?.let { Toast.makeText(requireContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show()}
+    }
+    findNavController().popBackStack()
+
+}
     private var dueAmount = 0
 
     private fun updateDueAmount() {
@@ -530,10 +574,10 @@ private var isLoading = false
 
                     if(context !=null) {
                         mainViewModel.refreshMembers()
-
+                        showShareDialog(2)
                         Utils.showToast(requireContext(), response.message)
                     }
-                    findNavController().popBackStack()
+                  //  findNavController().popBackStack()
                 }else{
 
                     if(context !=null) {
@@ -611,10 +655,19 @@ private fun dataAdd(isUpdate:Boolean){
 
                    if(context !=null) {
                        mainViewModel.refreshMembers()
-
                        Utils.showToast(requireContext(), response.message)
+
+                       if(!isUpdate) {
+                           showShareDialog(0)
+                       }else if (isRenew == true){
+                           showShareDialog(1)
+
+                       }
+                       else{
+                           findNavController().popBackStack()
+                       }
                    }
-                   findNavController().popBackStack()
+
                }else{
                    if(context !=null) {
                        Utils.showToast(requireContext(), response.message)
@@ -630,6 +683,7 @@ private fun dataAdd(isUpdate:Boolean){
 
 
     }
+
 }
 
     companion object {
