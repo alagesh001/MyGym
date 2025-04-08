@@ -54,7 +54,11 @@ class AddmyTrainerFragment : Fragment(), View.OnClickListener {
         initUi()
         return binding.root
     }
+    private var role = 1
     private fun initUi(){
+      // default Trainer
+
+
         if(trainerData!=null){
             binding.nameInput.text = trainerData?.name?.toEditable()
             binding.mobInput.text = trainerData?.mob?.toEditable()
@@ -144,6 +148,13 @@ class AddmyTrainerFragment : Fragment(), View.OnClickListener {
         dialog.show()
     }
 private fun dataAdd(isUpdate:Boolean=false){
+    val selectedId = binding.roleGroup.checkedRadioButtonId
+    if (selectedId == R.id.radio_dietician) {
+        role = 2
+    }else
+    {   role = 1
+
+    }
     if(binding.nameInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty() ){
         lifecycleScope.launch {
             val result = if(isUpdate){
@@ -154,7 +165,7 @@ private fun dataAdd(isUpdate:Boolean=false){
                 }
 
             }else{
-                 ApiRepository().addmytrainer(binding.nameInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong())
+                 ApiRepository().addmytrainer(binding.nameInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),role)
 
             }
 

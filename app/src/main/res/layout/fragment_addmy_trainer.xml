@@ -1,87 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center"
-android:background="@color/white"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+
     >
 
-    <!-- Name Field -->
-    <TextView
-        android:id="@+id/name_label"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trainer Name"
-        android:textStyle="bold"
-        android:textColor="@color/primary_color"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/name_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Name"
-        android:textColor="@color/black"
-        android:textColorHint="#ADADAD"
+        <!-- Name Field -->
+        <TextView
+            android:id="@+id/name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
 
-        android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="Enter Name"
+            android:textColor="@color/black"
+            android:textColorHint="#ADADAD"
+            android:background="@drawable/edit_text_background"
+            android:inputType="textPersonName"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Mobile Field -->
-    <TextView
-        android:id="@+id/mob_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mobile"
-        android:textStyle="bold"
+        <!-- Mobile Field -->
+        <TextView
+            android:id="@+id/mob_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mobile"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:textSize="16sp" />
 
-        android:textColor="@color/primary_color"
+        <EditText
+            android:id="@+id/mob_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="Enter Mobile Number"
+            android:textColor="@color/black"
+            android:textColorHint="#ADADAD"
+            android:background="@drawable/edit_text_background"
+            android:inputType="phone"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
 
-        android:textSize="16sp" />
+        <!-- Role Selection -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Role"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
 
-    <EditText
-        android:id="@+id/mob_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Mobile Number"
-        android:textColor="@color/black"
-        android:textColorHint="#ADADAD"
-        android:inputType="phone" />
+        <RadioGroup
+            android:id="@+id/role_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp"
+            android:checkedButton="@+id/radio_trainer"> <!-- Default checked -->
 
+            <RadioButton
+                android:id="@+id/radio_trainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trainer"
+                android:textColor="@color/black" />
 
+            <RadioButton
+                android:id="@+id/radio_dietician"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dietician"
+                android:textColor="@color/black"
+                android:layout_marginStart="24dp" />
+        </RadioGroup>
 
+        <!-- Buttons -->
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/secondary_color"
+            android:layout_marginBottom="12dp" />
 
+        <Button
+            android:id="@+id/update_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update"
+            android:visibility="gone"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp" />
 
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:backgroundTint="@color/tertiary_color"
+            android:textColor="@color/white"
+            android:visibility="gone" />
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/secondary_color"
-        android:layout_gravity="center" />
-    <Button
-        android:id="@+id/update_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update"
-        android:visibility="gone"
-        android:backgroundTint="@color/secondary_color"
-        android:textColor="@color/white"
-
-        android:layout_gravity="center" />
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:backgroundTint="@color/tertiary_color"
-        android:textColor="@color/white"
-
-        android:visibility="gone"
-        android:layout_gravity="center" />
-
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

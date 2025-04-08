@@ -93,9 +93,9 @@ class ApiRepository() {
 
 
     }
-    suspend fun addmytrainer(name:String, gymid: Int,mob:Long): Result<UserRegisterModel> {
+    suspend fun addmytrainer(name:String, gymid: Int,mob:Long,role:Int): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.addmytrainer(ApiHelper.plusTrainerUrl(),name,gymid,mob)
+            RetrofitClient.instance.addmytrainer(ApiHelper.plusTrainerUrl(),name,gymid,mob,role)
         }
 
 
