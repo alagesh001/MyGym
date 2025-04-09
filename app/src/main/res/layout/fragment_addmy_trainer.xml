@@ -63,6 +63,7 @@
 
         <!-- Role Selection -->
         <TextView
+            android:id="@+id/role_titile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select Role"

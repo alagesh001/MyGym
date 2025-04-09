@@ -1,16 +1,20 @@
 package com.oxad.fitox.ui
 
+import AddProductDialog
+import ProductScreen
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oxad.fitox.adapter.RenewalAdapter
 import com.oxad.fitox.databinding.FragmentMyProductsBinding
 import com.oxad.fitox.model.MyMemberListModel
+import com.oxad.fitox.model.Product
 import com.oxad.fitox.retrofit.ApiInterface
 import com.oxad.fitox.retrofit.ApiManager
 import com.oxad.fitox.utils.RsConstants
@@ -38,12 +42,16 @@ class MyProductsFragment : Fragment(), ApiInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        apiManager = ApiManager(requireContext(), this)
-        binding = FragmentMyProductsBinding.inflate(inflater, container, false)
-        //initUi()
-        return binding.root
-
-
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val products = listOf(
+                    Product(1, "Whey Protein", 3000.0, 2499.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg"),
+                    Product(2, "Fitness Tracker", 4999.0, 4299.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg"),
+                    Product(3, "Dumbbells", 1500.0, 1199.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg")
+                )
+                ProductScreen(products, onAddClicked = {}, onEditClicked = {})
+            }
+        }
     }
 
     private fun initUi() {

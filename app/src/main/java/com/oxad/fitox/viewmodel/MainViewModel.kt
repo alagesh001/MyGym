@@ -39,6 +39,7 @@ class MainViewModel() : ViewModel() {
 
     private val _trainerList = MutableStateFlow<List<TrainerModel>>(emptyList())
     val trainerList: StateFlow<List<TrainerModel>> = _trainerList
+    var dieticianData: TrainerModel ?= null
 
     private var currentPage = 1
     private val limit = 5
@@ -171,6 +172,8 @@ class MainViewModel() : ViewModel() {
                 result.onSuccess { response ->
                     if(response.success){
                         _trainerList.value = response.result
+                        dieticianData = response.result.find { it.role == "dietician" }
+
                         dataStoreManagerVM.saveCoaches(response.result)
                     }else{
                         _trainerList.value = emptyList()
