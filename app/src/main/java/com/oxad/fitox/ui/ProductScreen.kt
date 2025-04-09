@@ -1,7 +1,12 @@
 import android.app.Activity
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -36,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,11 +57,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.oxad.fitox.model.Product
 import com.oxad.fitox.model.ProductAdd
 import com.yalantis.ucrop.UCrop
 import java.io.File
-
+import java.io.FileOutputStream
+import androidx.compose.material.icons.filled.AddAPhoto
 @Composable
 fun ProductScreen(
     products: List<Product>,
@@ -90,30 +99,47 @@ fun ProductScreen(
         )
     }
 }
+
+
 @Composable
 fun AddProductDialog(
     onAdd: (String, String, String, Uri?) -> Unit,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
+
     var name by remember { mutableStateOf("") }
     var actualPrice by remember { mutableStateOf("") }
     var offerPrice by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var lastCompressedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
-    // Launcher to handle crop result
+    // Crop result handler
     val cropLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val resultUri = result.data?.let { UCrop.getOutput(it) }
-            if (resultUri != null) {
-                imageUri = resultUri
+            resultUri?.let { uri ->
+                Log.e("adfjkakjfa","uri $uri")
+                val realUri = uri
+                compressImage(context, uri) { compressedUri ->
+                    imageUri = compressedUri
+                    Log.e("adfjkakjfa","compressedUri $imageUri")
+
+                    if (compressedUri != null) {
+                        Log.e("adfjkakjfa","lastCompressedImageUri $lastCompressedImageUri")
+
+                        lastCompressedImageUri = compressedUri
+                    }else{
+                        imageUri = realUri
+                    }
+                }
             }
         }
     }
 
-    // Launcher to pick image from gallery
+    // Gallery launcher
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -128,60 +154,66 @@ fun AddProductDialog(
         }
     }
 
+    // Dialog UI
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add Product") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.LightGray.copy(alpha = 0.2f))
+                        .background(Color.LightGray)
                         .clickable { galleryLauncher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {
                     if (imageUri != null) {
-                        AsyncImage(
-                            model = imageUri,
-                            contentDescription = "Selected Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUri),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
                     } else {
-                        Text("Tap to select & crop image", color = Color.Gray)
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = Icons.Filled.AddAPhoto,
+                                contentDescription = "Add Image",
+                                tint = Color.DarkGray,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Text("Tap to select image", color = Color.DarkGray, fontSize = 12.sp)
+                        }
                     }
                 }
 
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Product Name") },
-                    singleLine = true
+                    label = { Text("Product Name") }
                 )
 
                 OutlinedTextField(
                     value = actualPrice,
                     onValueChange = { actualPrice = it },
                     label = { Text("Actual Price") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
                 OutlinedTextField(
                     value = offerPrice,
                     onValueChange = { offerPrice = it },
                     label = { Text("Offer Price") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
         },
         confirmButton = {
             TextButton(onClick = {
                 if (name.isNotBlank() && actualPrice.isNotBlank() && offerPrice.isNotBlank()) {
-                    onAdd(name, actualPrice, offerPrice, imageUri)
+                    onAdd(name, actualPrice, offerPrice, imageUri ?: lastCompressedImageUri)
                 }
             }) {
                 Text("Add")
@@ -194,6 +226,30 @@ fun AddProductDialog(
         }
     )
 }
+
+// Compression function
+fun compressImage(context: Context, uri: Uri, onResult: (Uri?) -> Unit) {
+    try {
+        val file = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+        val outputStream = FileOutputStream(file)
+        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+
+        val isSuccess = bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
+        outputStream.flush()
+        outputStream.close()
+
+        val compressedUri =
+            Uri.fromFile(file)
+
+
+        onResult(compressedUri)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        onResult(null)
+    }
+}
+
+
 
 
 @Composable
