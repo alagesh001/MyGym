@@ -41,9 +41,11 @@ interface TrainerListener{
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
+if(item.role != "dietician"){
+    holder.tvTitle.text = item.name
+    holder.tvDetails.text = item.mob
+}
 
-        holder.tvTitle.text = item.name
-        holder.tvDetails.text = item.mob
 
 
         /*Glide.with(context)

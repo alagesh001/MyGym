@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.tooling.preview.android)
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -101,4 +102,6 @@ dependencies {
     implementation ("androidx.camera:camera-view:1.3.0")
     implementation ("com.google.zxing:core:3.5.2")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.github.yalantis:ucrop:2.2.8")
+
 }

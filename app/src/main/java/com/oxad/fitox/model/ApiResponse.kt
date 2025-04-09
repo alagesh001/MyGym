@@ -2,6 +2,7 @@ package com.oxad.fitox.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.ui.semantics.Role
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -31,7 +32,6 @@ data class MemberResponse(
     val limit: Int,
     val result: List<Member>,
     val message: String
-
 )
 
 
@@ -277,6 +277,9 @@ data class TrainerModel(
     val name: String,
 
     val mob: String,
+    val role: String,
+    val password: String,
+
     var isExpanded: Boolean = false
 
     ):Parcelable {
@@ -284,6 +287,9 @@ data class TrainerModel(
         parcel.readLong(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+
         parcel.readByte() != 0.toByte()
     ) {
     }
@@ -292,6 +298,9 @@ data class TrainerModel(
         parcel.writeLong(coachid)
         parcel.writeString(name)
         parcel.writeString(mob)
+        parcel.writeString(role)
+        parcel.writeString(password)
+
         parcel.writeByte(if (isExpanded) 1 else 0)
     }
 
