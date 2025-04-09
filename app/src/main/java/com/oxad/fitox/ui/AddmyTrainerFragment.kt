@@ -65,6 +65,8 @@ class AddmyTrainerFragment : Fragment(), View.OnClickListener {
             binding.submitButton.visibility = GONE
             binding.updateButton.visibility = VISIBLE
             binding.deleteButton.visibility = VISIBLE
+binding.roleTitile.visibility = GONE
+            binding.roleGroup.visibility = GONE
 
         }else{
             binding.submitButton.visibility = VISIBLE
