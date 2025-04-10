@@ -1,11 +1,14 @@
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -95,12 +98,13 @@ fun ProductScreen(
             onAdd = { name, actual, offer, imageUri ->
                 // Save or upload product here
             },
-            onDismiss = { /* close dialog */ }
+            onDismiss = { showDialog = false  }
         )
     }
 }
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddProductDialog(
     onAdd: (String, String, String, Uri?) -> Unit,
@@ -228,21 +232,32 @@ fun AddProductDialog(
 }
 
 // Compression function
+@RequiresApi(Build.VERSION_CODES.P)
 fun compressImage(context: Context, uri: Uri, onResult: (Uri?) -> Unit) {
     try {
+        val source = ImageDecoder.createSource(context.contentResolver, uri)
+        val bitmap = ImageDecoder.decodeBitmap(source)
+
+        // Create output file
         val file = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
-        val outputStream = FileOutputStream(file)
-        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+        var quality = 50 // Start with moderate quality
+        var success = false
 
-        val isSuccess = bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outputStream)
-        outputStream.flush()
-        outputStream.close()
+        while (quality > 10) {
+            val outputStream = FileOutputStream(file)
+            success = bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            outputStream.flush()
+            outputStream.close()
 
-        val compressedUri =
-            Uri.fromFile(file)
+            // Check file size
+            if (file.length() < 10 * 1024) break // Success if below 10KB
+            quality -= 10 // Reduce quality and try again
+        }
+        Log.e("adfjkakjfa","file size ${file.length()}")
 
-
+        val compressedUri = if (success) Uri.fromFile(file) else null
         onResult(compressedUri)
+
     } catch (e: Exception) {
         e.printStackTrace()
         onResult(null)
