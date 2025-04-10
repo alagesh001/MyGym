@@ -1,5 +1,8 @@
 package com.oxad.fitox.database
 
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -10,6 +13,12 @@ import com.oxad.fitox.retrofit.ApiHelper.gtDataUrl
 import com.oxad.fitox.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class ApiRepository() {
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
@@ -100,6 +109,50 @@ class ApiRepository() {
 
 
     }
+    suspend fun addProduct(
+        name: String,
+        offerPrice: Int,
+        actualPrice: Int,
+        gymId: Int,
+        imageFile: Uri,
+        context: Context
+    ): Result<UserRegisterModel> {
+
+            val namePart = createPartFromString(name)
+            val offerPricePart = createPartFromString(offerPrice.toString())
+            val actualPricePart = createPartFromString(actualPrice.toString())
+            val gymIdPart = createPartFromString(gymId.toString())
+            val imagePart = prepareFilePart("pic", imageFile, context)
+
+            return safeApiCall {
+                RetrofitClient.instance.addProducts(
+                    ApiHelper.addProductUrl(),
+                    namePart,
+                    offerPricePart,
+                    actualPricePart,
+                    gymIdPart,
+                    imagePart
+                )
+            }
+}
+
+        fun createPartFromString(value: String): RequestBody {
+            return value.toRequestBody("text/plain".toMediaTypeOrNull())
+        }
+
+        fun prepareFilePart(partName: String, uri: Uri, context: Context): MultipartBody.Part {
+            val contentResolver = context.contentResolver
+            val inputStream = contentResolver.openInputStream(uri)
+            val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir)
+            inputStream?.use { input ->
+                tempFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            val requestFile = tempFile.asRequestBody("image/*".toMediaTypeOrNull())
+            return MultipartBody.Part.createFormData(partName, tempFile.name, requestFile)
+        }
     suspend fun updategympass( gymid: Int,oldpass:String,newpass:String): Result<UserRegisterModel> {
         return safeApiCall {
             RetrofitClient.instance.updateGymPassword(ApiHelper.uCPassUrl(),gymid,oldpass,newpass)

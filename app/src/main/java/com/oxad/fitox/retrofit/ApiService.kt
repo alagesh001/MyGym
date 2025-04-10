@@ -6,12 +6,16 @@ import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.UserRegisterModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.Url
 
@@ -28,6 +32,16 @@ interface ApiService {
         @Field("email") email: String
     ): Call<UserRegisterModel>
 
+    @Multipart
+    @POST
+    suspend fun addProducts(
+        @Url url: String,
+        @Part("name") name: RequestBody,
+        @Part("offerprice") offerprice: RequestBody,
+        @Part("actualprice") actualprice: RequestBody,
+        @Part("gymid") gymid: RequestBody,
+        @Part pic: MultipartBody.Part
+    ): UserRegisterModel
     @GET // Adjust this to match your backend endpoint
     suspend fun getmymembers(
         @Url url: String,
