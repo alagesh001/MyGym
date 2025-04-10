@@ -67,17 +67,26 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.material.icons.filled.AddAPhoto
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ProductScreen(
     products: List<Product>,
-    onAddClicked: () -> Unit,
+    showDialog: Boolean,
+    onShowDialogChange: (Boolean) -> Unit,
+    onAddClicked: (
+            name:String,
+            actual:Int,
+            offer:Int,
+            imageUri: Uri?
+
+            ) -> Unit,
     onEditClicked: (Product) -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+  //  var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick ={ showDialog = true }) {
+            FloatingActionButton(onClick ={ onShowDialogChange(true) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Product")
             }
         }
@@ -97,8 +106,10 @@ fun ProductScreen(
         AddProductDialog(
             onAdd = { name, actual, offer, imageUri ->
                 // Save or upload product here
+               // addProductApiCall(name,actual,offer,imageUri)
+                onAddClicked(name,actual,offer,imageUri)
             },
-            onDismiss = { showDialog = false  }
+            onDismiss = { onShowDialogChange(false) }
         )
     }
 }
@@ -107,16 +118,18 @@ fun ProductScreen(
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddProductDialog(
-    onAdd: (String, String, String, Uri?) -> Unit,
+    onAdd: (String, Int, Int, Uri?) -> Unit,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
-    var actualPrice by remember { mutableStateOf("") }
-    var offerPrice by remember { mutableStateOf("") }
+    var offerPrice by remember { mutableStateOf(0) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var lastCompressedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var actualPriceInput by remember { mutableStateOf("") }
+    var offerPriceInput by remember { mutableStateOf("") }
+
 
     // Crop result handler
     val cropLauncher = rememberLauncherForActivityResult(
@@ -199,16 +212,17 @@ fun AddProductDialog(
                     label = { Text("Product Name") }
                 )
 
+
                 OutlinedTextField(
-                    value = actualPrice,
-                    onValueChange = { actualPrice = it },
+                    value = actualPriceInput,
+                    onValueChange = { actualPriceInput = it.filter { char -> char.isDigit() } },
                     label = { Text("Actual Price") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
                 OutlinedTextField(
-                    value = offerPrice,
-                    onValueChange = { offerPrice = it },
+                    value = offerPriceInput,
+                    onValueChange = { offerPriceInput = it.filter { char -> char.isDigit() } },
                     label = { Text("Offer Price") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -216,7 +230,10 @@ fun AddProductDialog(
         },
         confirmButton = {
             TextButton(onClick = {
-                if (name.isNotBlank() && actualPrice.isNotBlank() && offerPrice.isNotBlank()) {
+                if (name.isNotBlank() && actualPriceInput.isNotBlank() && offerPriceInput.isNotBlank()) {
+                    val actualPrice: Int = actualPriceInput.toInt()
+                    val offerPrice: Int = offerPriceInput.toInt()
+
                     onAdd(name, actualPrice, offerPrice, imageUri ?: lastCompressedImageUri)
                 }
             }) {
@@ -304,6 +321,7 @@ fun ProductItem(product: Product, onEditClicked: (Product) -> Unit) {
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.P)
 @Preview(showBackground = true)
 @Composable
 fun ProductScreenPreview() {
@@ -313,5 +331,5 @@ fun ProductScreenPreview() {
         Product(3, "Dumbbells", 1500.0, 1199.0, "https://via.placeholder.com/100")
     )
 
-    ProductScreen(products = products, onAddClicked = {}, onEditClicked = {})
+   // ProductScreen(products = products, onAddClicked = {}, onEditClicked = {})
 }
