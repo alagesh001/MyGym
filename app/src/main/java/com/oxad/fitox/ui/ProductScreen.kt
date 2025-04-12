@@ -1,10 +1,11 @@
+package com.oxad.fitox.ui
+
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,7 +32,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -62,12 +62,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.oxad.fitox.model.Product
-import com.oxad.fitox.model.ProductAdd
 import com.yalantis.ucrop.UCrop
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -75,21 +75,15 @@ import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+var isEdit:Boolean = false
+var selectedProduct:Product ? =null
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ProductScreen(
     mainVM:MainViewModel,
-    productsA: List<Product>,
     showDialog: Boolean,
     onShowDialogChange: (Boolean) -> Unit,
-    onAddClicked: (
-            name:String,
-            actual:Int,
-            offer:Int,
-            imageUri: Uri?
-
-            ) -> Unit,
     onEditClicked: (Product) -> Unit
 ) {
   //  var showDialog by remember { mutableStateOf(false) }
@@ -97,31 +91,45 @@ fun ProductScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick ={ onShowDialogChange(true) }) {
+            FloatingActionButton(onClick ={
+                isEdit = false
+                onShowDialogChange(true)
+            }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Product")
             }
         }
     ) { padding ->
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            items (products) { product ->
-                ProductItem(product = product, onEditClicked = onEditClicked)
+        LazyColumn ( modifier = Modifier
+            .padding(padding)
+            .padding(16.dp)){
+            val safeProducts = products ?: emptyList()
+            if (safeProducts.isNotEmpty()) {
+                items(safeProducts) { product ->
+                    ProductItem(
+                        onShowDialogChange = onShowDialogChange,
+                        mainVM = mainVM,
+                        onDismiss = { onShowDialogChange(false) },
+                        product = product,
+                        onEditClicked = onEditClicked
+                    )
+                }
+            } else {
+                item {
+                    Text(
+                        text = "No products available",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
+
     }
-    if (showDialog) {
+    if (showDialog ) {
         AddProductDialog(
+            isEdit,
             onShowDialogChange,
             mainVM,
-            onAdd = { name, actual, offer, imageUri ->
-                // Save or upload product here
-               // addProductApiCall(name,actual,offer,imageUri)
-                onAddClicked(name,actual,offer,imageUri)
-            },
             onDismiss = { onShowDialogChange(false) }
         )
     }
@@ -131,10 +139,10 @@ fun ProductScreen(
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddProductDialog(
+    isEdit:Boolean,
     onShowDialogChange: (Boolean) -> Unit,
     mainVM:MainViewModel,
-    onAdd: (String, Int, Int, Uri?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -145,7 +153,11 @@ fun AddProductDialog(
     var actualPriceInput by remember { mutableStateOf("") }
     var offerPriceInput by remember { mutableStateOf("") }
     val lifecycleOwner = LocalLifecycleOwner.current
-
+    if(isEdit){
+        name = selectedProduct?.name.toString()
+        actualPriceInput = selectedProduct?.actualPrice?.toInt().toString()
+        offerPriceInput = selectedProduct?.offerPrice?.toInt().toString()
+    }
 
     // Crop result handler
     val cropLauncher = rememberLauncherForActivityResult(
@@ -190,7 +202,9 @@ fun AddProductDialog(
     // Dialog UI
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Product") },
+        title = {
+            Text(text = if (isEdit) "Edit Product" else "Add Product")
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(
@@ -210,15 +224,25 @@ fun AddProductDialog(
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = Icons.Filled.AddAPhoto,
-                                contentDescription = "Add Image",
-                                tint = Color.DarkGray,
-                                modifier = Modifier.size(32.dp)
+                        if(isEdit){
+                            Image(
+                                painter = rememberAsyncImagePainter(selectedProduct?.imageUrl),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
                             )
-                            Text("Tap to select image", color = Color.DarkGray, fontSize = 12.sp)
+                        }else{
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    imageVector = Icons.Filled.AddAPhoto,
+                                    contentDescription = "Add Image",
+                                    tint = Color.DarkGray,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Text("Tap to select image", color = Color.DarkGray, fontSize = 12.sp)
+                            }
                         }
+
                     }
                 }
 
@@ -249,12 +273,20 @@ fun AddProductDialog(
                 if (name.isNotBlank() && actualPriceInput.isNotBlank() && offerPriceInput.isNotBlank()) {
                     val actualPrice: Int = actualPriceInput.toInt()
                     val offerPrice: Int = offerPriceInput.toInt()
-addProductApiCall(onShowDialogChange,context,mainVM,name,actualPrice,offerPrice,imageUri?:lastCompressedImageUri,lifecycleOwner)
-                    onAdd(name, actualPrice, offerPrice, imageUri ?: lastCompressedImageUri)
+                    val pid: Int = selectedProduct?.id?:0
+
+                    if(isEdit){
+                        updateProductApiCall(onShowDialogChange,context,mainVM,name,actualPrice,offerPrice,pid,imageUri?:lastCompressedImageUri,lifecycleOwner)
+
+                    }else{
+                        addProductApiCall(onShowDialogChange,context,mainVM,name,actualPrice,offerPrice,imageUri?:lastCompressedImageUri,lifecycleOwner)
+
+                    }
+
                 }
             }) {
-                Text("Add")
-            }
+                    Text(text = if (isEdit) "Update" else "Add Product")
+                }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
@@ -301,7 +333,9 @@ fun compressImage(context: Context, uri: Uri, onResult: (Uri?) -> Unit) {
 
 
 @Composable
-fun ProductItem(product: Product, onEditClicked: (Product) -> Unit) {
+fun ProductItem( onShowDialogChange: (Boolean) -> Unit,
+                 mainVM:MainViewModel,
+                 onDismiss: () -> Unit,product: Product, onEditClicked: (Product) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -331,7 +365,11 @@ fun ProductItem(product: Product, onEditClicked: (Product) -> Unit) {
                 Text("Offer: ₹${product.offerPrice}", color = Color(0xFF2E7D32))
             }
 
-            IconButton(onClick = { onEditClicked(product) }) {
+            IconButton(onClick = {
+                selectedProduct = product
+                isEdit = true
+              onShowDialogChange(true)
+            }) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit Product")
             }
         }
@@ -382,7 +420,61 @@ fun addProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mai
 
 
 
+        }else{
+            Utils.showToast(context, "Image not selected")
+
         }
+    }
+
+
+}
+fun updateProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mainVM: MainViewModel,name:String,
+                       actual:Int,
+                       offer:Int,pid:Int,
+                       imageUri: Uri?,lifecycleOwner: LifecycleOwner){
+    lifecycleOwner.lifecycleScope.launch {
+     //   Log.d("MultipartDataa", "pid Part: ${pid}")
+
+            val result =      ApiRepository().updateProduct(
+                name,
+                offer,
+                actual,
+                mainVM.gymResult[mainVM.currentGymSelected].GymId,
+                imageUri,
+pid,
+                context
+            )
+
+            result.onSuccess { response ->
+                if(response.success){
+                    mainVM.loadProductsData()
+                    onShowDialogChange(false)
+                    if(context !=null) {
+                        //    mainViewModel.refreshMembers()
+                        //   mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+
+                        Utils.showToast(context, response.message)
+                        //findNavController().popBackStack()
+
+                    }
+                    // findNavController().popBackStack()
+                }else{
+                    if(context !=null) {
+                        Utils.showToast(context, response.message)
+                    }
+                }
+            }
+
+            result.onFailure { exception ->
+                Utils.showToast(context, "Failed")
+                exception.message ?: "Something went wrong!"
+            }
+
+
+
+
+
+
     }
 
 
@@ -397,5 +489,5 @@ fun ProductScreenPreview() {
         Product(3, "Dumbbells", 1500.0, 1199.0, "https://via.placeholder.com/100")
     )
 
-   // ProductScreen(products = products, onAddClicked = {}, onEditClicked = {})
+   // com.oxad.fitox.ui.ProductScreen(products = products, onAddClicked = {}, onEditClicked = {})
 }

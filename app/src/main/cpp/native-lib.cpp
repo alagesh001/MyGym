@@ -108,4 +108,9 @@ Java_com_oxad_fitox_retrofit_ApiHelper_addProductUrl(JNIEnv *env, jclass clazz) 
     std::string baseURL = "addmyproduct";
     return env->NewStringUTF(baseURL.c_str());
 }
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_updateProductUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "updateproduct";
+    return env->NewStringUTF(baseURL.c_str());
+}
 }
