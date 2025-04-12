@@ -3,6 +3,7 @@ package com.oxad.fitox.database
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -141,8 +142,46 @@ class ApiRepository() {
                 )
             }
 }
+    suspend fun updateProduct(
+        name: String,
+        offerPrice: Int,
+        actualPrice: Int,
+        gymId: Int,
+        imageFile: Uri?,
+        pid: Int,
+        context: Context
+    ): Result<UserRegisterModel> {
 
-        fun createPartFromString(value: String): RequestBody {
+        val namePart = createPartFromString(name)
+        val offerPricePart = createPartFromString(offerPrice.toString())
+        val actualPricePart = createPartFromString(actualPrice.toString())
+        val gymIdPart = createPartFromString(gymId.toString())
+        val imagePart = imageFile?.let { prepareFilePart("pic", it, context) }
+        val pid =  createPartFromString(pid.toString())
+
+        Log.d("MultipartData", "Name Part: ${namePart}")
+        Log.d("MultipartData", "Offer Price Part: ${offerPricePart}")
+        Log.d("MultipartData", "Actual Price Part: ${actualPricePart}")
+        Log.d("MultipartData", "Gym ID Part: ${gymIdPart}")
+
+        imagePart?.let {
+            Log.d("MultipartData", "Image Part: ${it}")
+        }
+        return safeApiCall {
+            RetrofitClient.instance.updateProducts(
+                ApiHelper.updateProductUrl(),
+                namePart,
+                offerPricePart,
+                actualPricePart,
+                gymIdPart,
+                pid,
+                imagePart
+            )
+        }
+    }
+
+
+    fun createPartFromString(value: String): RequestBody {
             return value.toRequestBody("text/plain".toMediaTypeOrNull())
         }
 

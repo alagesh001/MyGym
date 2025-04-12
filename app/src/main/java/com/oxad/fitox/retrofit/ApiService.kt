@@ -32,7 +32,18 @@ interface ApiService {
         @Field("name") name: String,
         @Field("email") email: String
     ): Call<UserRegisterModel>
+    @Multipart
+    @POST
+    suspend fun updateProducts(
+        @Url url: String,
+        @Part("name") name: RequestBody,
+        @Part("offerprice") offerprice: RequestBody,
+        @Part("actualprice") actualprice: RequestBody,
+        @Part("gymid") gymid: RequestBody,
+        @Part("productId") pid: RequestBody,
 
+        @Part pic: MultipartBody.Part?
+    ): UserRegisterModel
     @Multipart
     @POST
     suspend fun addProducts(

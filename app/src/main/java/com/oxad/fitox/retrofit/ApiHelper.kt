@@ -25,6 +25,8 @@ object ApiHelper {
     external fun uCPassUrl(): String
     external fun addProductUrl(): String
     external fun getProductUrl(): String
+    external fun updateProductUrl(): String
+
 
 
 

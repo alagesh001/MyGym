@@ -1,6 +1,5 @@
 package com.oxad.fitox.ui
 
-import ProductScreen
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,23 +29,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.adapter.RenewalAdapter
-import com.oxad.fitox.database.ApiRepository
-import com.oxad.fitox.databinding.FragmentGymprofileBinding
 import com.oxad.fitox.databinding.FragmentMyProductsBinding
-import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.MyMemberListModel
 import com.oxad.fitox.model.Product
 import com.oxad.fitox.retrofit.ApiInterface
 import com.oxad.fitox.retrofit.ApiManager
 import com.oxad.fitox.utils.RsConstants
-import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -122,8 +112,8 @@ class MyProductsFragment : Fragment(), ApiInterface {
             composeView.setContent {
                 var showDialog by remember { mutableStateOf(false) }
 
-                ProductScreen(mainViewModel,products, showDialog = showDialog,
-                    onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
+                ProductScreen(mainViewModel, showDialog = showDialog,
+                    onShowDialogChange = { showDialog = it }, onEditClicked = {})
             }
         }
     }
@@ -140,64 +130,13 @@ class MyProductsFragment : Fragment(), ApiInterface {
         }
 
         if (isLoaded) {
-            ProductScreen(mainViewModel,products, showDialog = showDialog,
-                onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
+            ProductScreen(mainViewModel, showDialog = showDialog,
+                onShowDialogChange = { showDialog = it },onEditClicked = {})
         } else {
             ProgressBar() // Show placeholder UI
         }
     }
-     fun addProductApiCall(name:String,
-                                  actual:Int,
-                                  offer:Int,
-                                  imageUri: Uri?){
-/*
-        lifecycleScope.launch {
 
-if(imageUri!=null) {
-    activity?.let {
-        val result =      ApiRepository().addProduct(
-            name,
-            offer,
-            actual,
-            mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
-            imageUri,
-            requireContext()
-        )
-
-        result.onSuccess { response ->
-            if(response.success){
-mainViewModel.loadProductsData()
-                if(context !=null) {
-                //    mainViewModel.refreshMembers()
-                 //   mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
-
-                    Utils.showToast(requireContext(), response.message)
-                    //findNavController().popBackStack()
-
-                }
-               // findNavController().popBackStack()
-            }else{
-                if(context !=null) {
-                    Utils.showToast(requireContext(), response.message)
-                }
-            }
-        }
-
-        result.onFailure { exception ->
-            Utils.showToast(requireContext(), "Failed")
-            exception.message ?: "Something went wrong!"
-        }
-
-    }
-
-
-
-}
-        }
-*/
-
-
-    }
     fun createPartFromString(value: String): RequestBody {
         return value.toRequestBody("text/plain".toMediaTypeOrNull())
     }
@@ -253,8 +192,8 @@ mainViewModel.loadProductsData()
 
             }
         } else {
-            ProductScreen(mainViewModel,products, showDialog = showDialog,
-                onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
+            ProductScreen(mainViewModel, showDialog = showDialog,
+                onShowDialogChange = { showDialog = it }, onEditClicked = {})
         }
     }
 
