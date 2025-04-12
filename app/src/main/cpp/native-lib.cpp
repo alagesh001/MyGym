@@ -42,6 +42,11 @@ return env->NewStringUTF(baseURL.c_str());
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_getProductUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "getmyproducts";
+    return env->NewStringUTF(baseURL.c_str());
+}
+JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_transCheckUrl(JNIEnv *env, jclass clazz) {
 std::string baseURL = "gettransachistory";
 return env->NewStringUTF(baseURL.c_str());

@@ -13,6 +13,9 @@ import com.oxad.fitox.database.WorkoutDao
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.model.Product
+import com.oxad.fitox.model.ProductRes
+import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.model.Workout
@@ -50,6 +53,8 @@ class MainViewModel() : ViewModel() {
     private val _workouts = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workouts
     lateinit var dataStoreManagerVM:DataStoreManager
+    private val _productData = MutableStateFlow<List<Product>>(emptyList())
+    val productData: StateFlow<List<Product>> = _productData
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
@@ -102,7 +107,34 @@ class MainViewModel() : ViewModel() {
         }
 
     }
+    fun loadProductsData() {
+        viewModelScope.launch {
+            try {
+                val result = ApiRepository().getProducts(gymResult[currentGymSelected].GymId)
+                result.onSuccess { response ->
+                   // Log.e("onSuccessdsf","CC "+Gson().toJson(response.result))
 
+                    _productData.value = response.result
+                  //  Log.e("onSuccessdsf","sstsAA ")
+
+                }
+                result.onFailure { exception ->
+                    _productData.value = emptyList() // Handle error case
+
+                }
+
+                //    Log.e("jdacjadf","res "+Gson().toJson(workouts))
+            } catch (e: Exception) {
+                _productData.value = emptyList() // Handle error case
+                // Log.e("jdacjadf","catch "+e.message)
+
+            } finally {
+                // Log.e("jdacjadf","finally ")
+
+               // _isLoading.value = false
+            }
+        }
+    }
     fun fetchWorkouts(muscleGroup: String) {
         viewModelScope.launch {
             _isLoading.value = true

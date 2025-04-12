@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,9 +31,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.adapter.RenewalAdapter
 import com.oxad.fitox.database.ApiRepository
@@ -72,11 +75,11 @@ class MyProductsFragment : Fragment(), ApiInterface {
         super.onCreate(savedInstanceState)
 
     }
-    val products = listOf(
+   /* val products = listOf(
         Product(1, "Whey Protein", 3000.0, 2499.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg"),
         Product(2, "Fitness Tracker", 4999.0, 4299.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg"),
         Product(3, "Dumbbells", 1500.0, 1199.0, "https://m.media-amazon.com/images/I/710SxepIfiL.jpg")
-    )
+    )*/
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,12 +90,22 @@ class MyProductsFragment : Fragment(), ApiInterface {
 
     }
     private val viewModel: MainViewModel by activityViewModels()
+    var products = emptyList<Product>()
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+      /*  activity?.let {
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.productData.collect { productsList ->
+                   //  Log.e("onSuccessdsf","abvsdv "+Gson().toJson(productsList))
+                    Log.e("onSuccessdsf","sstsBB ")
 
+                    products = productsList
+                }
+            }
+        }*/
         if (!viewModel.gymProductOpenedFirsttime) {
             viewModel.gymProductOpenedFirsttime = true
             viewLifecycleOwner.lifecycleScope.launch {
@@ -109,11 +122,12 @@ class MyProductsFragment : Fragment(), ApiInterface {
             composeView.setContent {
                 var showDialog by remember { mutableStateOf(false) }
 
-                ProductScreen(products, showDialog = showDialog,
+                ProductScreen(mainViewModel,products, showDialog = showDialog,
                     onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
             }
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.P)
     @Composable
     fun DelayedComposeWithPlaceholder() {
@@ -126,7 +140,7 @@ class MyProductsFragment : Fragment(), ApiInterface {
         }
 
         if (isLoaded) {
-            ProductScreen(products, showDialog = showDialog,
+            ProductScreen(mainViewModel,products, showDialog = showDialog,
                 onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
         } else {
             ProgressBar() // Show placeholder UI
@@ -136,6 +150,7 @@ class MyProductsFragment : Fragment(), ApiInterface {
                                   actual:Int,
                                   offer:Int,
                                   imageUri: Uri?){
+/*
         lifecycleScope.launch {
 
 if(imageUri!=null) {
@@ -151,7 +166,7 @@ if(imageUri!=null) {
 
         result.onSuccess { response ->
             if(response.success){
-
+mainViewModel.loadProductsData()
                 if(context !=null) {
                 //    mainViewModel.refreshMembers()
                  //   mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
@@ -179,6 +194,7 @@ if(imageUri!=null) {
 
 }
         }
+*/
 
 
     }
@@ -237,7 +253,7 @@ if(imageUri!=null) {
 
             }
         } else {
-            ProductScreen(products, showDialog = showDialog,
+            ProductScreen(mainViewModel,products, showDialog = showDialog,
                 onShowDialogChange = { showDialog = it }, onAddClicked = {name, actual, offer, imageUri -> addProductApiCall(name,actual,offer,imageUri)}, onEditClicked = {})
         }
     }

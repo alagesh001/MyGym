@@ -5,6 +5,7 @@ import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MemberResponse
+import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.UserRegisterModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -54,6 +55,11 @@ interface ApiService {
     @GET
     suspend fun getWorkoutsByMuscleGroup(        @Url url: String,
                                                  @Query("muscle_group") muscleGroup: String): GymGuideResponse
+
+    @GET
+    suspend fun getproductsgym(        @Url url: String,
+                                       @Query("gymid") gymid: Int
+    ): ProductResponse
 
 
     @GET // Adjust this to match your backend endpoint

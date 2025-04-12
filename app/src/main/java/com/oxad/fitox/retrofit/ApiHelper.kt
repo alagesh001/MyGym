@@ -24,6 +24,7 @@ object ApiHelper {
     external fun plusTrainerUrl(): String
     external fun uCPassUrl(): String
     external fun addProductUrl(): String
+    external fun getProductUrl(): String
 
 
 

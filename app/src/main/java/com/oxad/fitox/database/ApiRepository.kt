@@ -7,6 +7,8 @@ import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MemberResponse
+import com.oxad.fitox.model.ProductResponse
+import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.model.UserRegisterModel
 import com.oxad.fitox.retrofit.ApiHelper
 import com.oxad.fitox.retrofit.ApiHelper.gtDataUrl
@@ -28,6 +30,10 @@ class ApiRepository() {
         }
     suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
         return safeApiCall { RetrofitClient.instance.getWorkoutsByMuscleGroup(ApiHelper.vcoachUrl(),muscleGroup) }
+
+    }
+    suspend fun getProducts(gymId: Int): Result<ProductResponse> {
+        return safeApiCall { RetrofitClient.instance.getproductsgym(ApiHelper.getProductUrl(),gymId) }
 
     }
     suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String): Result<UserRegisterModel> {

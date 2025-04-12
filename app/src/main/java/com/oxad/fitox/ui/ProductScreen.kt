@@ -67,10 +67,20 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.oxad.fitox.database.ApiRepository
+import com.oxad.fitox.utils.Utils
+import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
+
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ProductScreen(
-    products: List<Product>,
+    mainVM:MainViewModel,
+    productsA: List<Product>,
     showDialog: Boolean,
     onShowDialogChange: (Boolean) -> Unit,
     onAddClicked: (
@@ -83,6 +93,7 @@ fun ProductScreen(
     onEditClicked: (Product) -> Unit
 ) {
   //  var showDialog by remember { mutableStateOf(false) }
+    val products by mainVM.productData.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -104,6 +115,8 @@ fun ProductScreen(
     }
     if (showDialog) {
         AddProductDialog(
+            onShowDialogChange,
+            mainVM,
             onAdd = { name, actual, offer, imageUri ->
                 // Save or upload product here
                // addProductApiCall(name,actual,offer,imageUri)
@@ -118,6 +131,8 @@ fun ProductScreen(
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddProductDialog(
+    onShowDialogChange: (Boolean) -> Unit,
+    mainVM:MainViewModel,
     onAdd: (String, Int, Int, Uri?) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -129,6 +144,7 @@ fun AddProductDialog(
     var lastCompressedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     var actualPriceInput by remember { mutableStateOf("") }
     var offerPriceInput by remember { mutableStateOf("") }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
 
     // Crop result handler
@@ -233,7 +249,7 @@ fun AddProductDialog(
                 if (name.isNotBlank() && actualPriceInput.isNotBlank() && offerPriceInput.isNotBlank()) {
                     val actualPrice: Int = actualPriceInput.toInt()
                     val offerPrice: Int = offerPriceInput.toInt()
-
+addProductApiCall(onShowDialogChange,context,mainVM,name,actualPrice,offerPrice,imageUri?:lastCompressedImageUri,lifecycleOwner)
                     onAdd(name, actualPrice, offerPrice, imageUri ?: lastCompressedImageUri)
                 }
             }) {
@@ -320,6 +336,56 @@ fun ProductItem(product: Product, onEditClicked: (Product) -> Unit) {
             }
         }
     }
+}
+fun addProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mainVM: MainViewModel,name:String,
+                      actual:Int,
+                      offer:Int,
+                      imageUri: Uri?,lifecycleOwner: LifecycleOwner){
+    lifecycleOwner.lifecycleScope.launch {
+
+        if(imageUri!=null) {
+                val result =      ApiRepository().addProduct(
+                    name,
+                    offer,
+                    actual,
+                    mainVM.gymResult[mainVM.currentGymSelected].GymId,
+                    imageUri,
+                    context
+                )
+
+                result.onSuccess { response ->
+                    if(response.success){
+                        mainVM.loadProductsData()
+                        onShowDialogChange(false)
+                        if(context !=null) {
+                            //    mainViewModel.refreshMembers()
+                            //   mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+
+                            Utils.showToast(context, response.message)
+                            //findNavController().popBackStack()
+
+                        }
+                        // findNavController().popBackStack()
+                    }else{
+                        if(context !=null) {
+                            Utils.showToast(context, response.message)
+                        }
+                    }
+                }
+
+                result.onFailure { exception ->
+                    Utils.showToast(context, "Failed")
+                    exception.message ?: "Something went wrong!"
+                }
+
+
+
+
+
+        }
+    }
+
+
 }
 @RequiresApi(Build.VERSION_CODES.P)
 @Preview(showBackground = true)

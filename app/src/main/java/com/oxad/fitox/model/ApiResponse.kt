@@ -120,7 +120,20 @@ data class Member(
     }
 }
 
+data class ProductResponse(
+    val success: Boolean,
+    val result: List<Product>,
+    val message: String
 
+)
+
+data class ProductRes(
+    val productId: Int,
+    val productName: String,
+    val pic: String,
+    val offerPrice: Int,
+    val actualPrice: Int
+)
 data class MyClient(
 
     val name: String,
@@ -317,4 +330,5 @@ data class TrainerModel(
             return arrayOfNulls(size)
         }
     }
+
 }

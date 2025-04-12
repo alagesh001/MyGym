@@ -87,6 +87,7 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
                 if(renewalDate < System.currentTimeMillis()){
                     Utils.showToast(ctx,"Kindly renew to enter.")
                 }else{
+                    mainViewModel.loadProductsData()
                     mainViewModel.loadTrainerData(DataStoreManager(ctx))
                     findNavController().navigate(R.id.action_gymSelectFragment_to_homeFragment)
                 }
