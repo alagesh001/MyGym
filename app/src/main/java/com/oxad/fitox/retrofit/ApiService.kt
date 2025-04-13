@@ -44,6 +44,15 @@ interface ApiService {
 
         @Part pic: MultipartBody.Part?
     ): UserRegisterModel
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun deleteProduct(
+        @Url url: String,
+        @Field("gymid") gid: Int,
+        @Field("productId") pid: Int,
+        @Field("isDelete") isDelete: Int = 1
+
+    ): UserRegisterModel
     @Multipart
     @POST
     suspend fun addProducts(

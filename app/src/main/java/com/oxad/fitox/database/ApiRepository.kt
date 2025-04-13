@@ -180,7 +180,20 @@ class ApiRepository() {
         }
     }
 
+    suspend fun deleteProduct(
+        gymId: Int,
+        pid: Int,
+    ): Result<UserRegisterModel> {
+      //  Log.d("deldfacx", "gis $gymId pid $pid")
 
+        return safeApiCall {
+            RetrofitClient.instance.deleteProduct(
+                ApiHelper.updateProductUrl(),
+                gymId,
+                pid,
+            )
+        }
+    }
     fun createPartFromString(value: String): RequestBody {
             return value.toRequestBody("text/plain".toMediaTypeOrNull())
         }

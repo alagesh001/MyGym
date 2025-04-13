@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -66,6 +68,9 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 import java.io.FileOutputStream
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.materialPath
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.LifecycleOwner
@@ -293,6 +298,7 @@ fun AddProductDialog(
                 Text("Cancel")
             }
         }
+
     )
 }
 
@@ -332,11 +338,20 @@ fun compressImage(context: Context, uri: Uri, onResult: (Uri?) -> Unit) {
 
 
 
+
 @Composable
 fun ProductItem( onShowDialogChange: (Boolean) -> Unit,
                  mainVM:MainViewModel,
                  onDismiss: () -> Unit,product: Product, onEditClicked: (Product) -> Unit) {
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     Card(
+        onClick = {
+            selectedProduct = product
+            isEdit = true
+            onShowDialogChange(true)
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
@@ -365,12 +380,86 @@ fun ProductItem( onShowDialogChange: (Boolean) -> Unit,
                 Text("Offer: ₹${product.offerPrice}", color = Color(0xFF2E7D32))
             }
 
-            IconButton(onClick = {
-                selectedProduct = product
-                isEdit = true
-              onShowDialogChange(true)
-            }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit Product")
+            IconButton(
+                onClick = { showConfirmDialog = true },
+                modifier = Modifier
+                    .size(48.dp) // Ensure a consistent button size
+                    .clip(CircleShape) // Make the button circular
+                    .background(Color(0xFFFDECEC)) // Light red background for delete action
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Red, // Red tint for the icon
+                    modifier = Modifier
+                        .size(24.dp) // Icon size inside the button
+                )
+            }
+            if (showConfirmDialog) {
+                AlertDialog(
+                    onDismissRequest = { showConfirmDialog = false },
+                    title = {
+                        Text(text = "Confirm Delete")
+                    },
+                    text = {
+                        Text("Are you sure you want to delete this product? This action cannot be undone.")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                           // onDeleteConfirmed()
+                            lifecycleOwner.lifecycleScope.launch {
+                                //   Log.d("MultipartDataa", "pid Part: ${pid}")
+
+                                val result =      ApiRepository().deleteProduct(
+                                    mainVM.gymResult[mainVM.currentGymSelected].GymId,
+                                    product.id,
+                                )
+
+                                result.onSuccess { response ->
+                                    if(response.success){
+                                        mainVM.loadProductsData()
+                                        onShowDialogChange(false)
+                                        if(context !=null) {
+                                            //    mainViewModel.refreshMembers()
+                                            //   mainViewModel.loadTrainerData(DataStoreManager(requireContext()))
+
+                                            Utils.showToast(context, response.message)
+                                            //findNavController().popBackStack()
+
+                                        }
+                                        // findNavController().popBackStack()
+                                    }else{
+                                        if(context !=null) {
+                                            Utils.showToast(context, response.message)
+                                        }
+                                    }
+                                }
+
+                                result.onFailure { exception ->
+                                    Utils.showToast(context, "Failed")
+                                    exception.message ?: "Something went wrong!"
+                                }
+
+
+
+
+
+
+                            }
+
+                            showConfirmDialog = false
+                        }) {
+                            Text("Delete", color = Color.Red)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showConfirmDialog = false
+                        }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
             }
         }
     }
