@@ -202,6 +202,21 @@
 
             android:background ="@drawable/roun_rad_rect"
             android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/renew_tv"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Renew"
+                android:textAlignment="center"
+                android:backgroundTint="@color/primary_color"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"
+
+                android:background ="@drawable/roun_rad_rect"
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/due_tv"
                 android:layout_width="@dimen/_90sdp"
@@ -216,15 +231,14 @@
 
                 android:background ="@drawable/roun_rad_rect"
                 android:textSize="16sp" />
-
             <TextView
-                android:id="@+id/renew_tv"
-                android:layout_width="@dimen/_90sdp"
+                android:id="@+id/diet_schedule_tv"
+                android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Renew"
+                android:text="Diet Schedule"
                 android:textAlignment="center"
-                android:backgroundTint="@color/primary_color"
+                android:backgroundTint="#9C27B0"
                 android:textColor="@color/white"
                 android:padding="@dimen/_10sdp"
 

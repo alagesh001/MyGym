@@ -162,12 +162,14 @@ activity?.let {
                     shareBitmapToWhatsApp(requireContext(),bitmapFile,"918148602102")
                 }
             }*/
-            if (::dataStoreManager.isInitialized) {
+            val fullmsg = " Your Referral Code is ${member.referral_id}."
+            sendWhatsAppMessage(fullmsg, "91" + member.mobile.toString().replace(" ", ""))
+          /*  if (::dataStoreManager.isInitialized) {
                 dataStoreManager.referralMessage.collect { savedMessage ->
                     val fullmsg = savedMessage + " The Referral Code is ${member.referral_id}."
                     sendWhatsAppMessage(fullmsg, "91" + member.mobile.toString().replace(" ", ""))
                 }
-            }
+            }*/
         }
 
     }
