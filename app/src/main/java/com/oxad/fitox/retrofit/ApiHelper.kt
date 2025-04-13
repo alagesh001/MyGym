@@ -26,6 +26,7 @@ object ApiHelper {
     external fun addProductUrl(): String
     external fun getProductUrl(): String
     external fun updateProductUrl(): String
+    external fun updateBroadmsgUrl(): String
 
 
 
