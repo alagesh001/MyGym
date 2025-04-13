@@ -34,7 +34,7 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/secondary_color"
 android:textColor="@color/white"
-        android:text="Save Message"
+        android:text="Set Broadcast message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"

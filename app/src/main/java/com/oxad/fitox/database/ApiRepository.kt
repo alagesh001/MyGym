@@ -218,6 +218,13 @@ class ApiRepository() {
 
 
     }
+    suspend fun updatebroadmsg( gymid: Int,pass:String,broadmsg:String): Result<UserRegisterModel> {
+        return safeApiCall {
+            RetrofitClient.instance.updatebroadmsg(ApiHelper.updateBroadmsgUrl(),gymid,pass,broadmsg)
+        }
+
+
+    }
     suspend fun getTransacHist(gymId: Int, page: Int): Result<GetMyTransacHist> {
         return safeApiCall {
             RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page)

@@ -1,17 +1,20 @@
 package com.oxad.fitox.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.oxad.fitox.R
 
 import com.oxad.fitox.model.TrainerModel
 
-class ExpandableAdapter( private val context: Context,private val listener:TrainerListener ) :
+class  ExpandableAdapter( private val context: Context,private val listener:TrainerListener ) :
     RecyclerView.Adapter<ExpandableAdapter.ViewHolder>() {
     private val itemList = mutableListOf<TrainerModel>()
 
@@ -27,6 +30,8 @@ class ExpandableAdapter( private val context: Context,private val listener:Train
         val ivProfile: ImageView = itemView.findViewById(R.id.imgProfile)
         val card_item: View = itemView.findViewById(R.id.item_viewcard)
         val update_tv: View = itemView.findViewById(R.id.update_tv)
+        val relative_lay: RelativeLayout = itemView.findViewById(R.id.relative_lay)
+
 
 
     }
@@ -41,11 +46,13 @@ interface TrainerListener{
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
-if(item.role != "dietician"){
-    holder.tvTitle.text = item.name
-    holder.tvDetails.text = item.mob
-}
 
+
+        if(item.role != "dietician"){
+            holder.tvTitle.text = item.name
+            holder.tvDetails.text = item.mob
+           // holder.relative_lay.setBackgroundColor(ContextCompat.getColor(context, R.color.secondary_color))
+        }
 
 
         /*Glide.with(context)

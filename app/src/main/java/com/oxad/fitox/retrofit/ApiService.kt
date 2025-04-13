@@ -236,6 +236,16 @@ interface ApiService {
         @Field("newpass") newpass: String,
 
         ): UserRegisterModel
+
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun updatebroadmsg(
+        @Url url: String,
+        @Field("gymid") gymid: Int,
+        @Field("pass") oldpass: String,
+        @Field("broadmsg") newpass: String,
+
+        ): UserRegisterModel
 }
 
 

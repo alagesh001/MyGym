@@ -69,7 +69,7 @@ class DataStoreManager(private val context: Context) {
     // Function to get referral message
     val referralMessage: Flow<String> = context.dataStore.data
         .map { preferences ->
-            preferences[REFERRAL_MESSAGE_KEY] ?: "Join my gym using this referral code!"
+            preferences[REFERRAL_MESSAGE_KEY] ?: "No pain, No Gain!"
         }
 
 
