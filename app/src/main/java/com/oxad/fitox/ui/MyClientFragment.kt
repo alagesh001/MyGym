@@ -1,5 +1,7 @@
 package com.oxad.fitox.ui
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,8 +10,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,9 +22,11 @@ import com.oxad.fitox.R
 import com.oxad.fitox.adapter.MemberAdapter
 import com.oxad.fitox.adapter.MemberSearchAdapter
 import com.oxad.fitox.adapter.RenewalAdapter
+import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.FragmentMyClientBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.utils.Utils
 
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +35,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -174,6 +183,85 @@ activity?.let {
 
     }
 
+    override fun onDietSchedule(userid: Long) {
+
+        showDateTimePickerDialog(userid)
+    }
+    private fun showDateTimePickerDialog(userid: Long) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        activity?.let {
+            // Show DatePickerDialog first
+            val datePickerDialog = DatePickerDialog(
+                ContextThemeWrapper(requireContext(), android.R.style.Theme_Holo_Light_Dialog),
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    // After date is picked, show TimePickerDialog
+                    val timePickerDialog = TimePickerDialog(
+                        requireContext(),
+                        { _, selectedHour, selectedMinute ->
+                            val selectedDateTime = Calendar.getInstance()
+                            selectedDateTime.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute)
+
+                            val mysqlDateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            val formattedDateTime = mysqlDateTimeFormat.format(selectedDateTime.time)
+
+                            // Send the formattedDateTime to the database
+                            sendToDatabase(formattedDateTime,userid)
+                        },
+                        hour, minute, true // Use 24-hour format
+                    )
+                    timePickerDialog.show()
+                },
+                year, month, day
+            )
+
+            // Force spinner mode for the DatePickerDialog
+            try {
+                val datePicker = datePickerDialog.datePicker
+                val method = datePicker.javaClass.getDeclaredMethod("setSpinnersShown", Boolean::class.java)
+                method.invoke(datePicker, true)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            datePickerDialog.show()
+        }
+    }
+
+    // Function to send data to the database
+    private fun sendToDatabase(dateTime: String,userid: Long) {
+        // Use your existing API or database interaction code here
+        // Example:
+      //  Log.d("DatesasTime", "Selected DateTime to send: $userid $dateTime")
+        lifecycleScope.launch {
+            val result =
+                ApiRepository().updatedietSchedule(userid,dateTime)
+
+            //Log.e("chadka",""+ Gson().toJson(result))
+            result.onSuccess { response ->
+                if(response.success){
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+
+                    }
+                }else{
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                }
+            }
+
+            result.onFailure { exception ->
+                exception.message ?: "Something went wrong!"
+            }
+        }
+        // Add network or database interaction code to save the dateTime string
+    }
     override fun onDestroyView() {
         super.onDestroyView()
        // Log.e("chadkaa","destroy")

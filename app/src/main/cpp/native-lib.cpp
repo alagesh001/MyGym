@@ -118,4 +118,9 @@ Java_com_oxad_fitox_retrofit_ApiHelper_updateBroadmsgUrl(JNIEnv *env, jclass cla
     std::string baseURL = "updatebroadcastmsg";
     return env->NewStringUTF(baseURL.c_str());
 }
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_updatedietscheduleurl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "update_diet_schedule";
+    return env->NewStringUTF(baseURL.c_str());
+}
 }
