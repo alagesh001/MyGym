@@ -42,6 +42,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -297,29 +299,35 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 
     }
     // new - 0, renew - 1, duepay - 2
-    private fun showShareDialog(type:Int) {
+    private fun showShareDialog(type:Int,mobIs:String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Share")
             .setMessage("Do you want to share this on WhatsApp?")
+            .setCancelable(false)
             .setPositiveButton("Share") { _, _ ->
-                shareInWhatsapp(type)
+                shareInWhatsapp(type,mobIs)
             }
             .setNegativeButton("Cancel")  { _, _ ->
                 findNavController().popBackStack()
             }
             .show()
     }
-    private fun shareInWhatsapp(type:Int){
+    private fun shareInWhatsapp(type:Int,mobIs:String){
+        val currentDateTime = LocalDateTime.now()
+
+// Format the date and time
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
         viewLifecycleOwner.lifecycleScope.launch {
             val fullmsg = when(type){
-                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration effective from date ${binding.textViewSelectedDate.text}for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
-                    1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal effective from date ${binding.textViewSelectedDate.text}for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
-                    2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${binding.textViewSelectedDate.text}."
+                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                    1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                    2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${formattedDateTime}."
                 else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
             }
 
 
-            sendWhatsAppMessage(fullmsg, "91" +  binding.mobInput.text.toString().replace(" ", ""))
+            sendWhatsAppMessage(fullmsg, "91$mobIs")
         }
 
     }
@@ -571,10 +579,11 @@ private var isLoading = false
                 isLoading = false
                 if(response.success){
 
+                    val  mobileIs = response.mobile
 
                     if(context !=null) {
                         mainViewModel.refreshMembers()
-                        showShareDialog(2)
+                        showShareDialog(2,response.mobile.toString())
                         Utils.showToast(requireContext(), response.message)
                     }
                   //  findNavController().popBackStack()
@@ -656,11 +665,11 @@ private fun dataAdd(isUpdate:Boolean){
                    if(context !=null) {
                        mainViewModel.refreshMembers()
                        Utils.showToast(requireContext(), response.message)
-
+                   val  mobileIs = response.mobile
                        if(!isUpdate) {
-                           showShareDialog(0)
+                           showShareDialog(0, mobileIs.toString())
                        }else if (isRenew == true){
-                           showShareDialog(1)
+                           showShareDialog(1, mobileIs.toString())
 
                        }
                        else{
