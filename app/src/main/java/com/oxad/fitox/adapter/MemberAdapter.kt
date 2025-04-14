@@ -68,6 +68,11 @@ holder.dueTextView.visibility = VISIBLE
             notifyItemChanged(position)
             listener.onUpdateClick(member,true)
         }
+        holder.dietscheduletv.setOnClickListener { member.isExpanded = !member.isExpanded
+            notifyItemChanged(position)
+            listener.onDietSchedule(member.userid)
+        }
+
         holder.sendwtsapp_tv.setOnClickListener {
             listener.onWhatsappSend(member)
         }
@@ -82,6 +87,8 @@ holder.dueTextView.visibility = VISIBLE
         private val goalTextView: TextView = view.findViewById(R.id.tvGoal)
         private val tvAttendCount: TextView = view.findViewById(R.id.tvAttendCount)
         private val tvlastAttend: TextView = view.findViewById(R.id.tvlastAttend)
+
+        val dietscheduletv: TextView = view.findViewById(R.id.diet_schedule_tv)
 
         private val renewalDateTextView: TextView = view.findViewById(R.id.tvRenewalDate)
         val numberTextView: TextView = itemView.findViewById(R.id.numberTextView)
@@ -153,6 +160,7 @@ holder.dueTextView.visibility = VISIBLE
         fun onDueClick(member:Member)
 
         fun onWhatsappSend(member:Member)
+        fun onDietSchedule(userid:Long)
 
     }
 }

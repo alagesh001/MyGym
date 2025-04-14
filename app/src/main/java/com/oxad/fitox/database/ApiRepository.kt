@@ -49,6 +49,11 @@ class ApiRepository() {
 
 
     }
+    suspend fun updatedietSchedule( user_id:Long,datetime:String): Result<UserRegisterModel> {
+        return safeApiCall {
+            RetrofitClient.instance.updatedietSchedule(ApiHelper.updatedietscheduleurl(),user_id,datetime)
+        }
+    }
     suspend fun duePay( name:String,gymid: Int,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
         return safeApiCall {
             RetrofitClient.instance.duePay(ApiHelper.gudueUrl(),name,gymid,userid, amount_paid,due_amount)        }

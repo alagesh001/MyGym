@@ -169,6 +169,16 @@ interface ApiService {
 
 
     ): UserRegisterModel
+
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun updatedietSchedule(
+        @Url url: String,
+        @Field("userid") userid: Long,
+        @Field("diet_schedule") diet_schedule: String,
+    ): UserRegisterModel
+
+
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint
     suspend fun updatemytrainer(
