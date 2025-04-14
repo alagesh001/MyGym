@@ -46,6 +46,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
+import androidx.core.net.toUri
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -320,7 +321,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         val formattedDateTime = currentDateTime.format(formatter)
         viewLifecycleOwner.lifecycleScope.launch {
             val fullmsg = when(type){
-                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!. $newMemberlogincred"
                     1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
                     2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${formattedDateTime}."
                 else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
@@ -336,7 +337,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 private fun sendWhatsAppMessage(message: String, phoneNumber: String) {
     try {
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse("https://wa.me/$phoneNumber?text=" + Uri.encode(message))
+        intent.data = ("https://wa.me/$phoneNumber?text=" + Uri.encode(message)).toUri()
         startActivity(intent)
     } catch (e: Exception) {
         activity?.let { Toast.makeText(requireContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show()}
@@ -602,6 +603,7 @@ private var isLoading = false
             }
         }
     }
+    var newMemberlogincred = ""
 private fun dataAdd(isUpdate:Boolean){
     if(trainerData?.isEmpty() == true){
         Utils.showToast(requireContext(), "No trainers found")
@@ -665,7 +667,8 @@ private fun dataAdd(isUpdate:Boolean){
                    if(context !=null) {
                        mainViewModel.refreshMembers()
                        Utils.showToast(requireContext(), response.message)
-                   val  mobileIs = response.mobile
+                        val  mobileIs = response.mobile
+                      newMemberlogincred = "Your login credential is Userid - ${response.userid}, Password - ${response.pass}. Login through ${response.login_url}. Use this referral id ${response.ref_id} to refer to your friends and get discounts. "
                        if(!isUpdate) {
                            showShareDialog(0, mobileIs.toString())
                        }else if (isRenew == true){

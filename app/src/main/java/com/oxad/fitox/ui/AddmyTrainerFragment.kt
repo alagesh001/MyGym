@@ -39,6 +39,7 @@ class AddmyTrainerFragment : Fragment(), View.OnClickListener {
     private lateinit var apiManager: ApiManager
     private val mainViewModel: MainViewModel by activityViewModels()
     private var trainerData: TrainerModel?  = null
+    private var logindata: TrainerModel?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

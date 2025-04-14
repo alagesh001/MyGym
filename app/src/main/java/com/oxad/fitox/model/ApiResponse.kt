@@ -12,7 +12,13 @@ data class UserRegisterModel(
     val success: Boolean,
     val message: String,
     val isAdmin: Int,
-    val mobile: Long = 0
+    val mobile: Long = 0,
+    val userid: Long,
+    val pass: String,
+    val ref_id: String,
+    val login_url: String
+
+
 
 
 )
