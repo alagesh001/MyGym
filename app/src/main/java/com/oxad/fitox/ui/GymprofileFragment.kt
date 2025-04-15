@@ -348,7 +348,7 @@ activity?.let {
             if (showDialog) {
 
                 bitmapFile =
-                    generateQRCode("https://oxadmedia.in/login")
+                    generateQRCode("123xyz")
                   //  generateQRCode(encryptHere(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString()))
 
                 AlertDialog(

@@ -20,7 +20,7 @@
         android:layout_marginHorizontal="@dimen/_12sdp"
         android:textColorHint="#4D4D4D"
         android:padding="@dimen/_15sdp"
-        android:hint="Enter your referral message"
+        android:hint="Enter your broadcast message here"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
