@@ -36,6 +36,7 @@ interface ApiService {
     @POST
     suspend fun updateProducts(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Part("name") name: RequestBody,
         @Part("offerprice") offerprice: RequestBody,
         @Part("actualprice") actualprice: RequestBody,
@@ -48,6 +49,7 @@ interface ApiService {
     @POST // Adjust this to match your backend endpoint
     suspend fun deleteProduct(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Field("gymid") gid: Int,
         @Field("productId") pid: Int,
         @Field("isDelete") isDelete: Int = 1
@@ -57,6 +59,7 @@ interface ApiService {
     @POST
     suspend fun addProducts(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Part("name") name: RequestBody,
         @Part("offerprice") offerprice: RequestBody,
         @Part("actualprice") actualprice: RequestBody,
@@ -132,6 +135,7 @@ interface ApiService {
     @POST // Adjust this to match your backend endpoint
     suspend fun addmymember(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("gymid") gymid: Int,
@@ -193,6 +197,7 @@ interface ApiService {
     @POST // Adjust this to match your backend endpoint
     suspend fun duePay(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Field("name") name: String,
         @Field("gymid") gymid: Int,
         @Field("userid") userid: Long,
@@ -204,6 +209,7 @@ interface ApiService {
     @POST // Adjust this to match your backend endpoint
     suspend fun renewmymember(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Field("gymid") gymid: Int,
         @Field("paidmonths") paidmonths: Int,
         @Field("date") date: String,
@@ -251,6 +257,7 @@ interface ApiService {
     @POST // Adjust this to match your backend endpoint
     suspend fun updatebroadmsg(
         @Url url: String,
+        @Header("x-api-key") apiKey: String,
         @Field("gymid") gymid: Int,
         @Field("pass") oldpass: String,
         @Field("broadmsg") newpass: String,

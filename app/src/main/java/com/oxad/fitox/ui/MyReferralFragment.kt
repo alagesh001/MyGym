@@ -104,7 +104,7 @@ class MyReferralFragment : Fragment() {
                             val result = ApiRepository().updatebroadmsg(
                                 mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                                 pass,
-                                newMessage
+                                newMessage,mainViewModel.a_keyIs
                             )
                             result.onSuccess { response ->
                                 if (response.success) {

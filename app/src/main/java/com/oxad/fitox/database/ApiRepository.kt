@@ -54,15 +54,15 @@ class ApiRepository() {
             RetrofitClient.instance.updatedietSchedule(ApiHelper.updatedietscheduleurl(),user_id,datetime)
         }
     }
-    suspend fun duePay( name:String,gymid: Int,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
+    suspend fun duePay( name:String,gymid: Int,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.duePay(ApiHelper.gudueUrl(),name,gymid,userid, amount_paid,due_amount)        }
+            RetrofitClient.instance.duePay(ApiHelper.gudueUrl(),aKeyIs,name,gymid,userid, amount_paid,due_amount)        }
 
 
     }
-    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
+    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
+            RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),aKeyIs,gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
 
 
     }
@@ -91,9 +91,9 @@ class ApiRepository() {
 
 
     }
-    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int): Result<UserRegisterModel> {
+    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.addmymember(ApiHelper.plusNewCUrl(),
+            RetrofitClient.instance.addmymember(ApiHelper.plusNewCUrl(),aKeyIs,
                 name,
                 email,
                 gymid,
@@ -122,7 +122,7 @@ class ApiRepository() {
 
     }
     suspend fun addProduct(
-        name: String,
+        aKeyIs:String,name: String,
         offerPrice: Int,
         actualPrice: Int,
         gymId: Int,
@@ -138,7 +138,7 @@ class ApiRepository() {
 
             return safeApiCall {
                 RetrofitClient.instance.addProducts(
-                    ApiHelper.addProductUrl(),
+                    ApiHelper.addProductUrl(),aKeyIs,
                     namePart,
                     offerPricePart,
                     actualPricePart,
@@ -148,7 +148,7 @@ class ApiRepository() {
             }
 }
     suspend fun updateProduct(
-        name: String,
+        aKeyIs:String, name: String,
         offerPrice: Int,
         actualPrice: Int,
         gymId: Int,
@@ -164,17 +164,17 @@ class ApiRepository() {
         val imagePart = imageFile?.let { prepareFilePart("pic", it, context) }
         val pid =  createPartFromString(pid.toString())
 
-        Log.d("MultipartData", "Name Part: ${namePart}")
-        Log.d("MultipartData", "Offer Price Part: ${offerPricePart}")
-        Log.d("MultipartData", "Actual Price Part: ${actualPricePart}")
-        Log.d("MultipartData", "Gym ID Part: ${gymIdPart}")
+      //  Log.d("MultipartData", "Name Part: ${namePart}")
+     //   Log.d("MultipartData", "Offer Price Part: ${offerPricePart}")
+       // Log.d("MultipartData", "Actual Price Part: ${actualPricePart}")
+      //  Log.d("MultipartData", "Gym ID Part: ${gymIdPart}")
 
         imagePart?.let {
-            Log.d("MultipartData", "Image Part: ${it}")
+           // Log.d("MultipartData", "Image Part: ${it}")
         }
         return safeApiCall {
             RetrofitClient.instance.updateProducts(
-                ApiHelper.updateProductUrl(),
+                ApiHelper.updateProductUrl(),aKeyIs,
                 namePart,
                 offerPricePart,
                 actualPricePart,
@@ -185,7 +185,7 @@ class ApiRepository() {
         }
     }
 
-    suspend fun deleteProduct(
+    suspend fun deleteProduct( aKeyIs:String,
         gymId: Int,
         pid: Int,
     ): Result<UserRegisterModel> {
@@ -193,7 +193,7 @@ class ApiRepository() {
 
         return safeApiCall {
             RetrofitClient.instance.deleteProduct(
-                ApiHelper.updateProductUrl(),
+                ApiHelper.updateProductUrl(),aKeyIs,
                 gymId,
                 pid,
             )
@@ -223,9 +223,9 @@ class ApiRepository() {
 
 
     }
-    suspend fun updatebroadmsg( gymid: Int,pass:String,broadmsg:String): Result<UserRegisterModel> {
+    suspend fun updatebroadmsg( gymid: Int,pass:String,broadmsg:String,aKeyIs:String): Result<UserRegisterModel> {
         return safeApiCall {
-            RetrofitClient.instance.updatebroadmsg(ApiHelper.updateBroadmsgUrl(),gymid,pass,broadmsg)
+            RetrofitClient.instance.updatebroadmsg(ApiHelper.updateBroadmsgUrl(),aKeyIs,gymid,pass,broadmsg)
         }
 
 

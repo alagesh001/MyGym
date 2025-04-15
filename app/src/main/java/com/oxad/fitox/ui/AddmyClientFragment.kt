@@ -319,9 +319,27 @@ class AddmyClientFragment : Fragment(),OnClickListener {
 // Format the date and time
         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
         val formattedDateTime = currentDateTime.format(formatter)
+        val confirmationMessage = """
+    Payment Confirmation
+    ---------------------
+    We have received your payment of ₹${binding.amountPaidInput.text} for a new registration on $formattedDateTime.
+    
+    Plan Duration: ${binding.paidmonthsInput.text} months
+    
+    Your Login Credentials:
+    - User ID: $nmUid
+    - Password: $nmPass
+    
+    Please log in at: $lginUrl
+    
+    Referral Program:
+    Use this referral ID $nmRefId to refer your friends and earn discounts!
+    
+    Thank you for choosing us!
+""".trimIndent()
         viewLifecycleOwner.lifecycleScope.launch {
             val fullmsg = when(type){
-                0 ->"We have received your payment of ₹${binding.amountPaidInput.text} for new Registration on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!. $newMemberlogincred"
+                0-> confirmationMessage
                     1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
                     2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${formattedDateTime}."
                 else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
@@ -573,7 +591,7 @@ private var isLoading = false
                     binding.nameInput.text.toString(),
                     mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                     it, binding.amountPaidInput.text.toString().trim().toInt(),
-                    dueAmount
+                    dueAmount,mainViewModel.a_keyIs
                 )
             }
             result?.onSuccess { response ->
@@ -603,8 +621,12 @@ private var isLoading = false
             }
         }
     }
-    var newMemberlogincred = ""
-private fun dataAdd(isUpdate:Boolean){
+    var nmUid = ""
+    var nmPass = ""
+    var lginUrl = ""
+    var nmRefId  = ""
+
+    private fun dataAdd(isUpdate:Boolean){
     if(trainerData?.isEmpty() == true){
         Utils.showToast(requireContext(), "No trainers found")
         return
@@ -626,7 +648,7 @@ private fun dataAdd(isUpdate:Boolean){
                             binding.spinnerTypeGender.selectedItem.toString(),
                             binding.referInput.text.toString().trim(),
                             binding.amountPaidInput.text.toString().trim().toInt(),
-                            dueAmount
+                            dueAmount,mainViewModel.a_keyIs
                         )
                     }
             }else{
@@ -634,7 +656,7 @@ private fun dataAdd(isUpdate:Boolean){
                     memberData?.userid?.let {
                         ApiRepository().renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
                             it,  binding.amountPaidInput.text.toString().trim().toInt(),
-                            dueAmount
+                            dueAmount,mainViewModel.a_keyIs
                         )
                     }
                 }else{
@@ -668,8 +690,11 @@ private fun dataAdd(isUpdate:Boolean){
                        mainViewModel.refreshMembers()
                        Utils.showToast(requireContext(), response.message)
                         val  mobileIs = response.mobile
-                      newMemberlogincred = "Your login credential is Userid - ${response.userid}, Password - ${response.pass}. Login through ${response.login_url}. Use this referral id ${response.ref_id} to refer to your friends and get discounts. "
                        if(!isUpdate) {
+                           nmUid = response.userid.toString()
+                           nmPass = response.pass
+                           lginUrl = response.login_url
+                           nmRefId = response.ref_id
                            showShareDialog(0, mobileIs.toString())
                        }else if (isRenew == true){
                            showShareDialog(1, mobileIs.toString())
