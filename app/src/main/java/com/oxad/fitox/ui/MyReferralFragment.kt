@@ -56,7 +56,7 @@ class MyReferralFragment : Fragment() {
         buttonSave = binding.buttonSave
 
         // Load saved referral message
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+     /*   viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             referralDataStore.referralMessage.collect { savedMessage ->
                 withContext(Dispatchers.Main) {
                     editTextReferral.text = savedMessage.toEditable()
@@ -65,7 +65,7 @@ class MyReferralFragment : Fragment() {
 
 
             }
-        }
+        }*/
 
         // Save referral message when the button is clicked
         buttonSave.setOnClickListener {
@@ -108,7 +108,7 @@ class MyReferralFragment : Fragment() {
                             )
                             result.onSuccess { response ->
                                 if (response.success) {
-                                    referralDataStore.saveReferralMessage(newMessage)
+                                   // referralDataStore.saveReferralMessage(newMessage)
                                     Utils.showToast(requireContext(), response.message)
                                 } else {
                                     Utils.showToast(requireContext(), response.message)
