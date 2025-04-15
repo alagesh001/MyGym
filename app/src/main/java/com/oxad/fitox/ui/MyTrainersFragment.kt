@@ -107,9 +107,8 @@ class MyTrainersFragment : Fragment(),ExpandableAdapter.TrainerListener{
             lifecycleScope.launch {
                 mainViewModel.trainerList.collectLatest { trainers ->
                     activity?.let {
-                        expandableAdapter.submitList(trainers)
-
-                        // You can now use 'dieticians' separately
+                        val filteredTrainers = trainers.filter { it.role != "dietician" }
+                        expandableAdapter.submitList(filteredTrainers)
                     }
                 }
 

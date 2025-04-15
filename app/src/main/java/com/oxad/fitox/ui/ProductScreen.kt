@@ -410,7 +410,7 @@ fun ProductItem( onShowDialogChange: (Boolean) -> Unit,
                             lifecycleOwner.lifecycleScope.launch {
                                 //   Log.d("MultipartDataa", "pid Part: ${pid}")
 
-                                val result =      ApiRepository().deleteProduct(
+                                val result =      ApiRepository().deleteProduct(mainVM.a_keyIs,
                                     mainVM.gymResult[mainVM.currentGymSelected].GymId,
                                     product.id,
                                 )
@@ -471,7 +471,7 @@ fun addProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mai
     lifecycleOwner.lifecycleScope.launch {
 
         if(imageUri!=null) {
-                val result =      ApiRepository().addProduct(
+                val result =      ApiRepository().addProduct(mainVM.a_keyIs,
                     name,
                     offer,
                     actual,
@@ -524,7 +524,7 @@ fun updateProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,
     lifecycleOwner.lifecycleScope.launch {
      //   Log.d("MultipartDataa", "pid Part: ${pid}")
 
-            val result =      ApiRepository().updateProduct(
+            val result =      ApiRepository().updateProduct(mainVM.a_keyIs,
                 name,
                 offer,
                 actual,
