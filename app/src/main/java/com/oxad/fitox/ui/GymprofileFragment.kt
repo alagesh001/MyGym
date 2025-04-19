@@ -21,12 +21,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -77,6 +79,7 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.foundation.verticalScroll
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -255,10 +258,14 @@ activity?.let {
         val terfontcolor =  Color(context.getColor(R.color.tertiary_color))
         var showDialogDelete by remember { mutableStateOf(false) }
         var showDialogConfirm by remember { mutableStateOf(false) }
+       val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
+
                 .fillMaxSize()
+                .verticalScroll(scrollState)
+
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
@@ -379,7 +386,6 @@ activity?.let {
                     }
                 )
             }
-        }
             Column ( modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
@@ -435,13 +441,15 @@ activity?.let {
                         onDismiss = { showDialogDelete = false },
                         onConfirm = { gymId, mobile, reason ->
                             // Handle delete account logic here
-                           // Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
+                            // Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
                             logout()
                         }
                     )
                 }
 
             }
+        }
+
           /*  if (showDialog) {
                 bitmapFile  = generateQRCode(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString())
 
