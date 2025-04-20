@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SearchView
@@ -79,6 +81,7 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     }
     private fun initUi(){
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
+        binding.circularProgressBar.visibility = VISIBLE
 
 activity?.let {
     memberAdapter = MemberAdapter(requireContext(),this)
@@ -89,6 +92,7 @@ activity?.let {
     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
         mainViewModel.memberList.collectLatest { members ->
             withContext(Dispatchers.Main) {
+                binding.circularProgressBar.visibility = GONE
                 memberAdapter.submitList(members)
             }
         }

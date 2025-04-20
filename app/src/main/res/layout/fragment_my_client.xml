@@ -82,7 +82,14 @@ android:paddingHorizontal="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 />
         </LinearLayout>
-
+        <ProgressBar
+            android:id="@+id/circular_progress_bar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="32dp"
+            android:indeterminate="true" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
