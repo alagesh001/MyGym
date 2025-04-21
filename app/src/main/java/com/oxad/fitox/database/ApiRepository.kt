@@ -1,6 +1,7 @@
 package com.oxad.fitox.database
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -15,6 +16,7 @@ import com.oxad.fitox.retrofit.ApiHelper
 import com.oxad.fitox.retrofit.ApiHelper.gtDataUrl
 import com.oxad.fitox.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -24,6 +26,20 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class ApiRepository() {
+    var progressDialog: ProgressDialog? = null
+
+    fun showLoading(context: Context) {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(context)
+            progressDialog?.setMessage("Please wait...")
+            progressDialog?.setCancelable(false)
+        }
+        progressDialog?.show()
+    }
+
+    fun hideLoading() {
+        progressDialog?.dismiss()
+    }
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
             return safeApiCall {
                 RetrofitClient.instance.getmymembers(ApiHelper.gDatamembUrl(),aKeyIs,gymId, page)
@@ -129,14 +145,14 @@ class ApiRepository() {
         imageFile: Uri,
         context: Context
     ): Result<UserRegisterModel> {
-
+        showLoading(context);
             val namePart = createPartFromString(name)
             val offerPricePart = createPartFromString(offerPrice.toString())
             val actualPricePart = createPartFromString(actualPrice.toString())
             val gymIdPart = createPartFromString(gymId.toString())
             val imagePart = prepareFilePart("pic", imageFile, context)
 
-            return safeApiCall {
+        val result = safeApiCall {
                 RetrofitClient.instance.addProducts(
                     ApiHelper.addProductUrl(),aKeyIs,
                     namePart,
@@ -146,6 +162,8 @@ class ApiRepository() {
                     imagePart
                 )
             }
+        hideLoading()
+        return result
 }
     suspend fun updateProduct(
         aKeyIs:String, name: String,
