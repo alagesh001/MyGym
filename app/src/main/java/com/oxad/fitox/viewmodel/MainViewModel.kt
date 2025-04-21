@@ -260,7 +260,7 @@ if(page in 1..totalTransacPage) {
 
         viewModelScope.launch {
             val cachedMembers = memberDao.getAllMembers()
-           // Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
+            Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
 
             if (cachedMembers.isNotEmpty()) {
                 _memberList.value =  cachedMembers // Return cached data

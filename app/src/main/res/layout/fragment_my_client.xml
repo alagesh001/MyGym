@@ -10,13 +10,28 @@
 <!--    <com.oxad.fitox.utils.DarkBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>-->
+   <!-- <TextView
+        android:id="@+id/refresh_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:text="Refresh"
+        android:background="@drawable/roun_rad_rect"
+        android:layout_marginEnd="@dimen/_20sdp"
+android:layout_alignParentEnd="true"
+        android:textAlignment="center"
+        android:visibility="visible"
+        android:backgroundTint="@color/tertiary_color"
+        android:textColor="@color/white"
+        android:padding="@dimen/_10sdp"
+        android:textSize="16sp" />-->
     <RelativeLayout
         android:id="@+id/search_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_20sdp"
+        android:padding="@dimen/_10sdp"
 
         >
 
@@ -90,7 +105,21 @@ android:paddingHorizontal="@dimen/_10sdp"
             android:layout_centerVertical="true"
             android:layout_marginTop="32dp"
             android:indeterminate="true" />
-
+        <TextView
+            android:id="@+id/refresh_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:text="Refresh"
+            android:background="@drawable/roun_rad_rect"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:backgroundTint="@color/tertiary_color"
+            android:textColor="@color/white"
+            android:padding="@dimen/_10sdp"
+            android:textSize="16sp" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

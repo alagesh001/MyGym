@@ -33,6 +33,7 @@ import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
 
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -82,7 +83,14 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     private fun initUi(){
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         binding.circularProgressBar.visibility = VISIBLE
+        binding.refreshTv.visibility = GONE
 
+        binding.refreshTv.setOnClickListener {
+            Log.d("djafjs","Yes cl")
+            val membList = emptyList<Member>()
+            memberAdapter.submitList(membList)
+            binding.circularProgressBar.visibility = VISIBLE
+            mainViewModel.refreshMembers()        }
 activity?.let {
     memberAdapter = MemberAdapter(requireContext(),this)
     dataStoreManager = DataStoreManager(requireContext())
@@ -90,8 +98,14 @@ activity?.let {
 
     binding.recyclerView.adapter =  memberAdapter
     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-        mainViewModel.memberList.collectLatest { members ->
+        mainViewModel.memberList.collect { members ->
             withContext(Dispatchers.Main) {
+                if(members.isEmpty()){
+                    binding.refreshTv.visibility = VISIBLE
+                }else{
+                    binding.refreshTv.visibility = GONE
+                }
+
                 binding.circularProgressBar.visibility = GONE
                 memberAdapter.submitList(members)
             }
