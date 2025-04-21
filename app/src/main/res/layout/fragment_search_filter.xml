@@ -32,6 +32,7 @@
             android:layout_marginTop="@dimen/_30sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="@dimen/_30sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent">
 
