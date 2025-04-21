@@ -48,29 +48,29 @@ class ApiRepository(contextA: Context) {
         progressDialog?.dismiss()
     }
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
-           showLoading();
+         ///  showLoading();
             val result =
              safeApiCall {
                 RetrofitClient.instance.getmymembers(ApiHelper.gDatamembUrl(),aKeyIs,gymId, page)
             }
-            hideLoading()
+          //  hideLoading()
             return result
         }
     suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
-        showLoading();
+       // showLoading();
         val result =
              safeApiCall { RetrofitClient.instance.getWorkoutsByMuscleGroup(ApiHelper.vcoachUrl(),muscleGroup) }
 
-        hideLoading()
+      //  hideLoading()
         return result
 
     }
     suspend fun getProducts(gymId: Int): Result<ProductResponse> {
-        showLoading();
+      //  showLoading();
         val result =
              safeApiCall { RetrofitClient.instance.getproductsgym(ApiHelper.getProductUrl(),gymId) }
 
-        hideLoading()
+       // hideLoading()
         return result
 
     }
@@ -353,23 +353,23 @@ class ApiRepository(contextA: Context) {
 
     }
     suspend fun getTransacHist(gymId: Int, page: Int): Result<GetMyTransacHist> {
-        showLoading();
+        //showLoading();
         val result =
             safeApiCall {
                 RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page)
             }
-            hideLoading()
+        //    hideLoading()
         return result
 
 
     }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
-        showLoading();
+       // showLoading();
         val result =
             safeApiCall {
                 RetrofitClient.instance.getmytrainer(gtDataUrl(),gymId)
             }
-            hideLoading()
+          //  hideLoading()
         return result
 
 
