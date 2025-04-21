@@ -76,6 +76,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.oxad.fitox.activity.Login
 import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
@@ -410,7 +411,7 @@ fun ProductItem( onShowDialogChange: (Boolean) -> Unit,
                             lifecycleOwner.lifecycleScope.launch {
                                 //   Log.d("MultipartDataa", "pid Part: ${pid}")
 
-                                val result =      ApiRepository().deleteProduct(mainVM.a_keyIs,
+                                val result =      mainVM.apiRepoVM.deleteProduct(mainVM.a_keyIs,
                                     mainVM.gymResult[mainVM.currentGymSelected].GymId,
                                     product.id,
                                 )
@@ -471,7 +472,7 @@ fun addProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mai
     lifecycleOwner.lifecycleScope.launch {
 
         if(imageUri!=null) {
-                val result =      ApiRepository().addProduct(mainVM.a_keyIs,
+                val result =      mainVM.apiRepoVM.addProduct(mainVM.a_keyIs,
                     name,
                     offer,
                     actual,
@@ -517,6 +518,7 @@ fun addProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mai
 
 
 }
+
 fun updateProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,mainVM: MainViewModel,name:String,
                        actual:Int,
                        offer:Int,pid:Int,
@@ -524,7 +526,7 @@ fun updateProductApiCall( onShowDialogChange: (Boolean) -> Unit,context:Context,
     lifecycleOwner.lifecycleScope.launch {
      //   Log.d("MultipartDataa", "pid Part: ${pid}")
 
-            val result =      ApiRepository().updateProduct(mainVM.a_keyIs,
+            val result =    mainVM.apiRepoVM.updateProduct(mainVM.a_keyIs,
                 name,
                 offer,
                 actual,

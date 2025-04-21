@@ -101,7 +101,7 @@ class MyReferralFragment : Fragment() {
                     if (pass.isNotEmpty()) {
                         // Proceed with the API call
                         lifecycleScope.launch {
-                            val result = ApiRepository().updatebroadmsg(
+                            val result =  mainViewModel.apiRepoVM.updatebroadmsg(
                                 mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                                 pass,
                                 newMessage,mainViewModel.a_keyIs

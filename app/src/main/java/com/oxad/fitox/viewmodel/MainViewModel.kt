@@ -53,12 +53,16 @@ class MainViewModel() : ViewModel() {
     private val _workouts = MutableStateFlow<List<Workout>>(emptyList())
     val workouts: StateFlow<List<Workout>> = _workouts
     lateinit var dataStoreManagerVM:DataStoreManager
+    lateinit var apiRepoVM: ApiRepository
     private val _productData = MutableStateFlow<List<Product>>(emptyList())
     val productData: StateFlow<List<Product>> = _productData
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
     val isExpanded: StateFlow<Boolean> = _isExpanded
+    fun setApiRepo(apiRepository: ApiRepository){
+        apiRepoVM = apiRepository
+    }
     fun fetchgymGuide(muscleGroup:String) {
         viewModelScope.launch {
             val cachedWorkouts = workoutDao.getWorkoutstype(muscleGroup)
@@ -78,7 +82,7 @@ class MainViewModel() : ViewModel() {
                 try {
                    // Log.e("jdacjadf","Calling api  ")
 
-                    val result = ApiRepository().getWorkoutsByMuscleGroup("")
+                    val result = apiRepoVM.getWorkoutsByMuscleGroup("")
                     result.onSuccess { response ->
                         if(response.result.isNotEmpty()) {
                            // _workouts.value = response.result
@@ -110,7 +114,7 @@ class MainViewModel() : ViewModel() {
     fun loadProductsData() {
         viewModelScope.launch {
             try {
-                val result = ApiRepository().getProducts(gymResult[currentGymSelected].GymId)
+                val result = apiRepoVM.getProducts(gymResult[currentGymSelected].GymId)
                 result.onSuccess { response ->
                    // Log.e("onSuccessdsf","CC "+Gson().toJson(response.result))
 
@@ -139,7 +143,7 @@ class MainViewModel() : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val result = ApiRepository().getWorkoutsByMuscleGroup(muscleGroup)
+                val result = apiRepoVM.getWorkoutsByMuscleGroup(muscleGroup)
                 result.onSuccess { response ->
                     _workouts.value = response.result
 
@@ -200,7 +204,7 @@ class MainViewModel() : ViewModel() {
         dataStoreManagerVM  = dataStoreManager
               //  Log.d("DataStoreA", "Not Stored")
 
-                val result = ApiRepository().getTrainers(gymResult[currentGymSelected].GymId)
+                val result = apiRepoVM.getTrainers(gymResult[currentGymSelected].GymId)
                // Log.e("chadka",""+ Gson().toJson(result))
                 result.onSuccess { response ->
                     if(response.success){
@@ -235,7 +239,7 @@ if(page in 1..totalTransacPage) {
 
     viewModelScope.launch {
 
-        val result = ApiRepository().getTransacHist(gymResult[currentGymSelected].GymId, page)
+        val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page)
         result.onSuccess { response ->
 
             if (response.success) {
@@ -266,7 +270,7 @@ if(page in 1..totalTransacPage) {
                 _memberList.value =  cachedMembers // Return cached data
             } else {
 
-                val result = ApiRepository().getMembers(gymResult[currentGymSelected].GymId,currentPage,a_keyIs)
+                val result =apiRepoVM.getMembers(gymResult[currentGymSelected].GymId,currentPage,a_keyIs)
                 result.onSuccess { response ->
                    // Log.e("chadka", "" + Gson().toJson(response))
                     if (response.success) {

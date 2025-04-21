@@ -258,7 +258,7 @@ activity?.let {
       //  Log.d("DatesasTime", "Selected DateTime to send: $userid $dateTime")
         lifecycleScope.launch {
             val result =
-                ApiRepository().updatedietSchedule(userid,dateTime)
+                mainViewModel.apiRepoVM.updatedietSchedule(userid,dateTime)
 
             //Log.e("chadka",""+ Gson().toJson(result))
             result.onSuccess { response ->

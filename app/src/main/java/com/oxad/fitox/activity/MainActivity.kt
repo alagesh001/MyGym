@@ -11,12 +11,14 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.oxad.fitox.R
+import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
 import com.oxad.fitox.model.LoginResult
@@ -32,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
+        val repo = ApiRepository(this)
+        mainViewModel.setApiRepo(repo)
         statusBarWhiteIcons(window)
         setContentView(binding.root)
         mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
