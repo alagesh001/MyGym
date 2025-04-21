@@ -1,16 +1,16 @@
 package com.oxad.fitox.activity
 
-import android.animation.ValueAnimator
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.view.Window
+import android.view.WindowInsetsController
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
@@ -20,8 +20,8 @@ import com.oxad.fitox.R
 import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
 import com.oxad.fitox.model.LoginResult
-import com.oxad.fitox.retrofit.ApiHelper
 import com.oxad.fitox.viewmodel.MainViewModel
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -32,12 +32,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
+        statusBarWhiteIcons(window)
         setContentView(binding.root)
         mainViewModel.memberDao = AppDatabase.getDatabase(application).memberDao()
         mainViewModel.workoutDao = AppDatabase.getDatabase(application).workoutDao()
         initUi()
     }
+    @Suppress("DEPRECATION")
+    fun statusBarWhiteIcons(window: Window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+            window.statusBarColor = Color.TRANSPARENT
 
+            // Use WindowInsetsController from decorView (modern way)
+            val controller = window.insetsController
+            controller?.setSystemBarsAppearance(
+                0, // Remove LIGHT_STATUS_BARS => white icons
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN // No LIGHT_STATUS_BAR => white icons
+
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
     private fun initUi(){
         this.let {
             Glide.with(it)

@@ -74,6 +74,7 @@
         android:background="#7BCDBCA8"
         >
         <LinearLayout
+            android:id="@+id/ll_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -153,6 +154,7 @@
                     />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/lastattend_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -179,85 +181,52 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentEnd="true"
-            android:gravity="end"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_below="@+id/ll_details"
+            android:scrollbars="none">
 
-            >
-
-        <TextView
-            android:id="@+id/update_tv"
-            android:layout_width="@dimen/_90sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Edit"
-
-            android:textAlignment="center"
-            android:backgroundTint="@color/primary_color"
-            android:textColor="@color/white"
-            android:padding="@dimen/_10sdp"
-
-            android:background ="@drawable/roun_rad_rect"
-            android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/renew_tv"
-                android:layout_width="@dimen/_90sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Renew"
-                android:textAlignment="center"
-                android:backgroundTint="@color/primary_color"
-                android:textColor="@color/white"
-                android:padding="@dimen/_10sdp"
-
-                android:background ="@drawable/roun_rad_rect"
-                android:textSize="16sp" />
-            <TextView
-                android:id="@+id/due_tv"
-                android:layout_width="@dimen/_90sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Due Pay"
-                android:visibility="gone"
-                android:textAlignment="center"
-                android:backgroundTint="@color/red"
-                android:textColor="@color/white"
-                android:padding="@dimen/_10sdp"
-
-                android:background ="@drawable/roun_rad_rect"
-                android:textSize="16sp" />
-            <TextView
-                android:id="@+id/diet_schedule_tv"
-                android:layout_width="@dimen/_120sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Diet Schedule"
-                android:textAlignment="center"
-                android:backgroundTint="#9C27B0"
-                android:textColor="@color/white"
-                android:padding="@dimen/_10sdp"
-
-                android:background ="@drawable/roun_rad_rect"
-                android:textSize="16sp" />
-            <TextView
-                android:id="@+id/sendwtsapp_tv"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Send Referral Code"
-                android:textAlignment="center"
-                android:backgroundTint="@color/blue_700"
-                android:textColor="@color/white"
-                android:padding="@dimen/_10sdp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                android:background ="@drawable/roun_rad_rect"
-                android:textSize="16sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/update_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:text="Edit" />
+
+                <TextView
+                    android:id="@+id/renew_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:text="Renew" />
+
+                <TextView
+                    android:id="@+id/due_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:text="Due Pay"
+                    android:visibility="gone"
+                    android:backgroundTint="@color/red" />
+
+                <TextView
+                    android:id="@+id/diet_schedule_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:text="Diet Schedule"
+                    android:backgroundTint="#9C27B0" />
+
+                <TextView
+                    android:id="@+id/sendwtsapp_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:text="Send Referral Code"
+                    android:backgroundTint="@color/blue_700" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
 
         <!-- <TextView
              android:id="@+id/tvDetails"
