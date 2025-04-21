@@ -65,7 +65,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.oxad.fitox.R
 import com.oxad.fitox.activity.Login
-import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.FragmentGymprofileBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.utils.ConfirmationDialog
@@ -629,7 +628,7 @@ fun DeleteAccountDialog(
                     if (newPassword == confirmPassword) {
                         errorMessage = ""
                         lifecycleScope.launch {
-                           val result = ApiRepository().updategympass(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,oldPassword,confirmPassword)
+                           val result =  mainViewModel.apiRepoVM.updategympass(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,oldPassword,confirmPassword)
                             result.onSuccess { response ->
                                 if(response.success){
                                     Utils.showToast(context, response.message)

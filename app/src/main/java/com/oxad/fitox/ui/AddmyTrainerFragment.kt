@@ -17,7 +17,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.oxad.fitox.R
-import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.FragmentAddmyTrainerBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.TrainerModel
@@ -100,7 +99,7 @@ binding.roleTitile.visibility = GONE
         lifecycleScope.launch {
 
             val result =     trainerData?.coachid?.let {
-                ApiRepository().deletemytrainer(
+                mainViewModel.apiRepoVM.deletemytrainer(
                     mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                     it
                 )
@@ -162,13 +161,13 @@ private fun dataAdd(isUpdate:Boolean=false){
         lifecycleScope.launch {
             val result = if(isUpdate){
                 trainerData?.coachid?.let {
-                    ApiRepository().updatemytrainer(binding.nameInput.text.toString(),binding.mobInput.text.toString().toLong(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
+                    mainViewModel.apiRepoVM.updatemytrainer(binding.nameInput.text.toString(),binding.mobInput.text.toString().toLong(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                         it
                     )
                 }
 
             }else{
-                 ApiRepository().addmytrainer(binding.nameInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),role)
+                mainViewModel.apiRepoVM.addmytrainer(binding.nameInput.text.toString(),mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),role)
 
             }
 

@@ -31,7 +31,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.oxad.fitox.R
-import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.FragmentAddmyClientBinding
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.TrainerModel
@@ -536,7 +535,7 @@ activity?.let {
         lifecycleScope.launch {
 
             val result =     memberData?.userid?.let {
-                ApiRepository().deletemymembers(
+              mainViewModel.apiRepoVM.deletemymembers(
                     mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                     it
                 )
@@ -587,7 +586,7 @@ private var isLoading = false
     private fun duePay(){
         lifecycleScope.launch {
             val result =  memberData?.userid?.let {
-                ApiRepository().duePay(
+                mainViewModel.apiRepoVM.duePay(
                     binding.nameInput.text.toString(),
                     mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,
                     it, binding.amountPaidInput.text.toString().trim().toInt(),
@@ -636,7 +635,7 @@ private var isLoading = false
             val result = if(!isUpdate){
                 trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid
                     ?.let {
-                        ApiRepository().addmymembers(
+                        mainViewModel.apiRepoVM.addmymembers(
                             binding.nameInput.text.toString(),binding.emailInput.text.toString(),
                             mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
                             binding.paidmonthsInput.text.toString().toInt(),dateIs,
@@ -654,7 +653,7 @@ private var isLoading = false
             }else{
                 if(isRenew == true){
                     memberData?.userid?.let {
-                        ApiRepository().renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
+                        mainViewModel.apiRepoVM.renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
                             it,  binding.amountPaidInput.text.toString().trim().toInt(),
                             dueAmount,mainViewModel.a_keyIs
                         )
@@ -662,7 +661,7 @@ private var isLoading = false
                 }else{
                     memberData?.userid?.let {
                         trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid?.let { it1 ->
-                            ApiRepository().updatemymembers(
+                            mainViewModel.apiRepoVM.updatemymembers(
                                 binding.nameInput.text.toString(),
                                 binding.emailInput.text.toString(),
                                 mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,

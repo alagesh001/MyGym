@@ -211,7 +211,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         if (owner.isNotEmpty() && gymName.isNotEmpty() && location.isNotEmpty()
             && mobile.isNotEmpty() && email.contains("@") && months.isNotEmpty()) {
             lifecycleScope.launch {
-                val result =  ApiRepository().registerNewGym(owner,gymName,mobile,months,location,email
+                val result =  ApiRepository(this@Login).registerNewGym(owner,gymName,mobile,months,location,email
                 )
                 result.onSuccess { response ->
                     if(response.success){

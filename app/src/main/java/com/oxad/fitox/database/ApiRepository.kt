@@ -25,115 +25,195 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
-class ApiRepository() {
+class ApiRepository(contextA: Context) {
     var progressDialog: ProgressDialog? = null
+    var contextB: Context  = contextA
 
-    fun showLoading(context: Context) {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(context)
-            progressDialog?.setMessage("Please wait...")
-            progressDialog?.setCancelable(false)
+    suspend fun showLoading() {
+        Log.e("initAVV",""+contextB)
+        withContext(Dispatchers.Main) {
+            if (progressDialog == null) {
+                progressDialog = ProgressDialog(contextB)
+                progressDialog?.setMessage("Please wait...")
+                progressDialog?.setCancelable(false)
+            }
+            progressDialog?.show()
         }
-        progressDialog?.show()
+
+
     }
 
     fun hideLoading() {
+
         progressDialog?.dismiss()
     }
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
-            return safeApiCall {
+           showLoading();
+            val result =
+             safeApiCall {
                 RetrofitClient.instance.getmymembers(ApiHelper.gDatamembUrl(),aKeyIs,gymId, page)
             }
+            hideLoading()
+            return result
         }
     suspend fun getWorkoutsByMuscleGroup(muscleGroup: String): Result<GymGuideResponse> {
-        return safeApiCall { RetrofitClient.instance.getWorkoutsByMuscleGroup(ApiHelper.vcoachUrl(),muscleGroup) }
+        showLoading();
+        val result =
+             safeApiCall { RetrofitClient.instance.getWorkoutsByMuscleGroup(ApiHelper.vcoachUrl(),muscleGroup) }
+
+        hideLoading()
+        return result
 
     }
     suspend fun getProducts(gymId: Int): Result<ProductResponse> {
-        return safeApiCall { RetrofitClient.instance.getproductsgym(ApiHelper.getProductUrl(),gymId) }
+        showLoading();
+        val result =
+             safeApiCall { RetrofitClient.instance.getproductsgym(ApiHelper.getProductUrl(),gymId) }
+
+        hideLoading()
+        return result
 
     }
     suspend fun updatemymembers(name:String,email:String, gymid: Int,mob:Long,userid:Long,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.updatemymember(ApiHelper.guTableUrl(),name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updatemymember(ApiHelper.guTableUrl(),name,email,gymid,mob,userid,dob,height,weight, goal, trainerId,gender)        }
+        hideLoading()
+        return result
+
 
     }
     suspend fun updatemytrainer( name:String,mob:Long,gymid: Int,trainerId:Long): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.updatemytrainer(ApiHelper.gutrainerUrl(),name,gymid,mob,trainerId)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updatemytrainer(ApiHelper.gutrainerUrl(),name,gymid,mob,trainerId)
+            }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun updatedietSchedule( user_id:Long,datetime:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.updatedietSchedule(ApiHelper.updatedietscheduleurl(),user_id,datetime)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updatedietSchedule(ApiHelper.updatedietscheduleurl(),user_id,datetime)
+            }
+            hideLoading()
+        return result
+
+
     }
     suspend fun duePay( name:String,gymid: Int,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.duePay(ApiHelper.gudueUrl(),aKeyIs,name,gymid,userid, amount_paid,due_amount)        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.duePay(ApiHelper.gudueUrl(),aKeyIs,name,gymid,userid, amount_paid,due_amount)        }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),aKeyIs,gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),aKeyIs,gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun deletemymembers( gymid: Int,userid:Long): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.deletemymember(ApiHelper.minusCustUrl(),gymid,userid)      }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.deletemymember(ApiHelper.minusCustUrl(),gymid,userid)      }
+            hideLoading()
+        return result
+
+
 
     }
     suspend fun deletemytrainer( gymid: Int,trainerId:Long): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.deletemytrainer(ApiHelper.minusTrainerUrl(),gymid,trainerId)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.deletemytrainer(ApiHelper.minusTrainerUrl(),gymid,trainerId)
+            }
+            hideLoading()
+        return result
+
+
 
     }
     suspend fun registerNewGym(owner:String,gymname:String, mob:String,plantype:String,location:String,email:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.registerNewGym(ApiHelper.plusNewGymUrl(),
-                owner,
-                gymname,
-                mob,
-                plantype,
-                location,
-                email,
-            )
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.registerNewGym(ApiHelper.plusNewGymUrl(),
+                    owner,
+                    gymname,
+                    mob,
+                    plantype,
+                    location,
+                    email,
+                )
+            }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.addmymember(ApiHelper.plusNewCUrl(),aKeyIs,
-                name,
-                email,
-                gymid,
-                mob,
-                paidmonths,
-                date,
-                dob,
-                height,
-                weight,
-                goal,
-                trainerId,
-                gender,
-                referredBy,
-                amount_paid,
-                due_amount
-            )
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.addmymember(ApiHelper.plusNewCUrl(),aKeyIs,
+                    name,
+                    email,
+                    gymid,
+                    mob,
+                    paidmonths,
+                    date,
+                    dob,
+                    height,
+                    weight,
+                    goal,
+                    trainerId,
+                    gender,
+                    referredBy,
+                    amount_paid,
+                    due_amount
+                )
+            }
+
+            hideLoading()
+        return result
+
 
 
     }
     suspend fun addmytrainer(name:String, gymid: Int,mob:Long,role:Int): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.addmytrainer(ApiHelper.plusTrainerUrl(),name,gymid,mob,role)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.addmytrainer(ApiHelper.plusTrainerUrl(),name,gymid,mob,role)
+            }
+            hideLoading()
+        return result
+
+
 
 
     }
@@ -145,7 +225,7 @@ class ApiRepository() {
         imageFile: Uri,
         context: Context
     ): Result<UserRegisterModel> {
-        showLoading(context);
+        showLoading();
             val namePart = createPartFromString(name)
             val offerPricePart = createPartFromString(offerPrice.toString())
             val actualPricePart = createPartFromString(actualPrice.toString())
@@ -190,17 +270,23 @@ class ApiRepository() {
         imagePart?.let {
            // Log.d("MultipartData", "Image Part: ${it}")
         }
-        return safeApiCall {
-            RetrofitClient.instance.updateProducts(
-                ApiHelper.updateProductUrl(),aKeyIs,
-                namePart,
-                offerPricePart,
-                actualPricePart,
-                gymIdPart,
-                pid,
-                imagePart
-            )
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updateProducts(
+                    ApiHelper.updateProductUrl(),aKeyIs,
+                    namePart,
+                    offerPricePart,
+                    actualPricePart,
+                    gymIdPart,
+                    pid,
+                    imagePart
+                )
+            }
+            hideLoading()
+        return result
+
+
     }
 
     suspend fun deleteProduct( aKeyIs:String,
@@ -208,14 +294,19 @@ class ApiRepository() {
         pid: Int,
     ): Result<UserRegisterModel> {
       //  Log.d("deldfacx", "gis $gymId pid $pid")
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.deleteProduct(
+                    ApiHelper.updateProductUrl(),aKeyIs,
+                    gymId,
+                    pid,
+                )
+            }
+            hideLoading()
+        return result
 
-        return safeApiCall {
-            RetrofitClient.instance.deleteProduct(
-                ApiHelper.updateProductUrl(),aKeyIs,
-                gymId,
-                pid,
-            )
-        }
+
     }
     fun createPartFromString(value: String): RequestBody {
             return value.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -235,28 +326,53 @@ class ApiRepository() {
             return MultipartBody.Part.createFormData(partName, tempFile.name, requestFile)
         }
     suspend fun updategympass( gymid: Int,oldpass:String,newpass:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.updateGymPassword(ApiHelper.uCPassUrl(),gymid,oldpass,newpass)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updateGymPassword(ApiHelper.uCPassUrl(),gymid,oldpass,newpass)
+            }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun updatebroadmsg( gymid: Int,pass:String,broadmsg:String,aKeyIs:String): Result<UserRegisterModel> {
-        return safeApiCall {
-            RetrofitClient.instance.updatebroadmsg(ApiHelper.updateBroadmsgUrl(),aKeyIs,gymid,pass,broadmsg)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+
+                RetrofitClient.instance.updatebroadmsg(ApiHelper.updateBroadmsgUrl(),aKeyIs,gymid,pass,broadmsg)
+            }
+            hideLoading()
+        return result
+
+
 
 
     }
     suspend fun getTransacHist(gymId: Int, page: Int): Result<GetMyTransacHist> {
-        return safeApiCall {
-            RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page)
+            }
+            hideLoading()
+        return result
+
+
     }
     suspend fun getTrainers(gymId: Int): Result<GetMyTrainersResponse> {
-        return safeApiCall {
-            RetrofitClient.instance.getmytrainer(gtDataUrl(),gymId)
-        }
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.getmytrainer(gtDataUrl(),gymId)
+            }
+            hideLoading()
+        return result
+
+
     }
     private suspend fun <T> safeApiCall(apiCall: suspend () -> T): Result<T> {
         return withContext(Dispatchers.IO) {
