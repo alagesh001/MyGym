@@ -1,6 +1,7 @@
 package com.oxad.fitox.ui
 
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -365,7 +366,26 @@ activity?.let {
             datePickerDialog.show()
         }
     }
+    fun showSuccessDialog(context: Context, message: String) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_success, null)
 
+        // Populate the success message
+        dialogView.findViewById<TextView>(R.id.successMessage).text = message
+
+        // Create and show the dialog
+        val dialog = Dialog(context).apply {
+            setContentView(dialogView)
+            setCancelable(false) // Prevent closing the dialog by tapping outside
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+
+        // Handle the OK button click
+        dialogView.findViewById<Button>(R.id.btnOk).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     // Function to send data to the database
     private fun sendToDatabase(dateTime: String,userid: Long) {
         // Use your existing API or database interaction code here
@@ -378,10 +398,14 @@ activity?.let {
             //Log.e("chadka",""+ Gson().toJson(result))
             result.onSuccess { response ->
                 if(response.success){
-                    if(context !=null) {
-                        Utils.showToast(requireContext(), response.message)
+                       activity?.let {
+                           showSuccessDialog(requireContext(), "Successfully scheduled!")
 
-                    }
+                       }
+
+                       // Utils.showToast(requireContext(), response.message)
+
+
                 }else{
                     if(context !=null) {
                         Utils.showToast(requireContext(), response.message)

@@ -1,0 +1,39 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@drawable/dialog_background">
+
+    <!-- Success Icon -->
+    <ImageView
+        android:id="@+id/successIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/checked" />
+
+    <!-- Success Message -->
+    <TextView
+        android:id="@+id/successMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Successfully Scheduled!"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="@color/primary_color"
+        android:layout_marginTop="16dp" />
+
+    <!-- OK Button -->
+    <Button
+        android:id="@+id/btnOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/primary_color"
+        android:textColor="@color/white" />
+</LinearLayout>
