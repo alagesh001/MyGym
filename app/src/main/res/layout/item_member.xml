@@ -180,6 +180,31 @@
                     />
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            android:layout_alignParentEnd="true"
+            >
+            <ImageView
+                android:id="@+id/call_btn"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/telephone"
+           />
+
+            <ImageView
+                android:id="@+id/wtapp_btn"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:src="@drawable/social"
+             />
+
+
+        </LinearLayout>
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -222,7 +247,7 @@
                 <TextView
                     android:id="@+id/sendwtsapp_tv"
                     style="@style/ActionButtonHorizontal"
-                    android:text="Send Referral Code"
+                    android:text="Share Detail"
                     android:backgroundTint="@color/blue_700" />
             </LinearLayout>
         </HorizontalScrollView>
