@@ -91,31 +91,43 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     }
     private fun initUi(){
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
-        binding.circularProgressBar.visibility = VISIBLE
-        binding.refreshTv.visibility = GONE
+       // binding.circularProgressBar.visibility = VISIBLE
+      //  binding.refreshTv.visibility = GONE
 
         binding.refreshTv.setOnClickListener {
             Log.d("djafjs","Yes cl")
             val membList = emptyList<Member>()
             memberAdapter.submitList(membList)
-            binding.circularProgressBar.visibility = VISIBLE
+          //  binding.circularProgressBar.visibility = VISIBLE
             mainViewModel.refreshMembers()        }
 activity?.let {
     memberAdapter = MemberAdapter(requireContext(),this)
+
     dataStoreManager = DataStoreManager(requireContext())
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
     binding.recyclerView.adapter =  memberAdapter
+    binding.swipeRefreshLayout.setOnRefreshListener {
+        mainViewModel.clearmembers()
+       // val memList = emptyList<Member>()
+       // memberAdapter.submitList(memList)
+        mainViewModel.loadMembers()
+    }
     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
         mainViewModel.memberList.collect { members ->
             withContext(Dispatchers.Main) {
-                if(members.isEmpty()){
+                /*if(members.isEmpty()){
                     binding.refreshTv.visibility = VISIBLE
                 }else{
                     binding.refreshTv.visibility = GONE
-                }
+                }*/
+               if(members.isEmpty()){
 
-                binding.circularProgressBar.visibility = GONE
+               }else{
+                   binding.swipeRefreshLayout.isRefreshing = false // Hide refresh indicator
+               }
+
+                //binding.circularProgressBar.visibility = GONE
                 memberAdapter.submitList(members)
             }
         }
