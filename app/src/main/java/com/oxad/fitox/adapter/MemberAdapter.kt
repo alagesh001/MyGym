@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -76,6 +77,12 @@ holder.dueTextView.visibility = VISIBLE
         holder.sendwtsapp_tv.setOnClickListener {
             listener.onWhatsappSend(member)
         }
+        holder.callbtn_iv.setOnClickListener {
+            listener.oncallClick(member.mobile)
+        }
+        holder.wtsappbtn_iv.setOnClickListener {
+            listener.onWhatsappClick(member.mobile)
+        }
     }
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -97,6 +104,8 @@ holder.dueTextView.visibility = VISIBLE
         val renewTextView: TextView = itemView.findViewById(R.id.renew_tv)
         val sendwtsapp_tv: TextView = itemView.findViewById(R.id.sendwtsapp_tv)
         val dueTextView: TextView = itemView.findViewById(R.id.due_tv)
+        val callbtn_iv: ImageView = itemView.findViewById(R.id.call_btn)
+        val wtsappbtn_iv: ImageView = itemView.findViewById(R.id.wtapp_btn)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
@@ -161,6 +170,8 @@ holder.dueTextView.visibility = VISIBLE
 
         fun onWhatsappSend(member:Member)
         fun onDietSchedule(userid:Long)
+        fun onWhatsappClick(mobile:Long)
+        fun oncallClick(mobile:Long)
 
     }
 }

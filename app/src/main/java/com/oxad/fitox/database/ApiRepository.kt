@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -71,6 +72,15 @@ class ApiRepository(contextA: Context) {
              safeApiCall { RetrofitClient.instance.getproductsgym(ApiHelper.getProductUrl(),gymId) }
 
        // hideLoading()
+        return result
+
+    }
+    suspend fun getcustdata(aKeyIs: String,userid: Long): Result<CustResponse> {
+          showLoading();
+        val result =
+            safeApiCall { RetrofitClient.instance.getCustData(ApiHelper.getCustDataUrl(),aKeyIs,userid) }
+
+         hideLoading()
         return result
 
     }

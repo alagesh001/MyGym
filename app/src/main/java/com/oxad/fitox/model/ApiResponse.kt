@@ -127,7 +127,21 @@ data class Member(
         }
     }
 }
+data class CustResponse(
+    val success: Boolean,
+    val result: CustResData,
+    val message: String,
+    val lgin_url:String
 
+
+)
+data class CustResData(
+    val name: String,
+    val userid: Int,
+    val password: String,
+    val referral_id: String,
+
+    )
 data class ProductResponse(
     val success: Boolean,
     val result: List<Product>,

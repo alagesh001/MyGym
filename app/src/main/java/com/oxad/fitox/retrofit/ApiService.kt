@@ -1,6 +1,7 @@
 package com.oxad.fitox.retrofit
 
 import com.oxad.fitox.model.AdminLoginModel
+import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -83,6 +84,13 @@ interface ApiService {
     suspend fun getproductsgym(        @Url url: String,
                                        @Query("gymid") gymid: Int
     ): ProductResponse
+    @GET
+    suspend fun getCustData(        @Url url: String,
+                                    @Header("x-api-key") apiKey: String,
+
+                                    @Query("userid") userid: Long
+    ): CustResponse
+
 
 
     @GET // Adjust this to match your backend endpoint

@@ -2,7 +2,9 @@ package com.oxad.fitox.ui
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,14 +14,20 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.util.Util
 import com.oxad.fitox.R
 import com.oxad.fitox.adapter.MemberAdapter
 import com.oxad.fitox.adapter.MemberSearchAdapter
@@ -183,28 +191,135 @@ activity?.let {
     private lateinit var dataStoreManager: DataStoreManager
     override fun onWhatsappSend(member: Member) {
         viewLifecycleOwner.lifecycleScope.launch {
+            val result =
+                mainViewModel.apiRepoVM.getcustdata(
+                    mainViewModel.a_keyIs,
+                   member.userid
+                )
 
-         /*   if (bitmapFile != null) {
-                activity?.let{
-                    shareBitmapToWhatsApp(requireContext(),bitmapFile,"918148602102")
+            result.onSuccess { response ->
+                if(response.success){
+
+activity?.let {
+    showInfoDialog(requireContext(),response.result.name,response.result.userid,response.result.password,response.result.referral_id,member.mobile,response.lgin_url)
+}
+
+                    //  findNavController().popBackStack()
+                }else{
+
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
                 }
-            }*/
-            val fullmsg = " Your Referral Code is ${member.referral_id}."
-            sendWhatsAppMessage(fullmsg, "91" + member.mobile.toString().replace(" ", ""))
-          /*  if (::dataStoreManager.isInitialized) {
-                dataStoreManager.referralMessage.collect { savedMessage ->
-                    val fullmsg = savedMessage + " The Referral Code is ${member.referral_id}."
-                    sendWhatsAppMessage(fullmsg, "91" + member.mobile.toString().replace(" ", ""))
-                }
-            }*/
+            }
+
+            result.onFailure { exception ->
+                Utils.showToast(requireContext(), "Failed Network")
+                exception.message ?: "Something went wrong!"
+            }
+
+
         }
 
     }
+
+    private fun showInfoDialog(context: Context, name: String,userid: Int, password: String, referralId: String,mobile:Long,lgin_url:String) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_user_info, null)
+
+        // Populate data dynamically
+        dialogView.findViewById<TextView>(R.id.tvlginUrl).text = "Login Url: $lgin_url"
+        dialogView.findViewById<TextView>(R.id.tvName).text = "Name: $name"
+
+        dialogView.findViewById<TextView>(R.id.tvUserId).text = "User ID: $userid"
+        dialogView.findViewById<TextView>(R.id.tvPassword).text = "Password: $password"
+        dialogView.findViewById<TextView>(R.id.tvReferralId).text = "Referral ID: $referralId"
+
+        // Create the dialog
+        val dialog = AlertDialog.Builder(context, R.style.CustomDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        // Set actions
+        dialogView.findViewById<Button>(R.id.btnShare).setOnClickListener {
+
+            val loginUrl = lgin_url // Replace with your actual login URL
+            val fullMsg = """
+    Hi ${name}, 
+    Here are your account details:
+    
+    User ID: ${userid}
+    Password: ${password}
+    Referral ID: ${referralId}
+    
+    You can log in using the link below:
+    $loginUrl
+    
+    Use this Referral ID to invite others and enjoy exclusive benefits!
+""".trimIndent()
+
+            sendWhatsAppMessage(fullMsg, "91" + mobile.toString().replace(" ", ""))
+            dialog.dismiss()
+        }
+        dialogView.findViewById<Button>(R.id.btnClose).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
 
     override fun onDietSchedule(userid: Long) {
 
         showDateTimePickerDialog(userid)
     }
+
+    override fun onWhatsappClick(mobile: Long) {
+        sendWhatsAppMessage("", "91" + mobile.toString().replace(" ", ""))
+
+    }
+
+    override fun oncallClick(mobile: Long) {
+       activity?.let {
+           initiatePhoneCall(requireContext(), "91" + mobile.toString().replace(" ", ""))
+       }
+
+    }
+    private var phoneNumber: String = ""
+
+    private val requestCallPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            makePhoneCall(phoneNumber) // If granted, proceed to make the call
+        } else {
+            activity?.let {
+
+                Utils.showToast(requireContext(), "Call permission is required to make calls.")
+            }
+        }
+    }
+    private fun initiatePhoneCall(context: Context, number: String) {
+        phoneNumber = number
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            makePhoneCall(phoneNumber)
+        } else {
+            // Request permission
+            requestCallPermission.launch(android.Manifest.permission.CALL_PHONE)
+        }
+    }
+    private fun makePhoneCall(phoneNumber: String) {
+        val intent = Intent(Intent.ACTION_CALL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+        }
+        try {
+            startActivity(intent)
+        } catch (e: SecurityException) {
+            activity?.let {
+                Utils.showToast(requireContext(), "Call failed. Permission is missing.")
+            }
+        }
+    }
+
     private fun showDateTimePickerDialog(userid: Long) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
