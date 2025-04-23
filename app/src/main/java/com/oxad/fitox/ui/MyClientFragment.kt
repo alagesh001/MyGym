@@ -108,10 +108,10 @@ activity?.let {
 
     binding.recyclerView.adapter =  memberAdapter
     binding.swipeRefreshLayout.setOnRefreshListener {
-        mainViewModel.clearmembers()
+        mainViewModel.clearmembers(true)
        // val memList = emptyList<Member>()
        // memberAdapter.submitList(memList)
-        mainViewModel.loadMembers()
+
     }
     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
         mainViewModel.memberList.collect { members ->

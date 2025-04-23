@@ -307,12 +307,17 @@ if(page in 1..totalTransacPage) {
             loadMembers() // Reload first page
         }
     }
-    fun clearmembers() {
+    fun clearmembers(isswipe: Boolean = false) {
+
         viewModelScope.launch {
             memberDao.clearMembers()
             currentPage = 1
             isLastPage = false
             _memberList.value = emptyList()
+            if (isswipe){
+                loadMembers()
+            }
+
         }
     }
 
