@@ -107,13 +107,14 @@ interface ApiService {
 
         @Query("gymid") gymid: Int): GetMyTrainersResponse
 
-    @GET // Adjust this to match your backend endpoint
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
     fun loginAdmin(
         @Url url: String,
         @Header("x-api-key") apiKey: String,
-        @Query("hashKey") hashIs: String,
-        @Query("mobile") mob: Long,
-        @Query("password") pass: String
+        @Field("hashKey") hashIs: String,
+        @Field("mobile") mob: Long,
+        @Field("password") pass: String
     ): Call<AdminLoginModel>
 
     @FormUrlEncoded
