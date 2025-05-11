@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,6 +81,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.core.net.toUri
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -249,16 +258,23 @@ activity?.let {
     fun ProfileScreen() {
         var name = viewModel.gymResult[viewModel.currentGymSelected].GymName
         var location = viewModel.gymResult[viewModel.currentGymSelected].Location
-        val plan = "Annual Plan - Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
+       var mobile = viewModel.gymResult[viewModel.currentGymSelected].mob
+       var admin_contact = viewModel.gymResult[viewModel.currentGymSelected].admin_cont
+       val plan = "Annual Plan - Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
         var showChangePasswordDialog by remember { mutableStateOf(false) }
-        val context = LocalContext.current
+       var contactSupport by remember { mutableStateOf(false) }
+       val mobIs = 8148602102
+       val context = LocalContext.current
         val primefontcolor =  Color(context.getColor(R.color.primary_color))
         val secfontcolor =  Color(context.getColor(R.color.secondary_color))
         val terfontcolor =  Color(context.getColor(R.color.tertiary_color))
         var showDialogDelete by remember { mutableStateOf(false) }
         var showDialogConfirm by remember { mutableStateOf(false) }
        val scrollState = rememberScrollState()
-
+       var isEditingNumber by remember { mutableStateOf(false) }
+       val keyboardController = LocalSoftwareKeyboardController.current
+       val focusRequester = remember { FocusRequester() }
+       val focusManager = LocalFocusManager.current
         Column(
             modifier = Modifier
 
@@ -306,6 +322,54 @@ activity?.let {
             )
 
             Text(
+                text = "Mobile:",
+                fontSize = 16.sp,
+                color = primefontcolor,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = mobile,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = terfontcolor
+            )
+                Text(
+                    text = "Admin Contact:",
+                    fontSize = 16.sp,
+                    color = primefontcolor,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                Row( verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 8.dp)){
+                    Text(
+                        text = admin_contact,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = terfontcolor
+                    )
+                    Text(
+                        text = "Edit",
+                        fontSize = 16.sp,
+                        color = Color.Blue,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .clickable { isEditingNumber = true }
+                            .padding(start = 8.dp),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+
+if(isEditingNumber){
+    updateAdminContact (onDismiss = {
+        isEditingNumber = false })
+
+}else{
+    keyboardController?.hide()
+    focusManager.clearFocus(force = true)
+}
+            Text(
                 text = "Active Plan:",
                 fontSize = 16.sp,
                 color = primefontcolor,
@@ -347,10 +411,22 @@ activity?.let {
             ) {
                 Text("Attendance QR")
             }
+            Button(
+                onClick = {
+                   contactSupport = true
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(Color(context.getColor(R.color.yellow)))
+            ) {
+                Text("Contact Support")
+            }
             if (showChangePasswordDialog) {
                 ChangePasswordDialog(onDismiss = { showChangePasswordDialog = false })
             }
-
+if(contactSupport){
+    contactSupport = false
+    sendWhatsAppMessage("Hi from GymId: ${mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId}, ","91$mobIs")
+}
             if (showDialog) {
 
                 bitmapFile =
@@ -437,7 +513,8 @@ activity?.let {
                 }
                 if (showDialogDelete) {
                     DeleteAccountDialog(
-                        onDismiss = { showDialogDelete = false },
+                        onDismiss = {// showDialogDelete = false
+                             },
                         onConfirm = { gymId, mobile, reason ->
                             // Handle delete account logic here
                             // Log.d("DeleteAccount", "Gym ID: $gymId, Mobile: $mobile, Reason: $reason")
@@ -471,7 +548,17 @@ activity?.let {
                 )}*/
 
     }
+    private fun sendWhatsAppMessage(message: String, phoneNumber: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = ("https://wa.me/$phoneNumber?text=" + Uri.encode(message)).toUri()
+            startActivity(intent)
+        } catch (e: Exception) {
+            activity?.let { Toast.makeText(requireContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show()}
+        }
+        findNavController().popBackStack()
 
+    }
 
 @Composable
 fun DeleteAccountDialogPreview() {
@@ -561,6 +648,86 @@ fun DeleteAccountDialog(
         }
     )
 }
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    fun updateAdminContact(onDismiss: () -> Unit) {
+        var new_number by remember { mutableStateOf("") }
+        var errorMessage by remember { mutableStateOf("") }
+        val context = LocalContext.current
+        val customOutlineColor = Color(0xFF6200EE) // Custom outline color (Purple)
+        val textStyle = TextStyle(fontSize = 18.sp) // Increased text size
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val focusRequester = remember { FocusRequester() }
+        val focusManager = LocalFocusManager.current
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Update Admin Contact",color = Color(context.getColor(R.color.tertiary_color))) },
+            text = {
+                Column {
+
+
+                    OutlinedTextField(
+                        value = new_number,
+                        onValueChange = { new_number = it },
+                        label = { Text("Enter new number") },
+                        modifier = Modifier.fillMaxWidth() .focusRequester(focusRequester)
+                        ,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+
+                                textStyle = textStyle,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = customOutlineColor,
+                            unfocusedBorderColor = Color(context.getColor(R.color.secondary_color))
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (errorMessage.isNotEmpty()) {
+                        Text(text = errorMessage, color = Color.Red, fontSize = 14.sp)
+                    }
+                }
+            },
+            confirmButton = {
+                Button(colors = ButtonDefaults.buttonColors(Color(context.getColor(R.color.secondary_color))), onClick = {
+                    if (new_number.length >= 10) {
+                        errorMessage = ""
+                        lifecycleScope.launch {
+                            val result =  mainViewModel.apiRepoVM.updateAdminContact(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,new_number,mainViewModel.a_keyIs)
+                            result.onSuccess { response ->
+                                if(response.success){
+                                    Utils.showToast(context, response.message)
+                                }else{
+                                    Utils.showToast(context, response.message)
+                                }
+                            }
+
+                            result.onFailure { exception ->
+                                exception.message ?: "Something went wrong!"
+                            }
+                        }
+                        onDismiss()
+                    } else {
+                        errorMessage = "Number is below 10 digits"
+                    }
+                }) {
+                    Text("Update")
+                }
+            },
+            dismissButton = {
+                Button(onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus(force = true)
+                    onDismiss()
+}
+                    , colors = ButtonDefaults.buttonColors(Color(context.getColor(R.color.tertiary_color)))) {
+                    Text("Cancel")
+                }
+            }
+        )
+        LaunchedEffect(Unit) {
+         //   focusRequester.requestFocus()
+        }
+    }
     @Composable
     fun ChangePasswordDialog(onDismiss: () -> Unit) {
         var oldPassword by remember { mutableStateOf("") }
@@ -655,6 +822,7 @@ fun DeleteAccountDialog(
                 }
             }
         )
+
     }
     fun generateFileName(): String {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
@@ -688,7 +856,7 @@ fun DeleteAccountDialog(
     @Composable
     fun PreviewProfileScreen() {
        // ProfileScreen()
-        DeleteAccountDialogPreview()
+        ProfileScreen()
         //ChangePasswordDialog(){
 
 

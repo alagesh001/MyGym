@@ -101,7 +101,11 @@ Java_com_oxad_fitox_retrofit_ApiHelper_plusTrainerUrl(JNIEnv *env, jclass clazz)
     std::string baseURL = "addmytrainer";
     return env->NewStringUTF(baseURL.c_str());
 }
-
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_uadmincontUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "updateadmin_cont";
+    return env->NewStringUTF(baseURL.c_str());
+}
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_uCPassUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "updategymownerpassword";
