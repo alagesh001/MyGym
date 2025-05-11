@@ -261,6 +261,15 @@ interface ApiService {
         @Field("newpass") newpass: String,
 
         ): UserRegisterModel
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun updateAdminMob(
+        @Url url: String,
+        @Header("x-api-key") apiKey: String,
+        @Field("gymid") gymid: Int,
+        @Field("admin_cont") admincontact: String,
+
+        ): UserRegisterModel
 
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint

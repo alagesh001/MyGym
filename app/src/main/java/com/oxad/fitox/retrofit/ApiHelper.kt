@@ -23,6 +23,7 @@ object ApiHelper {
     external fun minusTrainerUrl(): String
     external fun plusTrainerUrl(): String
     external fun uCPassUrl(): String
+    external fun uadmincontUrl(): String
     external fun addProductUrl(): String
     external fun getProductUrl(): String
     external fun updateProductUrl(): String

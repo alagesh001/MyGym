@@ -348,6 +348,19 @@ class ApiRepository(contextA: Context) {
 
 
     }
+    suspend fun updateAdminContact( gymid: Int,new_number:String,aKeyIs:String): Result<UserRegisterModel> {
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.updateAdminMob(ApiHelper.uadmincontUrl(),aKeyIs,gymid,new_number)
+            }
+        hideLoading()
+        return result
+
+
+
+
+    }
     suspend fun updatebroadmsg( gymid: Int,pass:String,broadmsg:String,aKeyIs:String): Result<UserRegisterModel> {
         showLoading();
         val result =
