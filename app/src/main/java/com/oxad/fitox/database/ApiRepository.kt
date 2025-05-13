@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.oxad.fitox.model.AdminContUpdateModel
 import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
@@ -348,7 +349,7 @@ class ApiRepository(contextA: Context) {
 
 
     }
-    suspend fun updateAdminContact( gymid: Int,new_number:String,aKeyIs:String): Result<UserRegisterModel> {
+    suspend fun updateAdminContact( gymid: Int,new_number:String,aKeyIs:String): Result<AdminContUpdateModel> {
         showLoading();
         val result =
             safeApiCall {

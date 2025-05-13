@@ -22,6 +22,15 @@ data class UserRegisterModel(
 
 
 )
+data class AdminContUpdateModel(
+    val success: Boolean,
+    val message: String,
+    val admin_cont: Long,
+
+
+
+
+)
 data class MyMemberListModel(
 
     val success: Boolean,

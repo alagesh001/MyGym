@@ -259,10 +259,11 @@ activity?.let {
         var name = viewModel.gymResult[viewModel.currentGymSelected].GymName
         var location = viewModel.gymResult[viewModel.currentGymSelected].Location
        var mobile = viewModel.gymResult[viewModel.currentGymSelected].mob
-       var admin_contact = viewModel.gymResult[viewModel.currentGymSelected].admin_cont
        val plan = "Annual Plan - Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
         var showChangePasswordDialog by remember { mutableStateOf(false) }
        var contactSupport by remember { mutableStateOf(false) }
+       var admin_contact by remember { mutableStateOf(viewModel.gymResult[viewModel.currentGymSelected].admin_cont) }
+
        val mobIs = 8148602102
        val context = LocalContext.current
         val primefontcolor =  Color(context.getColor(R.color.primary_color))
@@ -363,7 +364,14 @@ activity?.let {
 
 if(isEditingNumber){
     updateAdminContact (onDismiss = {
-        isEditingNumber = false })
+        isEditingNumber = false }, onUpdate = {
+        isEditingNumber = false
+        admin_contact = it.toString()
+
+        }
+
+
+    )
 
 }else{
     keyboardController?.hide()
@@ -650,7 +658,7 @@ fun DeleteAccountDialog(
 }
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    fun updateAdminContact(onDismiss: () -> Unit) {
+    fun updateAdminContact(onDismiss: () -> Unit,onUpdate: (newMob:Long) -> Unit) {
         var new_number by remember { mutableStateOf("") }
         var errorMessage by remember { mutableStateOf("") }
         val context = LocalContext.current
@@ -696,6 +704,7 @@ fun DeleteAccountDialog(
                             result.onSuccess { response ->
                                 if(response.success){
                                     Utils.showToast(context, response.message)
+                                    onUpdate(response.admin_cont)
                                 }else{
                                     Utils.showToast(context, response.message)
                                 }
@@ -705,7 +714,7 @@ fun DeleteAccountDialog(
                                 exception.message ?: "Something went wrong!"
                             }
                         }
-                        onDismiss()
+
                     } else {
                         errorMessage = "Number is below 10 digits"
                     }

@@ -1,5 +1,6 @@
 package com.oxad.fitox.retrofit
 
+import com.oxad.fitox.model.AdminContUpdateModel
 import com.oxad.fitox.model.AdminLoginModel
 import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
@@ -269,7 +270,7 @@ interface ApiService {
         @Field("gymid") gymid: Int,
         @Field("admin_cont") admincontact: String,
 
-        ): UserRegisterModel
+        ): AdminContUpdateModel
 
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint
