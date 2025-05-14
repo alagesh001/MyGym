@@ -54,3 +54,9 @@
 -keepattributes Signature
 # Keep classes annotated with @SerializedName (for Gson)
 -keep class com.google.gson.annotations.SerializedName { *; }
+-dontwarn okhttp3.internal.platform.BouncyCastlePlatform
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
+-dontwarn okhttp3.internal.platform.OpenJSSEPlatform
+-dontwarn org.openjsse.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
