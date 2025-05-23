@@ -47,6 +47,9 @@
             android:id="@+id/action_homeFragment_to_myProductFragment"
             app:destination="@id/myProductFragment" />
         <action
+            android:id="@+id/action_homeFragment_to_myTransacFrag"
+            app:destination="@id/myTransacFrag" />
+        <action
             android:id="@+id/action_homeFragment_to_addmyproductfragment"
             app:destination="@id/addmyproductfragment" />
         <action
@@ -110,6 +113,10 @@
         android:id="@+id/myProductFragment"
         android:name="com.oxad.fitox.ui.MyProductsFragment"
         tools:layout="@layout/fragment_my_products"/>
+    <fragment
+        android:id="@+id/myTransacFrag"
+        android:name="com.oxad.fitox.ui.TransacFragment"
+        tools:layout="@layout/fragment_transac"/>
     <fragment
         android:id="@+id/myofferfragment"
         android:name="com.oxad.fitox.ui.MyOffersFragment"

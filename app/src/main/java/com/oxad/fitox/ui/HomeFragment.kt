@@ -122,6 +122,8 @@ private lateinit var navController:NavController
         binding.traineraddIv.setOnClickListener(this)
         binding.settingsIv.setOnClickListener(this)
         binding.productAdd.setOnClickListener(this)
+     //   binding.transacRl.setOnClickListener(this)
+
 
 
     }
@@ -145,6 +147,7 @@ private lateinit var navController:NavController
             binding.traineraddIv -> code = 7
             binding.settingsIv -> code =8
             binding.productAdd -> code =9
+          //  binding.transacRl -> code =10
         }
         openFragment(code)
     }
@@ -200,6 +203,7 @@ private lateinit var navController:NavController
                 Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
             }
             9 -> navController.navigate(R.id.action_homeFragment_to_myProductFragment)
+            10 -> navController.navigate(R.id.action_homeFragment_to_myTransacFrag)
 
 
 
