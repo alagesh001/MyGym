@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -205,10 +206,16 @@ class MemberFilterCompose : Fragment() {
         Column {
             // 🔹 Filter Options
             Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                Button(onClick = { filterCriteria = "oldToNew" }) {
+                Button(
+                    onClick = { filterCriteria = "oldToNew" },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF003FAB))
+                ) {
                     Text(text = "Old to New")
                 }
-                Button(onClick = { filterCriteria = "newToOld" }) {
+                Button(
+                    onClick = { filterCriteria = "newToOld" },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF003FAB))
+                ) {
                     Text(text = "New to Old")
                 }
             }
@@ -300,7 +307,10 @@ Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
 
                 // Status (Dynamic)
                 Text(
-                    text = "Status: ${if (isPresentToday) "✅ Present" else "❌ Not marked yet today"}",
+                    text = buildString {
+                        append(if (isPresentToday) "✅ Present" else "❌ Not marked yet today")
+                        append(" — Total Attendance: ${record.attendance_count}")
+                    },
                     color = if (isPresentToday) Color.Green else Color.Red
                 )
             }
