@@ -124,6 +124,8 @@ class MemberFilterCompose : Fragment() {
                         "dob" -> UpcomingBirthdaysScreen()
                         "goal" -> GoalListScreen()
                         "transac" -> PaginatedTransactionListScreen()
+                        "attendance" -> attendanceFilterScreen()
+
 
                     }
                 }
@@ -181,6 +183,54 @@ class MemberFilterCompose : Fragment() {
         }
     }
     @Composable
+    fun attendanceFilterScreen() {
+        val scope = rememberCoroutineScope()
+        var attendanceList by remember { mutableStateOf<List<Member>>(emptyList()) }
+        var filterCriteria by remember { mutableStateOf<String>("oldToNew") }
+        val context = LocalContext.current
+
+        // 🔹 Fetch Attendance Records Once
+        LaunchedEffect(Unit) {
+            scope.launch {
+                attendanceList = mainViewModel.getTotalMemberList()
+            }
+        }
+
+        // 🔹 Sort Attendance Records Based on Filter Criteria
+        val sortedAttendance = when (filterCriteria) {
+            "newToOld" -> attendanceList.sortedByDescending { it.last_attend }
+            else -> attendanceList.sortedBy { it.last_attend }
+        }
+
+        Column {
+            // 🔹 Filter Options
+            Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(onClick = { filterCriteria = "oldToNew" }) {
+                    Text(text = "Old to New")
+                }
+                Button(onClick = { filterCriteria = "newToOld" }) {
+                    Text(text = "New to Old")
+                }
+            }
+
+            // 🔹 Attendance List
+            LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
+                item {
+                    Text(
+                        text = "Attendance Records 📋",
+                        color = colorResource(id = R.color.primary_color),
+                        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                items(sortedAttendance) { record ->
+                    AttendanceItem(record)
+                }
+            }
+        }
+    }
+    @Composable
     fun UpcomingBirthdaysScreen() {
         val scope = rememberCoroutineScope()
         var memberList by remember { mutableStateOf<List<Member>>(emptyList()) }
@@ -211,7 +261,51 @@ val context = LocalContext.current
             }
         }
     }
+    @Composable
+    fun AttendanceItem(record: Member) {
+        val context = LocalContext.current
+        val currentDate = remember { java.time.LocalDate.now() } // Get today's date
+        val attendanceDate = if (record.last_attend == "0000-00-00") null else try {
+            java.time.LocalDate.parse(record.last_attend)
+        } catch (e: Exception) {
+            null
+        }
+Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
+        // Determine the status based on the current date
+        val isPresentToday = attendanceDate == currentDate
 
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(context.getColor(R.color.secondary_color))), // Customize color
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                // Member's Name
+                Text(
+                    color = Color.White,
+                    text = record.name,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Last Marked Attendance Date
+                Text(
+                    text = "📅 Last Attendance: ${formatDateAttend(record.last_attend)}",
+                    color = Color.White,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Status (Dynamic)
+                Text(
+                    text = "Status: ${if (isPresentToday) "✅ Present" else "❌ Not marked yet today"}",
+                    color = if (isPresentToday) Color.Green else Color.Red
+                )
+            }
+        }
+    }
     // 🔹 UI for Birthday Item
     @Composable
     fun BirthdayItem(member: Member) {
@@ -253,11 +347,25 @@ val context = LocalContext.current
 
     // 🔹 Format Date for Display
     fun formatDate(dob: String): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val birthDate = LocalDate.parse(dob, formatter)
-        return birthDate.format(DateTimeFormatter.ofPattern("MMM dd"))
-    }
 
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val birthDate = LocalDate.parse(dob, formatter)
+            birthDate.format(DateTimeFormatter.ofPattern("MMM dd"))
+        } catch (e: Exception) {
+            "0000-00-00"
+        }
+    }
+    fun formatDateAttend(dob: String): String {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val birthDate = LocalDate.parse(dob, formatter)
+            // Format to include the year as well
+            birthDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
+        } catch (e: Exception) {
+            "0000-00-00" // Placeholder for invalid dates
+        }
+    }
     @Composable
     fun AgeGroupedMemberListScreen() {
         val scope = rememberCoroutineScope()

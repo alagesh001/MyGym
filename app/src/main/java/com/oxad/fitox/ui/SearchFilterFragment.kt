@@ -59,6 +59,7 @@ class SearchFilterFragment : Fragment(), OnClickListener {
         binding.trainerFilter.setOnClickListener(this)
         binding.dobFilter.setOnClickListener(this)
         binding.transacFilter.setOnClickListener(this)
+        binding.attendanceFilter.setOnClickListener(this)
 
 
     }
@@ -96,6 +97,11 @@ class SearchFilterFragment : Fragment(), OnClickListener {
             binding.transacFilter ->{
                 bundle = Bundle().apply {
                     putString("type_is", "transac")
+                }
+            }
+            binding.attendanceFilter ->{
+                bundle = Bundle().apply {
+                    putString("type_is", "attendance")
                 }
             }
         }
