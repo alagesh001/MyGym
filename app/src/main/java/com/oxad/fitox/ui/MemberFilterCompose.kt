@@ -307,11 +307,15 @@ Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
 
                 // Status (Dynamic)
                 Text(
-                    text = buildString {
-                        append(if (isPresentToday) "✅ Present" else "❌ Not marked yet today")
-                        append(" — Total Attendance: ${record.attendance_count}")
-                    },
-                    color = if (isPresentToday) Color.Green else Color.Red
+                    text = if (isPresentToday) "✅ Present" else "❌ Not marked yet today",
+                    color = if (isPresentToday) Color.Green else Color.Red,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Total Attendance (Separate)
+                Text(
+                    text = "📊 Total Attendance: ${record.attendance_count}",
+                    color = Color.White
                 )
             }
         }
@@ -373,7 +377,7 @@ Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
             // Format to include the year as well
             birthDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
         } catch (e: Exception) {
-            "0000-00-00" // Placeholder for invalid dates
+            "Jan 01, 2000" // Placeholder for invalid dates
         }
     }
     @Composable
