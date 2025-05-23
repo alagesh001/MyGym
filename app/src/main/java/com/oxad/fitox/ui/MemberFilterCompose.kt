@@ -80,6 +80,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -272,12 +273,19 @@ val context = LocalContext.current
     fun AttendanceItem(record: Member) {
         val context = LocalContext.current
         val currentDate = remember { java.time.LocalDate.now() } // Get today's date
-        val attendanceDate = if (record.last_attend == "0000-00-00") null else try {
-            java.time.LocalDate.parse(record.last_attend)
-        } catch (e: Exception) {
+        val attendanceDate = if (record.last_attend == "0000-00-00 00:00:00" || record.last_attend.isBlank()) {
             null
+        } else {
+            try {
+                // Parse the full datetime string
+                val dateTime = java.time.LocalDateTime.parse(record.last_attend, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                // Extract just the date part
+                dateTime.toLocalDate()
+            } catch (e: Exception) {
+                null
+            }
         }
-Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
+//Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
         // Determine the status based on the current date
         val isPresentToday = attendanceDate == currentDate
 
@@ -370,14 +378,18 @@ Log.e("jcdajcaa","cdate $currentDate latt $attendanceDate")
             "0000-00-00"
         }
     }
-    fun formatDateAttend(dob: String): String {
+    fun formatDateAttend(datetimeStr: String): String {
         return try {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val birthDate = LocalDate.parse(dob, formatter)
-            // Format to include the year as well
-            birthDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
+            // Input pattern including time
+            val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val dateTime = LocalDateTime.parse(datetimeStr, inputFormatter)
+
+            // Output pattern with formatted date and optional time
+            val outputFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")
+
+            dateTime.format(outputFormatter)
         } catch (e: Exception) {
-            "Jan 01, 2000" // Placeholder for invalid dates
+            "Jan 01, 2000" // fallback for invalid input
         }
     }
     @Composable
