@@ -186,7 +186,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_70sdp"
                     android:background="@drawable/rounded_rect_grad6"
-                    android:backgroundTint="@color/primary_color"
 
                     android:alpha="0.8"
                     />
@@ -232,6 +231,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_70sdp"
                     android:background="@drawable/rounded_rect_grad6"
+                    android:backgroundTint="@color/primary_color"
+
                     android:alpha="0.8"
                     />
 
@@ -278,7 +279,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_70sdp"
                     android:background="@drawable/rounded_rect_grad6"
-                    android:backgroundTint="@color/primary_color"
 
                     android:alpha="0.8"
                     />
@@ -327,6 +327,8 @@
                     android:layout_height="@dimen/_70sdp"
                     android:background="@drawable/rounded_rect_grad6"
                     android:alpha="0.8"
+                    android:backgroundTint="@color/primary_color"
+
                     />
 
                 <TextView
