@@ -438,7 +438,7 @@ if(contactSupport){
             if (showDialog) {
 
                 bitmapFile =
-                    generateQRCode("123xyz")
+                    generateQRCode("ncrtocDP2N")
                   //  generateQRCode(encryptHere(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString()))
 
                 AlertDialog(
