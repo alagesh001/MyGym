@@ -1,6 +1,8 @@
 package com.oxad.fitox.ui
 
 import GymselectAdapter
+import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +21,9 @@ import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import androidx.annotation.RequiresPermission
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -55,9 +60,14 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
        // Log.e("checkfra","Yes")
 
         activity?.lifecycleScope?.launch {
-            mainViewModel.clearmembers()
             if(context!=null) {
+            if (isNetworkAvailable(requireContext())) {
+                mainViewModel.clearmembers()
                 DataStoreManager(requireContext()).clearCoaches()
+            } else {
+                // No internet connection
+            }
+
             }
         }
         binding.recyclerView.setLayoutManager(LinearLayoutManager(requireContext()))
@@ -75,7 +85,16 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
                 }
             }
     }
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
     override fun onItemSelected(item: Int) {
         mainViewModel.currentGymSelected = item
         val renewalDateString = mainViewModel.gymResult[mainViewModel.currentGymSelected].renewaldate

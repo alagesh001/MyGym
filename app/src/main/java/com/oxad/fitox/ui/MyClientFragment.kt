@@ -1,11 +1,14 @@
 package com.oxad.fitox.ui
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +24,7 @@ import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -108,7 +112,15 @@ activity?.let {
 
     binding.recyclerView.adapter =  memberAdapter
     binding.swipeRefreshLayout.setOnRefreshListener {
-        mainViewModel.clearmembers(true)
+        if(context!=null) {
+            if (isNetworkAvailable(requireContext())) {
+                mainViewModel.clearmembers(true)
+            } else {
+                Utils.showToast(requireContext(),"No Network Connection")
+                // No internet connection
+            }
+
+        }
        // val memList = emptyList<Member>()
        // memberAdapter.submitList(memList)
 
@@ -124,6 +136,7 @@ activity?.let {
                if(members.isEmpty()){
 
                }else{
+
                    binding.swipeRefreshLayout.isRefreshing = false // Hide refresh indicator
                }
 
@@ -177,7 +190,16 @@ activity?.let {
     }
 
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
     override fun onDestroy() {
         super.onDestroy()
       //  Log.w("isdestroyc","Yes")
