@@ -46,6 +46,7 @@ import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 
 import kotlinx.coroutines.flow.collectLatest
@@ -73,6 +74,7 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     private lateinit var renewalAdapter: RenewalAdapter
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var memberSearchAdapter: MemberSearchAdapter
+    private lateinit var memberListSet: List<Member>
 
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,9 +99,14 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
        // binding.circularProgressBar.visibility = VISIBLE
       //  binding.refreshTv.visibility = GONE
+binding.expirySort.setOnClickListener{
+    if (::memberListSet.isInitialized) {
+        val sortedMembers = memberListSet.sortedBy { it.renewal_date }
 
+        // Submit the sorted list to the adapter
+        memberAdapter.submitList(sortedMembers)    }
+}
         binding.refreshTv.setOnClickListener {
-            Log.d("djafjs","Yes cl")
             val membList = emptyList<Member>()
             memberAdapter.submitList(membList)
           //  binding.circularProgressBar.visibility = VISIBLE
@@ -139,7 +146,7 @@ activity?.let {
 
                    binding.swipeRefreshLayout.isRefreshing = false // Hide refresh indicator
                }
-
+                memberListSet = members
                 //binding.circularProgressBar.visibility = GONE
                 memberAdapter.submitList(members)
             }
