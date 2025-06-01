@@ -40,7 +40,7 @@ android:layout_alignParentEnd="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="Search Members..."
-            android:backgroundTint="@color/gray"
+            android:backgroundTint="#F0EFEF"
             android:background="@drawable/roun_rad_rect"
             app:theme="@style/SearchViewTheme"
             />
@@ -56,48 +56,67 @@ android:layout_alignParentEnd="true"
 
             android:background="@color/white"
             android:layout_marginTop="8dp" />
-        <LinearLayout
-            android:id="@+id/heading"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/headingCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/searchView"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_below="@+id/searchView"
+            android:padding="@dimen/_10sdp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            android:backgroundTint="@color/white">
 
-android:paddingHorizontal="@dimen/_10sdp"
-            android:elevation="2dp">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Id"
-    android:textStyle="bold"
-    android:textSize="@dimen/_15sdp"
-    android:textColor="@color/primary_color"
-    />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textStyle="bold"
-                android:textSize="@dimen/_15sdp"
-                android:textColor="@color/primary_color"
-                android:layout_marginStart="@dimen/_10sdp"
-
-                />
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Expiry"
-                android:textStyle="bold"
-                android:textSize="@dimen/_15sdp"
-                android:textColor="@color/primary_color"
-                android:textAlignment="textEnd"
-                android:layout_marginEnd="@dimen/_10sdp"
-                />
-        </LinearLayout>
-        <ProgressBar
+                android:orientation="horizontal"
+                android:weightSum="4"
+                android:paddingVertical="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_5sdp"
+
+                android:gravity="center_vertical">
+
+                <!-- ID Column -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Id"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:textColor="@color/gray_dahomerk"
+                    android:layout_weight="1"
+                    android:gravity="start" />
+
+                <!-- Name Column -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_15sdp"
+                    android:layout_weight="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/gray_dahomerk"
+                    />
+
+                <!-- Expiry Column -->
+                <TextView
+                    android:id="@+id/expiry_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Expiry"
+                    android:textStyle="bold"
+                    android:layout_weight="2"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:textColor="@color/gray_dahomerk"
+                     />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>        <ProgressBar
             android:id="@+id/circular_progress_bar"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -126,7 +145,7 @@ android:paddingHorizontal="@dimen/_10sdp"
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_below="@+id/heading"
+            android:layout_below="@+id/headingCard"
 
             android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView

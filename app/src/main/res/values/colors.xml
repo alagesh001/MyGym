@@ -11,6 +11,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="gray">#D5D5D5</color>
     <color name="gray_dahomerk">#5D5D5D</color>
+    <color name="green_list">#73da8c</color>
 
 
     <color name="primary_color">#201E1F</color>
@@ -18,4 +19,6 @@
     <color name="secondary_color">#00ABA8</color>
     <color name="tertiary_color">#6B7A89</color>
     <color name="fourth_color">#CDBCA8</color>
+    <color name="dark_fourth_color">#c4a762</color>
+
 </resources>
