@@ -95,17 +95,29 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
 
 
     }
-    private fun initUi(){
+    private fun initUi() {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
-       // binding.circularProgressBar.visibility = VISIBLE
-      //  binding.refreshTv.visibility = GONE
-binding.expirySort.setOnClickListener{
-    if (::memberListSet.isInitialized) {
-        val sortedMembers = memberListSet.sortedBy { it.renewal_date }
+        // binding.circularProgressBar.visibility = VISIBLE
+        //  binding.refreshTv.visibility = GONE
+        binding.expirySort.setOnClickListener {
+            if (::memberListSet.isInitialized) {
+                val sortedMembers = memberListSet.sortedBy { it.renewal_date }
 
-        // Submit the sorted list to the adapter
-        memberAdapter.submitList(sortedMembers)    }
-}
+                // Submit the sorted list to the adapter
+                memberAdapter.submitList(sortedMembers)
+            }
+        }
+
+        binding.nameSort.setOnClickListener {
+            if (::memberListSet.isInitialized) {
+                val sortedMembers =
+                    memberListSet.sortedBy { it.name.lowercase(Locale.ROOT) } // Ensures case-insensitive sorting
+
+                memberAdapter.submitList(sortedMembers)
+            }
+
+    }
+
         binding.refreshTv.setOnClickListener {
             val membList = emptyList<Member>()
             memberAdapter.submitList(membList)
