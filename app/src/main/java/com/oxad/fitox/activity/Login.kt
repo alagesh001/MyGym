@@ -29,6 +29,7 @@ import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.ActivityLoginBinding
+import com.oxad.fitox.databinding.LoginLayNewBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.AdminLoginModel
 import com.oxad.fitox.retrofit.ApiInterface
@@ -44,7 +45,7 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 class Login : AppCompatActivity(),ApiInterface,OnClickListener {
-    private lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: LoginLayNewBinding
     private lateinit var apiManager: ApiManager
     private lateinit var dataStoreManager: DataStoreManager
     private var isLoggedIn = false
@@ -53,11 +54,11 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         apiManager = ApiManager(this, this)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = LoginLayNewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         backpressInit()
-        binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
-            .setBlurRadius(12f)
+       /* binding.blurView.setupWith(binding.root, RenderScriptBlur(this))
+            .setBlurRadius(12f)*/
         dataStoreManager = DataStoreManager(application)
        mHash =  getAppSignature()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -74,9 +75,9 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
                 val passs = dataStoreManager.password.first()
                 //  Log.d("UserSession", "Mobile Number: $mobile")
                 if(mob !=null && passs !=null) {
-                    binding.loginLay.visibility = GONE
 
                     withContext(Dispatchers.Main) {
+                        binding.loginLay.visibility = GONE
                         binding.btnLogin.isEnabled = false
                         isLoggedIn = true
                         apiManager.loginAdmin(mob.toLong(), passs,mHash)

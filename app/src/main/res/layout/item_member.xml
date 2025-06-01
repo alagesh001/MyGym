@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/roun_rad_rect"
-    android:backgroundTint="@color/tertiary_color"
+    android:backgroundTint="@color/green_list"
     android:orientation="horizontal"
     android:elevation="1dp"
     android:padding="16dp">
@@ -26,7 +26,7 @@
         android:text="1"
         android:textSize="16sp"
         android:textColor="@color/white"
-
+android:fontFamily="sans-serif-black"
         android:textStyle="bold" />
 
     <!-- Name -->
@@ -34,6 +34,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="sans-serif-black"
+
         android:orientation="vertical">
 
         <TextView
@@ -63,145 +65,155 @@
 
         android:textSize="16sp" />
 </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/expandableLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:visibility="visible"
         android:layout_marginTop="-40dp"
         android:background="#7BCDBCA8"
-        >
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:visibility="visible">
+
         <LinearLayout
             android:id="@+id/ll_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="40dp"
+            android:orientation="vertical"
 
             >
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
-    >
-    <ImageView
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:background="@drawable/baseline_call_24"
-        android:backgroundTint="@color/tertiary_color"/>
-        <TextView
-            android:id="@+id/tvMobile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3589893493"
-            android:paddingHorizontal="@dimen/_5sdp"
-            android:textColor="@color/primary_color"
-            android:textSize="16sp"
-            android:paddingVertical="@dimen/_5sdp"
-            />
-</LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            >
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:background="@drawable/target_vct"
-                android:backgroundTint="@color/tertiary_color"/>
-            <TextView
-            android:id="@+id/tvGoal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Weight Loss"
-            android:textColor="@color/primary_color"
-            android:textSize="16sp"
-                android:paddingHorizontal="@dimen/_5sdp"
 
-                android:paddingVertical="@dimen/_5sdp"
-
-            />
-        </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center"
-                >
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:visibility="gone"
+                    android:background="@drawable/baseline_call_24"
+                    android:backgroundTint="@color/black" />
 
+                <TextView
+                    android:id="@+id/tvMobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="3589893493"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@drawable/target_vct"
+                    android:backgroundTint="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvGoal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="Weight Loss"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+
+
+
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
                     android:background="@drawable/baseline_star_purple500_24"
-                    android:backgroundTint="@color/primary_color"/>
+
+                    android:backgroundTint="@color/primary_color"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/tvAttendCount"
                     android:layout_width="@dimen/_120sdp"
                     android:layout_height="wrap_content"
-                    android:text="Attendance - "
-                    android:textColor="@color/primary_color"
-                    android:textSize="16sp"
                     android:paddingHorizontal="@dimen/_5sdp"
 
                     android:paddingVertical="@dimen/_5sdp"
+                    android:text="Attendance - "
+                    android:textColor="@color/green"
+
+                    android:textSize="16sp"
 
                     />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/lastattend_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center"
-                >
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:visibility="gone"
                     android:background="@drawable/baseline_star_purple500_24"
-                    android:backgroundTint="@color/primary_color"/>
+                    android:backgroundTint="@color/primary_color"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/tvlastAttend"
                     android:layout_width="@dimen/_120sdp"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingVertical="@dimen/_5sdp"
                     android:text="Last attended "
                     android:textColor="@color/primary_color"
-                    android:textSize="16sp"
-                    android:paddingHorizontal="@dimen/_5sdp"
 
-                    android:paddingVertical="@dimen/_5sdp"
+                    android:textSize="16sp"
 
                     />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="40dp"
             android:layout_alignParentEnd="true"
-            >
+            android:layout_marginTop="40dp"
+            android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/call_btn"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/telephone"
-           />
+                android:src="@drawable/icn_call" />
 
             <ImageView
                 android:id="@+id/wtapp_btn"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:src="@drawable/social"
-             />
+                android:src="@drawable/wapp_icn" />
 
 
         </LinearLayout>
@@ -209,46 +221,57 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_details"
             android:layout_alignParentEnd="true"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:layout_below="@+id/ll_details"
             android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/update_tv"
                     style="@style/ActionButtonHorizontal"
+                    android:backgroundTint="#c5cac5"
+                    android:textStyle="bold"
                     android:text="Edit" />
 
                 <TextView
                     android:id="@+id/renew_tv"
                     style="@style/ActionButtonHorizontal"
+                    android:backgroundTint="#a7afa7"
+                    android:textStyle="bold"
+
                     android:text="Renew" />
 
                 <TextView
                     android:id="@+id/due_tv"
                     style="@style/ActionButtonHorizontal"
+                    android:backgroundTint="@color/red"
                     android:text="Due Pay"
-                    android:visibility="gone"
-                    android:backgroundTint="@color/red" />
+                    android:textStyle="bold"
+
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/diet_schedule_tv"
                     style="@style/ActionButtonHorizontal"
-                    android:text="Diet Schedule"
-                    android:backgroundTint="#9C27B0" />
+                    android:backgroundTint="#c4c4ae"
+                    android:textStyle="bold"
+
+                    android:text="Diet Schedule" />
 
                 <TextView
                     android:id="@+id/sendwtsapp_tv"
                     style="@style/ActionButtonHorizontal"
-                    android:text="Share Detail"
-                    android:backgroundTint="@color/blue_700" />
+                    android:backgroundTint="#aecdce"
+                    android:textStyle="bold"
+
+                    android:text="Share Detail" />
             </LinearLayout>
         </HorizontalScrollView>
 

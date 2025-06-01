@@ -43,7 +43,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         }else if(isDateCloseToExpiry(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
         }else{
-            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green)
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green_list)
         }
 
         if(member.due_amount!! >0){
