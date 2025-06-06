@@ -96,13 +96,13 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 override fun afterTextChanged(s: Editable?) {
                     val referralId = s.toString().trim()
                     if (referralId.length == 10) {
-                        if (lastInput != referralId) {
+                      //  if (lastInput != referralId) {
                             lastInput = referralId
                             handler.removeCallbacksAndMessages(null) // Debounce previous calls
                             handler.postDelayed({
                                 checkReferralIdInList(members, referralId)
                             }, 500) // Delay validation for smoother UX
-                        }
+                       // }
                     }else{
                         binding.referInput.setTextColor(Color.RED)
 
@@ -117,7 +117,6 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         val isValid = members.any { it.referral_id == referralId }
 //Log.e("chjjada","memberss "+Gson().toJson(members))
        // Log.e("chjjada","referral_id "+referralId)
-
         if (isValid) {
             binding.referInput.setTextColor(Color.GREEN)
         } else {
@@ -224,7 +223,9 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 binding.updateButton.visibility = VISIBLE
                 binding.renewButton.visibility = GONE
                 binding.referInput.isEnabled = false
-                binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
+                    binding.spinnerTypeTrainer.isEnabled = false
+
+                    binding.mobInput.text =  Editable.Factory.getInstance().newEditable(memberData?.mobile.toString())
                 binding.emailInput.text = memberData?.email?.toEditable()
                 binding.heightInput.text = Editable.Factory.getInstance().newEditable(memberData?.height.toString())
                 binding.weightInput.text = Editable.Factory.getInstance().newEditable(memberData?.weight?.toString())

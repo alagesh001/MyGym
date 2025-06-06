@@ -147,7 +147,7 @@ android:alpha="0.8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Trainer/Dietician"
+                android:text="Admins/Dietician"
                 android:paddingHorizontal="@dimen/_20sdp"
 
                 android:textColor="@color/white"

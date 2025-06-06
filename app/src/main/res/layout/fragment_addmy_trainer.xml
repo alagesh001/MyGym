@@ -84,7 +84,7 @@
                 android:id="@+id/radio_trainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trainer"
+                android:text="Admin"
                 android:textColor="@color/black" />
 
             <RadioButton
