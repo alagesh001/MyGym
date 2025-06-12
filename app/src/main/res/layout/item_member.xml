@@ -272,6 +272,13 @@ android:fontFamily="sans-serif-black"
                     android:textStyle="bold"
 
                     android:text="Share Detail" />
+                <TextView
+                    android:id="@+id/markAttend_tv"
+                    style="@style/ActionButtonHorizontal"
+                    android:backgroundTint="#BAAECE"
+                    android:textStyle="bold"
+                    android:text="Mark Attendance" />
+
             </LinearLayout>
         </HorizontalScrollView>
 

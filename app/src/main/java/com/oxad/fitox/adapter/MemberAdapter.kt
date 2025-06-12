@@ -83,6 +83,9 @@ holder.dueTextView.visibility = VISIBLE
         holder.wtsappbtn_iv.setOnClickListener {
             listener.onWhatsappClick(member.mobile)
         }
+        holder.markAttend_tv.setOnClickListener {
+            listener.onMarkAttendClick(member.userid)
+        }
     }
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -106,6 +109,7 @@ holder.dueTextView.visibility = VISIBLE
         val dueTextView: TextView = itemView.findViewById(R.id.due_tv)
         val callbtn_iv: ImageView = itemView.findViewById(R.id.call_btn)
         val wtsappbtn_iv: ImageView = itemView.findViewById(R.id.wtapp_btn)
+        val markAttend_tv: TextView = itemView.findViewById(R.id.markAttend_tv)
 
         fun bind(member: Member,position: Int) {
             numberTextView.text = (position + 1).toString() // Incrementing number
@@ -172,6 +176,8 @@ holder.dueTextView.visibility = VISIBLE
         fun onDietSchedule(userid:Long)
         fun onWhatsappClick(mobile:Long)
         fun oncallClick(mobile:Long)
+        fun onMarkAttendClick(userid:Long)
+
 
     }
 }
