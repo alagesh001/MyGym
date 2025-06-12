@@ -60,11 +60,11 @@ data class MemberResponse(
 
 @Entity(tableName = "members")
 data class Member(
-    @PrimaryKey val mobile: Long,
+    val mobile: Long,
     val name: String,
     val renewal_date: String,
     val email: String,
-    val userid: Long,
+    @PrimaryKey val userid: Long,
     val referral_id: String? = "",
     var isExpanded: Boolean = false,
     val height: Float = 0f,
@@ -77,6 +77,7 @@ data class Member(
     val due_amount: Int = 0,
     val attendance_count: Int = 0,
     val last_attend: String,
+    val gymid: Int
 
 
     ):Parcelable {
@@ -101,7 +102,9 @@ data class Member(
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString() ?: ""
+        parcel.readString() ?: "",
+        parcel.readInt()
+
         ) {
     }
 
@@ -123,6 +126,7 @@ data class Member(
         parcel.writeInt(due_amount)
         parcel.writeInt(attendance_count)
         parcel.writeString(last_attend)
+        parcel.writeInt(gymid)
 
 
     }

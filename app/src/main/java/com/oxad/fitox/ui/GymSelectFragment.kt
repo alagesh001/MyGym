@@ -62,7 +62,7 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
         activity?.lifecycleScope?.launch {
             if(context!=null) {
             if (isNetworkAvailable(requireContext())) {
-                mainViewModel.clearmembers()
+               // mainViewModel.clearmembers()
                 DataStoreManager(requireContext()).clearCoaches()
             } else {
                 // No internet connection
@@ -100,6 +100,7 @@ class GymSelectFragment : Fragment(),GymselectAdapter.OnItemSelectedListener {
         val renewalDateString = mainViewModel.gymResult[mainViewModel.currentGymSelected].renewaldate
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val renewalDate = dateFormat.parse(renewalDateString)?.time
+        mainViewModel.loadMembers()
 
         activity?.let { ctx ->
             if (renewalDate != null) {

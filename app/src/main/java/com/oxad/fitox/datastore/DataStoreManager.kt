@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.TrainerModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -26,6 +27,10 @@ class DataStoreManager(private val context: Context) {
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
     companion object {
+        private val gson = Gson()
+
+        private val GYM_RESULT_KEY = stringPreferencesKey("gym_result")
+        private val A_KEY_IS_KEY = stringPreferencesKey("a_key_is")
         private val COACHES_KEY = stringPreferencesKey("coaches_list")
         private val REFERRAL_MESSAGE_KEY = stringPreferencesKey("referral_message")
                 private val MOBILE_NUMBER = stringPreferencesKey("mobile_number")
@@ -36,7 +41,29 @@ class DataStoreManager(private val context: Context) {
 
     }
 
+    suspend fun saveLoginResData(gymResult: ArrayList<LoginResult>, aKeyIs: String) {
+        val gymResultJson = gson.toJson(gymResult) // Serialize gymResult
+        context.dataStore.edit { preferences ->
+            preferences[GYM_RESULT_KEY] = gymResultJson
+            preferences[A_KEY_IS_KEY] = aKeyIs
+        }
+    }
 
+    // Retrieve Data
+    fun getLoginresData(): Flow<Pair<ArrayList<LoginResult>, String>> {
+        return context.dataStore.data.map { preferences ->
+            // Deserialize gymResult
+            val gymResultJson = preferences[GYM_RESULT_KEY] ?: "[]"
+            val gymResult: ArrayList<LoginResult> = gson.fromJson(
+                gymResultJson,
+                object : TypeToken<ArrayList<LoginResult>>() {}.type
+            )
+
+            val aKeyIs = preferences[A_KEY_IS_KEY] ?: ""
+
+            Pair(gymResult, aKeyIs)
+        }
+    }
     // ✅ Save coaches list
     suspend fun saveCoaches(coaches: List<TrainerModel>) {
         val json = Gson().toJson(coaches) // Convert list to JSON

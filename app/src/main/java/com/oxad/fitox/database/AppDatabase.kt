@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.Workout
 
-@Database(entities = [Member::class,Workout::class], version = 2, exportSchema = false)
+@Database(entities = [Member::class,Workout::class], version = 3, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun memberDao(): MemberDao
@@ -23,21 +25,19 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "gym_database"
-                ).fallbackToDestructiveMigration()
+                )
+                   // .addMigrations(MIGRATION_2_3)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
-   /*     // Migration from version 1 to 2 (Adding new "exercises" table)
-        val MIGRATION_1_2 = object : Migration(1, 2) {
+        // Migration from version 1 to 2 (Adding new "exercises" table)
+      /*  val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS exercises (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                            "name TEXT NOT NULL, " +
-                            "category TEXT NOT NULL)"
-                )
+                database.execSQL("ALTER TABLE members ADD COLUMN gymid INTEGER NOT NULL DEFAULT 0")
+
             }
         }*/
     }
