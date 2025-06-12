@@ -94,7 +94,7 @@ android:layout_gravity="center"
                 android:id="@+id/refer_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Referral Id"
+                android:text="Referral Id (Optional)"
                 android:textStyle="bold"
                 android:textColor="@color/primary_color"
 

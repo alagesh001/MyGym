@@ -19,6 +19,7 @@ import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.model.Workout
+import com.oxad.fitox.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -166,7 +167,7 @@ class MainViewModel() : ViewModel() {
         }
     }
     val members: LiveData<List<Member>> = _searchQuery.switchMap { query ->
-        memberDao.searchMembersByName(query)
+        memberDao.searchMembersByName(query,gymResult[currentGymSelected].GymId)
 
     /*    if (query.isNullOrBlank()) {
             MutableLiveData(emptyList())
@@ -264,23 +265,24 @@ if(page in 1..totalTransacPage) {
 
         viewModelScope.launch {
             val cachedMembers = memberDao.getAllMembers(gymResult[currentGymSelected].GymId)
-            Log.e("chadka","cachedMembers dataStore "+ Gson().toJson(cachedMembers))
+           // Log.e("chadka","cachedMembers dataStore "+ Gson().toJson(cachedMembers))
 
             if (cachedMembers.isNotEmpty()) {
                 _memberList.value =  cachedMembers // Return cached data
             } else {
-
                 val result =apiRepoVM.getMembers(gymResult[currentGymSelected].GymId,currentPage,a_keyIs)
+                if(currentPage ==1) {
+                    _memberList.value = emptyList()
+                }
                 result.onSuccess { response ->
                    // Log.e("chadka", "" + Gson().toJson(response))
 
 
                     if (response.success) {
-
                         _memberList.value = (_memberList.value ?: emptyList()) + response.result
-                        Log.e("chadka","abcd AAA "+ Gson().toJson( _memberList.value))
+                       // Log.e("chadka","abcd AAA "+ Gson().toJson( _memberList.value))
 
-                        Log.e("chadka","abcd BBB "+ Gson().toJson(response.result))
+                      //  Log.e("chadka","abcd BBB "+ Gson().toJson(response.result))
 
                         if (currentPage < response.totalPages) {
                             currentPage++ // Move to next page
@@ -288,13 +290,19 @@ if(page in 1..totalTransacPage) {
                         } else {
                             isLastPage = true // No more data
                             memberDao.insertMembers(_memberList.value)
+
                             // Log.e("chadka","get all data "+ Gson().toJson(memberDao.getAllMembers()))
 
                         }
+                    }else{
+                        _memberList.value = emptyList()
                     }
                 }
                 result.onFailure { exception ->
                     exception.message ?: "Something went wrong!"
+                    if(currentPage == 1) {
+                        _memberList.value = emptyList()
+                    }
                 }
 
 

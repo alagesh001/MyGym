@@ -29,7 +29,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
     fun submitList(newList: List<Member>,) {
         members.clear()
-        Log.e("chadksaa","cachedMembers adfsasdf "+ Gson().toJson(newList))
+       // Log.e("chadksaa","cachedMembers adfsasdf "+ Gson().toJson(newList))
 
         members.addAll(newList)
 

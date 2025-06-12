@@ -84,19 +84,19 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
                         binding.loginLay.visibility = GONE
                         binding.btnLogin.isEnabled = false
                         isLoggedIn = true
-                        if (isNetworkAvailable(this@Login)) {
+                   /*     if (isNetworkAvailable(this@Login)) {
 
                             apiManager.loginAdmin(mob.toLong(), passs, mHash)
                             return@withContext
                         }
-                     else {
+                     else {*/
                         val (gymResult, aKeyIs) = dataStoreManager.getLoginresData().first()
                         val intent = Intent(this@Login, MainActivity::class.java)
                         intent.putParcelableArrayListExtra("gym_list", gymResult)
                         intent.putExtra("keyCall_Is", aKeyIs)
                         startActivity(intent)
                         finish()
-                    }
+                    //}
 
                 }
 
