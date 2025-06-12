@@ -77,7 +77,7 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var memberSearchAdapter: MemberSearchAdapter
     private lateinit var memberListSet: List<Member>
-
+private var isSearching:Boolean = false
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,6 +133,7 @@ activity?.let {
 
     binding.recyclerView.adapter =  memberAdapter
     binding.swipeRefreshLayout.setOnRefreshListener {
+        isSearching  = false
         if(context!=null) {
             if (isNetworkAvailable(requireContext())) {
                 mainViewModel.clearmembers(true)
@@ -149,33 +150,34 @@ activity?.let {
 
     viewLifecycleOwner.lifecycleScope.launch {
         mainViewModel.memberList.collect { members ->
+           // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
+            memberListSet = members
+
             if (members.isEmpty()) {
-                binding.refreshTv.visibility = View.VISIBLE
                 memberAdapter.submitList(emptyList()) // Clear adapter
             } else {
-                binding.refreshTv.visibility = View.GONE
                 binding.swipeRefreshLayout.isRefreshing = false
                 memberAdapter.submitList(members)
             }
-            members.forEach { member ->
-                if (member.name == "Gomathi Ram") {
-                    Log.e("chadksaa", "cachedMembers Gomathi Ram")
-                }
-            }
         }
     }
- /*   viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-        mainViewModel.memberList.collect { members ->
-            withContext(Dispatchers.Main) {
-                members.forEach({
-                    if(it.name == "Gomathi Ram"){
-                        Log.e("chadksaa","cachedMembers Gomathi Ram ")
+    mainViewModel.members.observe(viewLifecycleOwner) { members ->
+        if(isSearching){
+            memberAdapter.submitList(members)
+        }
+}
+        /*   viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+               mainViewModel.memberList.collect { members ->
+                   withContext(Dispatchers.Main) {
+                       members.forEach({
+                           if(it.name == "Gomathi Ram"){
+                               Log.e("chadksaa","cachedMembers Gomathi Ram ")
 
-                    }
+                           }
 
-                })
+                       })
 
-                *//*if(members.isEmpty()){
+                       *//*if(members.isEmpty()){
                     binding.refreshTv.visibility = VISIBLE
                 }else{
                     binding.refreshTv.visibility = GONE
@@ -209,11 +211,17 @@ activity?.let {
     }
     binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
-             mainViewModel.searchMembers(query?:"")
+            Log.e("dacjkax","yes onQueryTextSubmit - $query")
+            isSearching  = true
+
+            mainViewModel.searchMembers(query?:"")
             return true
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
+            Log.e("dacjkax","yes onQueryTextChange - $newText")
+            isSearching  = true
+
             mainViewModel.searchMembers(newText?:"")
             return true
         }
@@ -386,7 +394,7 @@ activity?.let {
         attendanceCount.text = attendanceNumber
 
         // Build and show the dialog
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(context, R.style.CustomDialogTheme)
             .setView(dialogView)
             .setCancelable(true)
             .setPositiveButton("OK") { dialog, _ ->

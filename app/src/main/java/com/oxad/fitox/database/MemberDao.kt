@@ -22,8 +22,8 @@ interface MemberDao {
 
     @Query("DELETE FROM members WHERE gymid = :gymId")
     suspend fun clearMembers(gymId: Int)
-    @Query("SELECT * FROM members WHERE name LIKE '%' || :name || '%'")
-    fun searchMembersByName(name: String): LiveData<List<Member>>
+    @Query("SELECT * FROM members WHERE name LIKE '%' || :name || '%' AND gymid = :gymId")
+    fun searchMembersByName(name: String,gymId: Int): LiveData<List<Member>>
 
 
 }
