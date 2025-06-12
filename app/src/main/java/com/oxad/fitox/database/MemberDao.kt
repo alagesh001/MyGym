@@ -14,14 +14,14 @@ interface MemberDao {
     @Query("SELECT * FROM members LIMIT :limit OFFSET :offset")
     suspend fun getMembers(limit: Int, offset: Int): List<Member>
 
-    @Query("SELECT * FROM members")
-    suspend fun getAllMembers(): List<Member>
+    @Query("SELECT * FROM members WHERE gymid = :gymId")
+    suspend fun getAllMembers(gymId: Int): List<Member>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMembers(members: List<Member>)
 
-    @Query("DELETE FROM members")
-    suspend fun clearMembers()
+    @Query("DELETE FROM members WHERE gymid = :gymId")
+    suspend fun clearMembers(gymId: Int)
     @Query("SELECT * FROM members WHERE name LIKE '%' || :name || '%'")
     fun searchMembersByName(name: String): LiveData<List<Member>>
 

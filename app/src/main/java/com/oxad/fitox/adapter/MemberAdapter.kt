@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.model.Member
 import java.text.SimpleDateFormat
@@ -28,7 +29,10 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
     fun submitList(newList: List<Member>,) {
         members.clear()
+        Log.e("chadksaa","cachedMembers adfsasdf "+ Gson().toJson(newList))
+
         members.addAll(newList)
+
         notifyDataSetChanged()
     }
     override fun getItemCount(): Int = members.size

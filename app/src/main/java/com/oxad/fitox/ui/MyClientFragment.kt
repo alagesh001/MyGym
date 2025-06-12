@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.util.Util
+import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.adapter.MemberAdapter
 import com.oxad.fitox.adapter.MemberSearchAdapter
@@ -145,14 +146,40 @@ activity?.let {
        // memberAdapter.submitList(memList)
 
     }
-    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+
+    viewLifecycleOwner.lifecycleScope.launch {
+        mainViewModel.memberList.collect { members ->
+            if (members.isEmpty()) {
+                binding.refreshTv.visibility = View.VISIBLE
+                memberAdapter.submitList(emptyList()) // Clear adapter
+            } else {
+                binding.refreshTv.visibility = View.GONE
+                binding.swipeRefreshLayout.isRefreshing = false
+                memberAdapter.submitList(members)
+            }
+            members.forEach { member ->
+                if (member.name == "Gomathi Ram") {
+                    Log.e("chadksaa", "cachedMembers Gomathi Ram")
+                }
+            }
+        }
+    }
+ /*   viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
         mainViewModel.memberList.collect { members ->
             withContext(Dispatchers.Main) {
-                /*if(members.isEmpty()){
+                members.forEach({
+                    if(it.name == "Gomathi Ram"){
+                        Log.e("chadksaa","cachedMembers Gomathi Ram ")
+
+                    }
+
+                })
+
+                *//*if(members.isEmpty()){
                     binding.refreshTv.visibility = VISIBLE
                 }else{
                     binding.refreshTv.visibility = GONE
-                }*/
+                }*//*
                if(members.isEmpty()){
 
                }else{
@@ -166,16 +193,16 @@ activity?.let {
         }
 
     }
-   /* memberSearchAdapter = MemberSearchAdapter()
+   *//* memberSearchAdapter = MemberSearchAdapter()
     binding.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-    binding.recyclerViewSearch.adapter = memberSearchAdapter*/
+    binding.recyclerViewSearch.adapter = memberSearchAdapter*//*
 
     // Observe LiveData
     mainViewModel.members.observe(viewLifecycleOwner) { members ->
         memberAdapter.submitList(members)
 
         // memberSearchAdapter.submitList(members)
-    }
+    }*/
     mainViewModel.searchMembers("")
     binding.searchView.setOnClickListener {
         binding.searchView.isIconified = false
