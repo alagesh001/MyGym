@@ -30,6 +30,7 @@ object ApiHelper {
     external fun updateBroadmsgUrl(): String
     external fun updatedietscheduleurl(): String
     external fun getCustDataUrl(): String
+    external fun getmarkAttendUrl(): String
 
 
 

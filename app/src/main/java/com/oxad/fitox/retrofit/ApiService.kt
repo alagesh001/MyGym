@@ -6,6 +6,7 @@ import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
+import com.oxad.fitox.model.MarkAttendModel
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.UserRegisterModel
@@ -262,6 +263,14 @@ interface ApiService {
         @Field("newpass") newpass: String,
 
         ): UserRegisterModel
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    suspend fun markAttendance(
+        @Url url: String,
+        @Field("userid") userid: Int,
+        @Field("gymid") gymid: Int,
+
+        ): MarkAttendModel
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint
     suspend fun updateAdminMob(

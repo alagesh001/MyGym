@@ -10,6 +10,7 @@ import com.oxad.fitox.model.CustResponse
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
+import com.oxad.fitox.model.MarkAttendModel
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.TrainerModel
@@ -336,6 +337,19 @@ class ApiRepository(contextA: Context) {
             val requestFile = tempFile.asRequestBody("image/*".toMediaTypeOrNull())
             return MultipartBody.Part.createFormData(partName, tempFile.name, requestFile)
         }
+    suspend fun markAttendance( userid: Int,gymid:Int): Result<MarkAttendModel> {
+        showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.markAttendance(ApiHelper.getmarkAttendUrl(),userid,gymid)
+            }
+        hideLoading()
+        return result
+
+
+
+
+    }
     suspend fun updategympass( gymid: Int,oldpass:String,newpass:String): Result<UserRegisterModel> {
         showLoading();
         val result =

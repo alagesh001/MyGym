@@ -22,6 +22,11 @@ data class UserRegisterModel(
 
 
 )
+data class MarkAttendModel(
+    val success: Boolean,
+    val message: String,
+    val a_count: String =""
+)
 data class AdminContUpdateModel(
     val success: Boolean,
     val message: String,
