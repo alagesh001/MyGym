@@ -50,6 +50,12 @@ Java_com_oxad_fitox_retrofit_ApiHelper_getCustDataUrl(JNIEnv *env, jclass clazz)
     std::string baseURL = "getlogincred";
     return env->NewStringUTF(baseURL.c_str());
 }
+
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_getmarkAttendUrl(JNIEnv *env, jclass clazz) {
+std::string baseURL = "markAttendAdminSide";
+return env->NewStringUTF(baseURL.c_str());
+}
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_transCheckUrl(JNIEnv *env, jclass clazz) {
 std::string baseURL = "gettransachistory";

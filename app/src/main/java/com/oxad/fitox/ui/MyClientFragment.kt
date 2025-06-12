@@ -20,6 +20,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
@@ -338,6 +339,70 @@ activity?.let {
        }
 
     }
+    fun showAttendanceDialog(context: Context, isMarked: Boolean, attendanceNumber: String,attendanceMsg:String) {
+        // Inflate the custom layout
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_attendance, null)
+        val statusIcon = dialogView.findViewById<ImageView>(R.id.statusIcon)
+        val attendanceMessage = dialogView.findViewById<TextView>(R.id.attendanceMessage)
+        val attendanceCount = dialogView.findViewById<TextView>(R.id.attendanceCount)
+
+        // Set values based on attendance status
+        if (isMarked) {
+            statusIcon.setImageResource(R.drawable.checked) // Use your check icon resource
+            attendanceMessage.text = attendanceMsg
+        } else {
+            statusIcon.setImageDrawable(null)
+            attendanceMessage.text = attendanceMsg
+        }
+
+        // Set attendance number
+        attendanceCount.text = attendanceNumber
+
+        // Build and show the dialog
+        AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(true)
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+    override fun onMarkAttendClick(userid: Long) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result =
+                mainViewModel.apiRepoVM.markAttendance(
+                    userid.toInt(),
+                    mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId
+                )
+
+            result.onSuccess { response ->
+                activity?.let {
+                    showAttendanceDialog(requireContext(),response.success,response.a_count,response.message)
+                }
+              /*  if(response.success){
+                    activity?.let {
+                        showAttendanceDialog(requireContext(),response.success,response.a_count,response.message)
+                    }
+
+                    //  findNavController().popBackStack()`
+                }else{
+
+                    if(context !=null) {
+                        Utils.showToast(requireContext(), response.message)
+                    }
+                }*/
+            }
+
+            result.onFailure { exception ->
+                Utils.showToast(requireContext(), "Failed Network")
+                exception.message ?: "Something went wrong!"
+            }
+
+
+        }
+    }
+
     private var phoneNumber: String = ""
 
     private val requestCallPermission = registerForActivityResult(
