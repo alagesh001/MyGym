@@ -66,7 +66,6 @@ private lateinit var navController:NavController
         initUi()
         return binding.root    }
     private fun initUi(){
-        mainViewModel.loadMembers()
 
      /*   context?.let {
            Glide.with(it)

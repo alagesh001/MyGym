@@ -1,8 +1,12 @@
 package com.oxad.fitox.activity
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -75,14 +80,26 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
                 val passs = dataStoreManager.password.first()
                 //  Log.d("UserSession", "Mobile Number: $mobile")
                 if(mob !=null && passs !=null) {
-
                     withContext(Dispatchers.Main) {
                         binding.loginLay.visibility = GONE
                         binding.btnLogin.isEnabled = false
                         isLoggedIn = true
-                        apiManager.loginAdmin(mob.toLong(), passs,mHash)
-                        return@withContext
+                        if (isNetworkAvailable(this@Login)) {
+
+                            apiManager.loginAdmin(mob.toLong(), passs, mHash)
+                            return@withContext
+                        }
+                     else {
+                        val (gymResult, aKeyIs) = dataStoreManager.getLoginresData().first()
+                        val intent = Intent(this@Login, MainActivity::class.java)
+                        intent.putParcelableArrayListExtra("gym_list", gymResult)
+                        intent.putExtra("keyCall_Is", aKeyIs)
+                        startActivity(intent)
+                        finish()
                     }
+
+                }
+
                 }
             }
 
@@ -94,6 +111,16 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
             
             
 
+    }
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
     private fun backpressInit(){
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -264,6 +291,10 @@ if(!isLoggedIn) {
 }
             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
+            lifecycleScope.launch {
+                dataStoreManager.saveLoginResData(adminLoginModel.result,adminLoginModel.a_key)
+            }
+
             intent.putParcelableArrayListExtra("gym_list",adminLoginModel.result)
             intent.putExtra("keyCall_Is",adminLoginModel.a_key)
             startActivity(intent)

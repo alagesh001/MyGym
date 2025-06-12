@@ -263,8 +263,8 @@ if(page in 1..totalTransacPage) {
     fun loadMembers() {
 
         viewModelScope.launch {
-            val cachedMembers = memberDao.getAllMembers()
-            Log.e("chadka","cachedMembers data"+ Gson().toJson(cachedMembers))
+            val cachedMembers = memberDao.getAllMembers(gymResult[currentGymSelected].GymId)
+            Log.e("chadka","cachedMembers dataStore "+ Gson().toJson(cachedMembers))
 
             if (cachedMembers.isNotEmpty()) {
                 _memberList.value =  cachedMembers // Return cached data
@@ -273,8 +273,15 @@ if(page in 1..totalTransacPage) {
                 val result =apiRepoVM.getMembers(gymResult[currentGymSelected].GymId,currentPage,a_keyIs)
                 result.onSuccess { response ->
                    // Log.e("chadka", "" + Gson().toJson(response))
+
+
                     if (response.success) {
+
                         _memberList.value = (_memberList.value ?: emptyList()) + response.result
+                        Log.e("chadka","abcd AAA "+ Gson().toJson( _memberList.value))
+
+                        Log.e("chadka","abcd BBB "+ Gson().toJson(response.result))
+
                         if (currentPage < response.totalPages) {
                             currentPage++ // Move to next page
                             loadMembers()
@@ -300,7 +307,7 @@ if(page in 1..totalTransacPage) {
 
     fun refreshMembers() {
         viewModelScope.launch {
-            memberDao.clearMembers()
+            memberDao.clearMembers(gymResult[currentGymSelected].GymId)
             currentPage = 1
             isLastPage = false
             _memberList.value = emptyList()
@@ -310,7 +317,7 @@ if(page in 1..totalTransacPage) {
     fun clearmembers(isswipe: Boolean = false) {
 
         viewModelScope.launch {
-            memberDao.clearMembers()
+            memberDao.clearMembers(gymResult[currentGymSelected].GymId)
             currentPage = 1
             isLastPage = false
             _memberList.value = emptyList()
