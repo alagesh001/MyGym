@@ -1,6 +1,7 @@
 package com.oxad.fitox.datastore
 
 import android.content.Context
+import android.os.Parcel
 import android.util.Base64
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -41,7 +42,48 @@ class DataStoreManager(private val context: Context) {
 
     }
 
+    fun LoginResult.toByteArray(): ByteArray {
+        val parcel = Parcel.obtain()
+        this.writeToParcel(parcel, 0)
+        val bytes = parcel.marshall()
+        parcel.recycle()
+        return bytes
+    }
+
+    fun ByteArray.toLoginResult(): LoginResult {
+        val parcel = Parcel.obtain()
+        parcel.unmarshall(this, 0, this.size)
+        parcel.setDataPosition(0)
+        val result = LoginResult.CREATOR.createFromParcel(parcel)
+        parcel.recycle()
+        return result
+    }
+
+
     suspend fun saveLoginResData(gymResult: ArrayList<LoginResult>, aKeyIs: String) {
+        val gymResultBytes = gymResult.joinToString(",") {
+            Base64.encodeToString(it.toByteArray(), Base64.DEFAULT)
+        }
+        context.dataStore.edit { preferences ->
+            preferences[GYM_RESULT_KEY] = gymResultBytes
+            preferences[A_KEY_IS_KEY] = aKeyIs
+        }
+    }
+    fun getLoginresData(): Flow<Pair<ArrayList<LoginResult>, String>> {
+        return context.dataStore.data.map { preferences ->
+            val gymResultBase64 = preferences[GYM_RESULT_KEY] ?: ""
+            val gymResult: ArrayList<LoginResult> = ArrayList(
+                gymResultBase64.split(",").filter { it.isNotEmpty() }.map {
+                    Base64.decode(it, Base64.DEFAULT).toLoginResult()
+                }
+            )
+            val aKeyIs = preferences[A_KEY_IS_KEY] ?: ""
+            Pair(gymResult, aKeyIs)
+        }
+    }
+
+
+   /* suspend fun saveLoginResData(gymResult: ArrayList<LoginResult>, aKeyIs: String) {
         val gymResultJson = gson.toJson(gymResult) // Serialize gymResult
         context.dataStore.edit { preferences ->
             preferences[GYM_RESULT_KEY] = gymResultJson
@@ -63,7 +105,7 @@ class DataStoreManager(private val context: Context) {
 
             Pair(gymResult, aKeyIs)
         }
-    }
+    }*/
     // ✅ Save coaches list
     suspend fun saveCoaches(coaches: List<TrainerModel>) {
         val json = Gson().toJson(coaches) // Convert list to JSON
