@@ -1,6 +1,7 @@
 package com.oxad.fitox.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -40,5 +41,13 @@ abstract class AppDatabase : RoomDatabase() {
 
             }
         }*/
+        fun clearDatabase(context: Context) {
+            synchronized(this) {
+                INSTANCE?.close()
+                val result = context.deleteDatabase("gym_database")
+                INSTANCE = null
+                //Log.d("DatabaseClear", "Database cleared successfully: $result")
+            }
+        }
     }
 }

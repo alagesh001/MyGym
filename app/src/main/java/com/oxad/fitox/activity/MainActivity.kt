@@ -1,5 +1,6 @@
 package com.oxad.fitox.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -12,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
@@ -23,6 +25,7 @@ import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -110,5 +113,18 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+    private fun logout() {
+        //  Log.e("chadjfadf","Yesss")
+        this@MainActivity.let {
+            lifecycleScope.launch {
+                mainViewModel.dataStoreManagerVM.clearUserData()
+                AppDatabase.clearDatabase(application)
+            }
+            val intent = Intent(it, Login::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            this@MainActivity.finish()
+        }
     }
 }

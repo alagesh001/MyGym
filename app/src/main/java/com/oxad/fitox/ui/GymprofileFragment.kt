@@ -88,6 +88,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.net.toUri
+import com.oxad.fitox.database.AppDatabase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -176,14 +177,17 @@ class GymprofileFragment : Fragment() {
     private fun logout(){
       //  Log.e("chadjfadf","Yesss")
 activity?.let {
+    lifecycleScope.launch {
+
+        mainViewModel.dataStoreManagerVM.clearUserData()
+        AppDatabase.clearDatabase(requireContext().applicationContext)
+
+    }
     val intent = Intent(requireContext(), Login::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    startActivity(intent)
-    lifecycleScope.launch {
-        mainViewModel.dataStoreManagerVM.clearUserData()
-    }
-    requireActivity().finish()
+   startActivity(intent)
 
+    requireActivity().finish()
 }
 
     }
