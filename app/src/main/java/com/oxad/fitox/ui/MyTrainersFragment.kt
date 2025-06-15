@@ -5,6 +5,8 @@ import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -52,6 +54,11 @@ class MyTrainersFragment : Fragment(),ExpandableAdapter.TrainerListener{
     }
 
     private fun initUi() {
+        if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
+            binding.btnDietician.visibility = VISIBLE
+        }else{
+            binding.btnDietician.visibility = GONE
+        }
         binding.passwordInput.text = mainViewModel.dieticianData?.password?.toString()
         binding.passwordInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         binding.passwordInput.transformationMethod = PasswordTransformationMethod.getInstance()

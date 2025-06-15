@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.viewmodel.MainViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class MemberAdapter(private val context: Context, private val listener: MemberAdapterListener) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
+class MemberAdapter(private val context: Context, private val listener: MemberAdapterListener,private val isActive: Int) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_member, parent, false)
         return MemberViewHolder(view)
@@ -41,6 +42,16 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         val member = members[position]
         member.let {
             holder.bind(it,position)
+        }
+        if(isActive == 3){
+            holder.dietscheduletv.visibility = VISIBLE
+            holder.sendwtsapp_tv.visibility = VISIBLE
+            holder.markAttend_tv.visibility = VISIBLE
+
+        }else{
+            holder.dietscheduletv.visibility = GONE
+            holder.sendwtsapp_tv.visibility = GONE
+            holder.markAttend_tv.visibility = GONE
         }
         if(isDateExpired(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)

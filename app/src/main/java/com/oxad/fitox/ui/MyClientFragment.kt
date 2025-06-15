@@ -126,7 +126,7 @@ private var isSearching:Boolean = false
           //  binding.circularProgressBar.visibility = VISIBLE
             mainViewModel.refreshMembers()        }
 activity?.let {
-    memberAdapter = MemberAdapter(requireContext(),this)
+    memberAdapter = MemberAdapter(requireContext(),this,mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active)
 
     dataStoreManager = DataStoreManager(requireContext())
     binding.recyclerView.layoutManager = LinearLayoutManager(context)
