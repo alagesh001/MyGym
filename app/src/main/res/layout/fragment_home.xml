@@ -144,10 +144,11 @@ android:alpha="0.8"
                 />
 
             <TextView
+                android:id="@+id/admin_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Admins/Dietician"
+                android:text="Admins"
                 android:paddingHorizontal="@dimen/_20sdp"
 
                 android:textColor="@color/white"
@@ -251,6 +252,7 @@ android:alpha="0.8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="2dp"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/_10sdp">
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
@@ -290,6 +292,7 @@ android:alpha="0.8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="2dp"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/_10sdp">
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"

@@ -38,6 +38,7 @@
             android:layout_width="@dimen/_120sdp"
             android:layout_height="wrap_content"
             android:text="Dietician"
+            android:visibility="gone"
             android:textSize="20sp"
             android:paddingVertical="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_10sdp"

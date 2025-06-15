@@ -10,7 +10,9 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnClickListener
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -66,7 +68,16 @@ private lateinit var navController:NavController
         initUi()
         return binding.root    }
     private fun initUi(){
+if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
+    binding.myreferRl.visibility = VISIBLE
+    binding.productAdd.visibility = VISIBLE
+    binding.adminTv.text = "Admins/Dietician"
+}else{
+    binding.myreferRl.visibility = GONE
+    binding.productAdd.visibility = GONE
+    binding.adminTv.text = "Admins"
 
+}
      /*   context?.let {
            Glide.with(it)
                .asBitmap()

@@ -253,7 +253,8 @@ data class LoginResult(
     val membercount: Int,
     val renewaldate: String,
     val mob: String,
-    val admin_cont: String
+    val admin_cont: String,
+    val is_active: Int
 
 ) :Parcelable {
     constructor(parcel: Parcel) : this(
@@ -265,6 +266,7 @@ data class LoginResult(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        parcel.readInt()
 
 
         ) {
@@ -279,6 +281,7 @@ data class LoginResult(
         parcel.writeString(renewaldate)
         parcel.writeString(mob)
         parcel.writeString(admin_cont)
+        parcel.writeInt(is_active)
 
     }
 
