@@ -46,12 +46,10 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         if(isActive == 3){
             holder.dietscheduletv.visibility = VISIBLE
             holder.sendwtsapp_tv.visibility = VISIBLE
-            holder.markAttend_tv.visibility = VISIBLE
 
         }else{
             holder.dietscheduletv.visibility = GONE
             holder.sendwtsapp_tv.visibility = GONE
-            holder.markAttend_tv.visibility = GONE
         }
         if(isDateExpired(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)

@@ -21,8 +21,8 @@ android {
         applicationId = "com.oxad.fitox"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "1.8.5.2"
+        versionCode = 18
+        versionName = "1.8.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
