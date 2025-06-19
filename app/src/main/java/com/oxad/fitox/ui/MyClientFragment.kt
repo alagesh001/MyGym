@@ -57,9 +57,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
+import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -245,7 +246,97 @@ activity?.let {
 }
 
         }
-    private fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
+
+
+    fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
+        val dialog = ProgressDialog(context).apply {
+            setMessage("Exporting CSV file...")
+            setCancelable(false)
+            show()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Define file path
+                val file = File(context.getExternalFilesDir(null), "gym_members.csv")
+                // Export data to CSV
+                exportUsersToCsv(file, users)
+
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Toast.makeText(context, "Export complete!", Toast.LENGTH_SHORT).show()
+                    // Share the CSV file
+                    shareCsvFile(context, file)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Log.e("CSVExportError", e.message.orEmpty())
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun exportUsersToCsv(file: File, users: List<Member>) {
+        // Create FileWriter and BufferedWriter
+        BufferedWriter(FileWriter(file)).use { writer ->
+            // Write header row
+            writer.write(
+                listOf(
+                    "ID", "Mobile", "Name", "Renewal Date", "Email", "User ID", "Referral ID",
+                    "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
+                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
+                ).joinToString(",") + "\n"
+            )
+
+            // Write data rows
+            users.forEachIndexed { index, user ->
+                writer.write(
+                    listOf(
+                        (index + 1).toString(),
+                        user.mobile,
+                        user.name,
+                        user.renewal_date,
+                        user.email,
+                        user.userid.toString(),
+                        user.referral_id ?: "",
+                        user.height.toString(),
+                        user.weight.toString(),
+                        user.dob,
+                        user.coachid.toString(),
+                        user.goal.toString(),
+                        user.gender ?: "Male",
+                        user.referred_by ?: "",
+                        user.due_amount.toString(),
+                        user.attendance_count.toString(),
+                        user.last_attend,
+                        user.gymid.toString()
+                    ).joinToString(",") + "\n"
+                )
+            }
+        }
+    }
+
+    private fun shareCsvFile(context: Context, file: File) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/csv"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Open or Share CSV File"))
+    }
+
+
+
+    /*    private fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
         val dialog = ProgressDialog(context).apply {
             setMessage("Exporting Excel file...")
             setCancelable(false)
@@ -331,7 +422,7 @@ activity?.let {
         }
 
         context.startActivity(Intent.createChooser(shareIntent, "Open or Share Excel File"))
-    }
+    }*/
     companion object {
 
         @JvmStatic
