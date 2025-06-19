@@ -9,6 +9,7 @@ object ApiHelper {
     external fun getUserregUrl(): String
     external fun enterInUrl(): String
     external fun lkeyFetch(): String
+    external fun enterInMemberUrl(): String
 
     external fun gDatamembUrl(): String
     external fun vcoachUrl(): String

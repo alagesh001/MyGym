@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.oxad.fitox.model.AdminLoginModel
+import com.oxad.fitox.model.MemberLoginModel
 import com.oxad.fitox.utils.RsConstants.Companion.REGISTER_USER
 import com.oxad.fitox.utils.RsConstants.Companion.SAVE_USER
 import com.oxad.fitox.utils.SessionManager
@@ -106,6 +107,37 @@ private val contextA = context
                     Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })*/
+    }
+
+    fun loginMember( userId: Long, pass: String,type:Int = 1) {
+        //   Log.w("checkresponss","call api registeruser } ")
+        progressDialogUtil.showLoadingDialog()
+
+        RetrofitClient.instance.loginMember(ApiHelper.enterInMemberUrl(),userId,pass,type)
+            .enqueue(object : Callback<MemberLoginModel> {
+
+                override fun onResponse(call: Call<MemberLoginModel>, response: Response<MemberLoginModel>) {
+                    //Log.w("checkresponss","call api response ${Gson().toJson(response.body())}")
+                    progressDialogUtil.hideLoadingDialog()
+
+                    if(response.body()!=null) {
+                        if (response.body()!!.success) {
+                            //sessionManager.saveLogin(profileUrl, name, email)
+                            apiInterfaceIs.onSuccess(response.body()!!, RsConstants.MEMBER_LOGIN)
+                        } else {
+                            apiInterfaceIs.onError(response.body()!!.error)
+                        }
+                    }
+
+                }
+
+                override fun onFailure(call: Call<MemberLoginModel>, t: Throwable) {
+                    // Log.e("checkresponss", "Error: ${t.message}")
+                    progressDialogUtil.hideLoadingDialog()
+                    apiInterfaceIs.onError("Network error")
+                    // Toast.makeText(contextA, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
     fun loginAdmin( mob: Long, pass: String,hashIs:String) {
     //   Log.w("checkresponss","call api registeruser } ")

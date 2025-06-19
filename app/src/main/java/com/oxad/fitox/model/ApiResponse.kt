@@ -6,6 +6,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class ApiResponse(val s:String)
 data class UserRegisterModel(
@@ -167,6 +168,7 @@ data class ProductResponse(
 
 )
 
+
 data class ProductRes(
     val productId: Int,
     val productName: String,
@@ -181,6 +183,22 @@ data class MyClient(
     val renewal_date: String
 
 )
+@Parcelize
+data class MemberLoginModel(
+    val success: Boolean,
+    val message:Message? ,
+    val type: Int?,
+    val error: String = "Login Error"
+) : Parcelable
+@Parcelize
+data class Message(
+    val name: String?,
+    val userid: Int?,
+    val gym_id: Int?,
+    val gender: String?,
+    val rDate: String?
+) : Parcelable
+
 data class AdminLoginModel(
 
     val success: Boolean,
