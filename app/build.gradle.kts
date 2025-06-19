@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
+    id ("kotlin-parcelize")
+
 }
 
 android {
@@ -61,6 +63,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+
     implementation("com.github.Dimezis:BlurView:version-2.0.6")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -71,7 +75,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview.android)
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation ("androidx.compose.material:material-icons-extended:<version>")
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")// Latest stable version
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

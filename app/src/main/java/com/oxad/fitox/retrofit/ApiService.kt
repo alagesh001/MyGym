@@ -7,6 +7,7 @@ import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
 import com.oxad.fitox.model.MarkAttendModel
+import com.oxad.fitox.model.MemberLoginModel
 import com.oxad.fitox.model.MemberResponse
 import com.oxad.fitox.model.ProductResponse
 import com.oxad.fitox.model.UserRegisterModel
@@ -118,7 +119,15 @@ interface ApiService {
         @Field("mobile") mob: Long,
         @Field("password") pass: String
     ): Call<AdminLoginModel>
+    @FormUrlEncoded
+    @POST // Adjust this to match your backend endpoint
+    fun loginMember(
+        @Url url: String,
+        @Field("userid") mob: Long,
+        @Field("id") pass: String,
+        @Field("type") type: Int,
 
+        ): Call<MemberLoginModel>
     @FormUrlEncoded
     @POST // Adjust this to match your backend endpoint
     fun saveprofiledata(
