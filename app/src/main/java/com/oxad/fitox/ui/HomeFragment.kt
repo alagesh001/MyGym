@@ -133,6 +133,7 @@ if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
         binding.settingsIv.setOnClickListener(this)
         binding.productAdd.setOnClickListener(this)
      //   binding.transacRl.setOnClickListener(this)
+        binding.inactiveRl.setOnClickListener(this)
 
 
 
@@ -158,6 +159,8 @@ if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
             binding.settingsIv -> code =8
             binding.productAdd -> code =9
           //  binding.transacRl -> code =10
+            binding.inactiveRl -> code = 11
+
         }
         openFragment(code)
     }
@@ -168,9 +171,17 @@ if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
         {
             1 ->  {
               //  val startTime = System.currentTimeMillis()
-                navController.navigate(R.id.action_homeFragment_to_myclientfragment,null, NavOptions.Builder()
-                    .setLaunchSingleTop(true)
-                    .build())
+                val bundle = Bundle().apply {
+                    putInt("type", 0)         // Example of passing an integer
+                }
+
+                navController.navigate(
+                    R.id.action_homeFragment_to_myclientfragment,
+                    bundle,
+                    NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .build()
+                )
               //  val endTime = System.currentTimeMillis()
                // Log.d("FragmentTiming", "Client took: ${endTime - startTime} ms")
 
@@ -210,10 +221,23 @@ if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3){
                         .build()
                 )
                 val endTime = System.currentTimeMillis()
-                Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
+              //  Log.d("FragmentTiming", "Coach Navigation took: ${endTime - startTime} ms")
             }
             9 -> navController.navigate(R.id.action_homeFragment_to_myProductFragment)
             10 -> navController.navigate(R.id.action_homeFragment_to_myTransacFrag)
+            11 -> {
+                val bundle = Bundle().apply {
+                    putInt("type", 1)         // Example of passing an integer
+                }
+
+                navController.navigate(
+                    R.id.action_homeFragment_to_myclientfragment,
+                    bundle,
+                    NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .build()
+                )
+            }
 
 
 

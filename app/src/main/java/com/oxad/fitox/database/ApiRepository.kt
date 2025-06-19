@@ -50,6 +50,16 @@ class ApiRepository(contextA: Context) {
 
         progressDialog?.dismiss()
     }
+
+    suspend fun getOldMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
+        ///  showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.getmymembers(ApiHelper.gOldDatamembUrl(),aKeyIs,gymId, page)
+            }
+        //  hideLoading()
+        return result
+    }
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
          ///  showLoading();
             val result =

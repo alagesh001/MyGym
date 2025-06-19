@@ -178,36 +178,37 @@ android:alpha="0.8"
                     />
             </LinearLayout>
         </RelativeLayout>
-      <!--  <RelativeLayout
-            android:id="@+id/transac_rl"
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="2dp"
-            android:layout_marginTop="@dimen/_10sdp">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_70sdp"
-                android:background="@drawable/rounded_rect_grad2"
-                android:alpha="0.8"
-                android:backgroundTint="@color/red"
-                />
+        <!--  <RelativeLayout
+              android:id="@+id/transac_rl"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Transaction History"
-                android:paddingHorizontal="@dimen/_20sdp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:elevation="2dp"
+              android:layout_marginTop="@dimen/_10sdp">
+              <androidx.appcompat.widget.AppCompatImageView
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/_70sdp"
+                  android:background="@drawable/rounded_rect_grad2"
+                  android:alpha="0.8"
+                  android:backgroundTint="@color/red"
+                  />
 
-                android:textColor="@color/white"
-                android:textSize="@dimen/_15ssp"
-                android:layout_centerVertical="true"
-                />
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textStyle="bold"
+                  android:text="Transaction History"
+                  android:paddingHorizontal="@dimen/_20sdp"
+
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/_15ssp"
+                  android:layout_centerVertical="true"
+                  />
 
 
-        </RelativeLayout>
--->
+          </RelativeLayout>
+  -->
         <RelativeLayout
             android:id="@+id/searchfilter_rl"
 
@@ -266,6 +267,44 @@ android:alpha="0.8"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:text="Broadcast Message"
+                android:paddingHorizontal="@dimen/_20sdp"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:layout_centerVertical="true"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                >
+
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/inactive_rl"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:layout_marginTop="@dimen/_10sdp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_70sdp"
+                android:background="@drawable/rounded_rect_grad8"
+                android:alpha="0.8"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Inactive Clients"
                 android:paddingHorizontal="@dimen/_20sdp"
 
                 android:textColor="@color/white"
