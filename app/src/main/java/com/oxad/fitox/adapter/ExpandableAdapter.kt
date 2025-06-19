@@ -25,6 +25,8 @@ class  ExpandableAdapter( private val context: Context,private val listener:Trai
     }
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
+        val tvAdminId: TextView = itemView.findViewById(R.id.tvadminid)
+
         val tvDetails: TextView = itemView.findViewById(R.id.tvDetails)
         val expandableLayout: View = itemView.findViewById(R.id.expandableLayout)
         val ivProfile: ImageView = itemView.findViewById(R.id.imgProfile)
@@ -51,6 +53,7 @@ interface TrainerListener{
         if(item.role != "dietician"){
             holder.tvTitle.text = item.name
             holder.tvDetails.text = item.mob
+            holder.tvAdminId.text = item.coachid.toString()
            // holder.relative_lay.setBackgroundColor(ContextCompat.getColor(context, R.color.secondary_color))
         }
 

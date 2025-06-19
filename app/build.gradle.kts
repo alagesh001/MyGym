@@ -72,7 +72,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation ("androidx.compose.material:material-icons-extended:<version>")
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")// Latest stable version
-
+    implementation ("org.apache.poi:poi:5.2.3")
+    implementation ("org.apache.poi:poi-ooxml:5.2.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
