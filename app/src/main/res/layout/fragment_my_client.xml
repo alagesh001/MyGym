@@ -34,35 +34,53 @@ android:layout_alignParentEnd="true"
         android:padding="@dimen/_10sdp"
 
         >
+<LinearLayout
+    android:id="@+id/searchViewLay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="10"
+    android:gravity="center"
+    >
+
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="9"
             android:queryHint="Search Members..."
             android:backgroundTint="#F0EFEF"
             android:background="@drawable/roun_rad_rect"
             app:theme="@style/SearchViewTheme"
             />
+    <ImageView
+        android:id="@+id/downloadiv"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_weight="1"
+        android:src="@drawable/download_icn"/>
+</LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:itemCount="5"
-            android:layout_below="@+id/searchView"
+            android:layout_below="@+id/searchViewLay"
 
             android:elevation="1dp"
 
             android:background="@color/white"
             android:layout_marginTop="8dp" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/headingCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_below="@+id/searchView"
+            android:layout_below="@+id/searchViewLay"
             android:padding="@dimen/_10sdp"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"

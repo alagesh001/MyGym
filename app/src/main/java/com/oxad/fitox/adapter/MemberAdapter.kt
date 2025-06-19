@@ -104,6 +104,7 @@ holder.dueTextView.visibility = VISIBLE
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rootLlView: LinearLayout = view.findViewById(R.id.rootView)
         val selectView: LinearLayout = view.findViewById(R.id.card_bg)
+        private val uidTextView: TextView = view.findViewById(R.id.tvUserid)
 
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
         private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
@@ -125,6 +126,7 @@ holder.dueTextView.visibility = VISIBLE
         val markAttend_tv: TextView = itemView.findViewById(R.id.markAttend_tv)
 
         fun bind(member: Member,position: Int) {
+            uidTextView.text = member.userid.toString() // Incrementing number
             numberTextView.text = (position + 1).toString() // Incrementing number
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()

@@ -3,6 +3,7 @@ package com.oxad.fitox.ui
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -46,6 +48,7 @@ import com.oxad.fitox.model.Member
 import com.oxad.fitox.utils.Utils
 
 import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.StateFlow
@@ -54,6 +57,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -101,6 +107,15 @@ private var isSearching:Boolean = false
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE
         //  binding.refreshTv.visibility = GONE
+        binding.downloadiv.setOnClickListener{
+
+                if (::memberListSet.isInitialized) {
+                    activity?.let {
+                        exportWithLoadingAndShare(requireContext(),memberListSet)
+
+                }
+            }
+        }
         binding.expirySort.setOnClickListener {
             if (::memberListSet.isInitialized) {
                 val sortedMembers = memberListSet.sortedBy { it.renewal_date }
@@ -230,8 +245,93 @@ activity?.let {
 }
 
         }
+    private fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
+        val dialog = ProgressDialog(context).apply {
+            setMessage("Exporting Excel file...")
+            setCancelable(false)
+            show()
+        }
 
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Export the Excel file
+                val file = File(context.getExternalFilesDir(null), "my_gym_members.xlsx")
+                exportUsersToExcel(context, users)
 
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Toast.makeText(context, "Export complete!", Toast.LENGTH_SHORT).show()
+                    shareExcelFile(context, file)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Log.e("sdafsv",""+e.message)
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    private fun exportUsersToExcel(context: Context, users: List<Member>) {
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Gym Members")
+
+        // Header row
+        val header = sheet.createRow(0)
+        val headers = listOf(
+            "ID", "Mobile", "Name", "Renewal Date", "Email", "User ID", "Referral ID",
+            "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
+            "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
+        )
+
+        headers.forEachIndexed { index, title ->
+            header.createCell(index).setCellValue(title)
+        }
+
+        // Data rows
+        users.forEachIndexed { index, user ->
+            val row = sheet.createRow(index + 1)
+            row.createCell(0).setCellValue((index + 1).toDouble()) // Excel ID starting from 1
+            row.createCell(1).setCellValue(user.mobile.toDouble())
+            row.createCell(2).setCellValue(user.name)
+            row.createCell(3).setCellValue(user.renewal_date)
+            row.createCell(4).setCellValue(user.email)
+            row.createCell(5).setCellValue(user.userid.toDouble())
+            row.createCell(6).setCellValue(user.referral_id ?: "")
+            row.createCell(7).setCellValue(user.height.toDouble())
+            row.createCell(8).setCellValue(user.weight.toDouble())
+            row.createCell(9).setCellValue(user.dob)
+            row.createCell(10).setCellValue(user.coachid.toDouble())
+            row.createCell(11).setCellValue(user.goal.toDouble())
+            row.createCell(12).setCellValue(user.gender ?: "Male")
+            row.createCell(13).setCellValue(user.referred_by ?: "")
+            row.createCell(14).setCellValue(user.due_amount.toDouble())
+            row.createCell(15).setCellValue(user.attendance_count.toDouble())
+            row.createCell(16).setCellValue(user.last_attend)
+            row.createCell(17).setCellValue(user.gymid.toDouble())
+        }
+
+        val file = File(context.getExternalFilesDir(null), "my_gym_members.xlsx")
+        FileOutputStream(file).use { outputStream ->
+            workbook.write(outputStream)
+        }
+        workbook.close()
+    }
+    fun shareExcelFile(context: Context, file: File) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Open or Share Excel File"))
+    }
     companion object {
 
         @JvmStatic
