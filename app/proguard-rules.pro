@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
  -keep,allowobfuscation,allowshrinking interface retrofit2.Call
  -keep,allowobfuscation,allowshrinking class retrofit2.Response
+-keep,allowobfuscation class kotlin.Metadata { *; }
 
  -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 -keep class com.oxad.fitox.retrofit.ApiManager { *; }
@@ -28,6 +29,7 @@
 -keep class com.oxad.fitox.retrofit.** { *; }
 -keep class com.oxad.fitox.database.** { *; }
 -keep class com.oxad.fitox.model.ResponseModels.** { *; }
+-keep,allowobfuscation @kotlin.Metadata
 
 -keepnames class com.oxad.fitox.activity.Login
 # Keep Retrofit classes

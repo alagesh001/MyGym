@@ -20,6 +20,12 @@ Java_com_oxad_fitox_retrofit_ApiHelper_enterInUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "getgymlist";
     return env->NewStringUTF(baseURL.c_str());
 }
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_enterInMemberUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "loginMembFitox";
+    return env->NewStringUTF(baseURL.c_str());
+}
+
 
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_lkeyFetch(JNIEnv *env, jclass clazz) {

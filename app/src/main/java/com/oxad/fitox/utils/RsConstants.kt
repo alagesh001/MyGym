@@ -7,6 +7,8 @@ class RsConstants {
         final val ADMIN_LOGIN = 3
         final val GET_MY_MEMBERS = 4
         final val ADD_MY_MEMBERS = 5
+        final val MEMBER_LOGIN = 6
+
 
     }
 }
