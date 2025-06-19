@@ -6,17 +6,19 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.oxad.fitox.database.ApiRepository
+import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.model.MemberLoginModel
 import com.oxad.fitox.retrofit.ApiService
 import kotlinx.coroutines.flow.Flow
 
 class MemberViewModel(private val apiService: ApiService,private val gymId: Int) : ViewModel() {
 
-   /* val memberList: Flow<PagingData<Member>> = Pager(
-        config = PagingConfig(
-            pageSize = 5, // Load 5 items per page
-            enablePlaceholders = false
-        ),
-        pagingSourceFactory = { MemberPagingSource(apiService,gymId) }
-    ).flow.cachedIn(viewModelScope)*/
+    var memResult: ArrayList<MemberLoginModel> = ArrayList()
+    lateinit var apiRepoVM: ApiRepository
+
+    fun setApiRepo(apiRepository: ApiRepository){
+        apiRepoVM = apiRepository
+    }
 }

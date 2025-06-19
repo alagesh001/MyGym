@@ -276,6 +276,18 @@ app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginTop="16dp" />
+                <CheckBox
+                    android:id="@+id/checkbox_member"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="As a Member"
+                    android:checked="false"
+                    android:padding="8dp"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/white"                    app:layout_constraintTop_toBottomOf="@id/et_password"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
 
                 <!-- Login Button -->
                 <Button
@@ -285,7 +297,7 @@ app:layout_constraintBottom_toBottomOf="parent"
                     android:text="LOGIN"
                     android:textColor="@color/white"
                     android:backgroundTint="@color/dark_fourth_color"
-                    app:layout_constraintTop_toBottomOf="@id/et_password"
+                    app:layout_constraintTop_toBottomOf="@id/checkbox_member"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="32dp"

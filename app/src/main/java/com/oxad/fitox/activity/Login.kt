@@ -37,6 +37,7 @@ import com.oxad.fitox.databinding.ActivityLoginBinding
 import com.oxad.fitox.databinding.LoginLayNewBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.AdminLoginModel
+import com.oxad.fitox.model.MemberLoginModel
 import com.oxad.fitox.retrofit.ApiInterface
 import com.oxad.fitox.retrofit.ApiManager
 import com.oxad.fitox.utils.RsConstants
@@ -123,6 +124,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
     private fun backpressInit(){
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
               if(isRegisterLay){
@@ -181,18 +183,23 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
                 }
             })
     }
-
+private var isMember:Boolean = false
     private fun setclicklistener() {
         binding.btnLogin.setOnClickListener(this)
         binding.btnRegister.setOnClickListener(this)
         binding.btnCancel.setOnClickListener(this)
         binding.btnSubmit.setOnClickListener(this)
 
+        binding.checkboxMember.setOnCheckedChangeListener { _, isChecked ->
+            isMember = isChecked
+        }
     }
 
     override fun onSuccess(response: Any, serviceCode: Int) {
         when(serviceCode){
             RsConstants.ADMIN_LOGIN -> registerSuccess(response)
+            RsConstants.MEMBER_LOGIN -> registerMemberSuccess(response,)
+
         }
     }
 
@@ -268,8 +275,17 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         }, 3000)
         // Simulate network delay*/
 
+
         if(binding.etMobile.text.toString() != "" && binding.etPassword.text.toString() !="") {
-            apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString(),mHash)
+
+            if (isMember) {
+
+                apiManager.loginMember( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString(),1)
+
+            } else {
+                apiManager.loginAdmin( binding.etMobile.text.toString().toLong(),binding.etPassword.text.toString(),mHash)
+
+            }
             binding.btnLogin .isEnabled = false
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.btnLogin .isEnabled = true
@@ -279,6 +295,27 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
         }else{
             Utils.showToast(this,"Fill all fields.")
         }
+    }
+    private fun registerMemberSuccess(response: Any){
+        val memberLoginModelb =  response as MemberLoginModel
+
+        //Log.e("adfadf",""+ Gson().toJson(adminLoginModel))
+
+        if(memberLoginModelb.success) {
+
+            Toast.makeText(this, "Member Login Successful", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, MemMainActivity::class.java)
+
+            startActivity(intent)
+            finish()
+
+        }else{
+            binding.loginLay.visibility = VISIBLE
+            initUI()
+
+        }
+
+
     }
     private fun registerSuccess(response: Any){
         val adminLoginModel =  response as AdminLoginModel
