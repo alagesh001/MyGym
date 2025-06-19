@@ -462,10 +462,58 @@ activity?.let {
 
         showDateTimePickerDialog(userid)
     }
+    private fun showShareDialog(context: Context, mobile:String, userName: String, expiryDate: String,dueAmount: String,type: Int) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_message_wtsapp, null)
 
-    override fun onWhatsappClick(mobile: Long) {
-        sendWhatsAppMessage("", "91" + mobile.toString().replace(" ", ""))
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Share Options")
+            .setView(dialogView)
+            .setNegativeButton("Cancel", null)
+            .create()
+when(type){
+    1 ->{
+        dialogView.findViewById<TextView>(R.id.btn_share_custom).visibility = VISIBLE
+    }
+        2 ->{
+            dialogView.findViewById<TextView>(R.id.btn_share_renewal).visibility = VISIBLE
 
+        }
+            3->{
+                dialogView.findViewById<TextView>(R.id.btn_share_expiry).visibility = VISIBLE
+
+            }
+                4->{
+                    dialogView.findViewById<TextView>(R.id.btn_share_due).visibility = VISIBLE
+
+                }
+
+}
+        dialogView.findViewById<TextView>(R.id.btn_share_renewal).setOnClickListener {
+            val msg = "Hello $userName, your gym membership is expiring on $expiryDate. Please renew soon!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialogView.findViewById<TextView>(R.id.btn_share_expiry).setOnClickListener {
+            val msg = "Hi $userName, your gym membership expired on $expiryDate. Renew now to continue your fitness journey!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+        dialogView.findViewById<TextView>(R.id.btn_share_due).setOnClickListener {
+            val msg = "Hi $userName, you have ₹$dueAmount pending for your gym membership. Kindly clear your dues to avoid interruption."
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialogView.findViewById<TextView>(R.id.btn_share_custom).setOnClickListener {
+            val msg = "Hey $userName, don’t miss your next session. Stay fit!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialog.show()
+    }
+
+    override fun onWhatsappClick(mobile: Long,userName: String, expiryDate: String,dueAmount: Int,type:Int) {
+       activity?.let {
+           showShareDialog(requireContext(),mobile.toString(),userName,expiryDate,dueAmount.toString(),type)
+       }
     }
 
     override fun oncallClick(mobile: Long) {

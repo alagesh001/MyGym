@@ -40,6 +40,11 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
         val member = members[position]
+        var typeOfMember = 1
+        //1 Active
+        //2 Close to expiry
+        //3 Expired
+        //4 Due to be paid
         member.let {
             holder.bind(it,position)
         }
@@ -53,15 +58,19 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         }
         if(isDateExpired(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
+            typeOfMember = 3
         }else if(isDateCloseToExpiry(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
+            typeOfMember = 2
         }else{
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green_list)
+            typeOfMember = 1
         }
 
         if(member.due_amount!! >0){
     holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
-holder.dueTextView.visibility = VISIBLE
+            typeOfMember = 4
+            holder.dueTextView.visibility = VISIBLE
 }else{
             holder.dueTextView.visibility = GONE
 
@@ -94,7 +103,7 @@ holder.dueTextView.visibility = VISIBLE
             listener.oncallClick(member.mobile)
         }
         holder.wtsappbtn_iv.setOnClickListener {
-            listener.onWhatsappClick(member.mobile)
+            listener.onWhatsappClick(member.mobile,member.name,member.renewal_date,member.due_amount,typeOfMember)
         }
         holder.markAttend_tv.setOnClickListener {
             listener.onMarkAttendClick(member.userid)
@@ -189,7 +198,7 @@ holder.dueTextView.visibility = VISIBLE
 
         fun onWhatsappSend(member:Member)
         fun onDietSchedule(userid:Long)
-        fun onWhatsappClick(mobile:Long)
+        fun onWhatsappClick(mobile:Long,userName: String, expiryDate: String, dueAmount: Int,type:Int)
         fun oncallClick(mobile:Long)
         fun onMarkAttendClick(userid:Long)
 
