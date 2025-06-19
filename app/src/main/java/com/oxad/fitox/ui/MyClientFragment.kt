@@ -35,6 +35,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.util.Util
 import com.google.gson.Gson
 import com.oxad.fitox.R
@@ -84,7 +85,11 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var memberSearchAdapter: MemberSearchAdapter
     private lateinit var memberListSet: List<Member>
-private var isSearching:Boolean = false
+    private var oldmemberListSet: MutableList<Member> = mutableListOf()
+
+    private var typeIs: Int? = 0
+
+    private var isSearching:Boolean = false
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,11 +104,144 @@ private var isSearching:Boolean = false
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyClientBinding.inflate(inflater, container, false)
-        initUi()
+        typeIs = arguments?.getInt("type")
+        if(typeIs == 0){
+            initUi()
+        }else{
+            initUiOldData()
+        }
+
         return binding.root
 
 
     }
+private var oldDtacurrentPage = 1
+    private fun initUiOldData() {
+        binding.downloadiv.setOnClickListener{
+
+                activity?.let {
+                    exportWithLoadingAndShare(requireContext(),oldmemberListSet)
+
+                }
+
+        }
+        binding.nameSort.setOnClickListener {
+                val sortedMembers =
+                    oldmemberListSet.sortedBy { it.name.lowercase(Locale.ROOT) } // Ensures case-insensitive sorting
+
+                memberAdapter.submitList(sortedMembers)
+
+
+        }
+        binding.expirySort.setOnClickListener {
+                val sortedMembers = oldmemberListSet.sortedBy { it.renewal_date }
+
+                // Submit the sorted list to the adapter
+                memberAdapter.submitList(sortedMembers)
+
+        }
+        mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+            oldDtacurrentPage++ // Increment after successful fetch
+        }
+        activity?.let {
+            memberAdapter = MemberAdapter(
+                requireContext(),
+                this,
+                mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active
+            )
+
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+
+            binding.recyclerView.adapter = memberAdapter
+            binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    //Log.e("adfasdf","Yes1")
+                    if (layoutManager.findLastCompletelyVisibleItemPosition() == memberAdapter.itemCount - 1) {
+                        // Load next page
+                        //Log.e("adfasdf","Yes2 $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
+
+                        if (oldDtacurrentPage < mainViewModel.totalOldDataPage) {
+                            mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+                                oldDtacurrentPage++ // Increment after successful fetch
+                            }                        }
+                    }
+                }
+            })
+            binding.swipeRefreshLayout.setOnRefreshListener {
+                if(context!=null) {
+                    if (isNetworkAvailable(requireContext())) {
+                        oldDtacurrentPage = 1
+                        mainViewModel.totalOldDataPage = 1
+                       memberListSet = emptyList()
+                        oldmemberListSet.clear()
+                        mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+                            oldDtacurrentPage++ // Increment after successful fetch
+                        }
+                    } else {
+                        Utils.showToast(requireContext(),"No Network Connection")
+                        // No internet connection
+                    }
+
+                }
+                // val memList = emptyList<Member>()
+                // memberAdapter.submitList(memList)
+
+            }
+
+            mainViewModel.searchMembers("")
+            binding.searchView.setOnClickListener {
+                binding.searchView.isIconified = false
+            }
+            binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    Log.e("dacjkax", "yes onQueryTextSubmit - $query")
+                    isSearching = true
+
+                    // Filter the list based on the query
+                    val filteredList = oldmemberListSet.filter {
+                        it.name.contains(query ?: "", ignoreCase = true)
+                    }
+
+                    // Update the adapter with the filtered list
+                    memberAdapter.submitList(filteredList)
+
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    // Optionally, handle real-time filtering as the text changes
+                    val filteredList = oldmemberListSet.filter {
+                        it.name.contains(newText ?: "", ignoreCase = true)
+                    }
+
+                    memberAdapter.submitList(filteredList)
+                    return true
+                }
+            })
+            viewLifecycleOwner.lifecycleScope.launch {
+                mainViewModel.oldDataList.collect { members ->
+                    // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
+                    memberListSet = members
+                    oldmemberListSet =
+                        (oldmemberListSet + members).toMutableList() // Creates a new list combining the existing and new members
+                    //Log.e("adfasdf","Yes3")
+
+                    if (members.isEmpty()) {
+                     //   Log.e("adfasdf","Yes4")
+
+                        memberAdapter.submitList(emptyList()) // Clear adapter
+                    } else {
+                        //Log.e("adfasdf","Yes5")
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        memberAdapter.submitListAdd(members)
+                    }
+                }
+            }
+        }
+    }
+
     private fun initUi() {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE
@@ -227,6 +365,32 @@ activity?.let {
     }
     binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
+           // Log.e("dacjkax", "yes onQueryTextSubmit - $query")
+            isSearching = true
+
+            // Filter the list based on the query
+            val filteredList = memberListSet.filter {
+                it.name.contains(query ?: "", ignoreCase = true)
+            }
+
+            // Update the adapter with the filtered list
+            memberAdapter.submitList(filteredList)
+
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            // Optionally, handle real-time filtering as the text changes
+            val filteredList = memberListSet.filter {
+                it.name.contains(newText ?: "", ignoreCase = true)
+            }
+
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+    })
+    /*binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
             Log.e("dacjkax","yes onQueryTextSubmit - $query")
             isSearching  = true
 
@@ -241,7 +405,7 @@ activity?.let {
             mainViewModel.searchMembers(newText?:"")
             return true
         }
-    })
+    })*/
 
 }
 

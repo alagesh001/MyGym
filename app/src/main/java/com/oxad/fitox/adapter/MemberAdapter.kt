@@ -36,6 +36,13 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
         notifyDataSetChanged()
     }
+    fun submitListAdd(newList: List<Member>,) {
+        // Log.e("chadksaa","cachedMembers adfsasdf "+ Gson().toJson(newList))
+
+        members.addAll(newList)
+
+        notifyDataSetChanged()
+    }
     override fun getItemCount(): Int = members.size
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {

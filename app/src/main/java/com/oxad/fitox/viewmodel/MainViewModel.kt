@@ -36,6 +36,11 @@ class MainViewModel() : ViewModel() {
     var totalTransacPage = 1
     private val _transacList = MutableStateFlow<List<Transaction>>(emptyList())
     val transacList: StateFlow<List<Transaction>> = _transacList
+
+    var totalOldDataPage = 1
+    private val _olddataList = MutableStateFlow<List<Member>>(emptyList())
+    val oldDataList: StateFlow<List<Member>> = _olddataList
+
     lateinit var memberDao: MemberDao
     lateinit var workoutDao: WorkoutDao
     var gymCoachOpenedFirsttime = false
@@ -228,6 +233,45 @@ class MainViewModel() : ViewModel() {
 
 
 }
+
+    fun loadOldMemberHistory(page:Int) {
+        //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        // Log.e("checktloa","viewmodrel api  $page")
+       // Log.e("adfasdf","API page $page")
+
+        if(page == 1){
+            _olddataList.value = emptyList()
+        }
+        if(page in 1..totalOldDataPage) {
+            // Log.e("caaca","Apicall")
+
+            viewModelScope.launch {
+
+                val result =apiRepoVM.getOldMembers(gymResult[currentGymSelected].GymId,page,a_keyIs)
+                result.onSuccess { response ->
+
+                    if (response.success) {
+                     //   Log.e("adfasdf","Success page $page")
+
+                        _olddataList.value = response.result
+                        totalOldDataPage = response.totalPages
+                       // Log.e("adfasdf","Total page $totalOldDataPage")
+
+                        //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
+                    }else{
+                        _olddataList.value = emptyList()
+                    }
+                }
+                result.onFailure { exception ->
+                    exception.message ?: "Something went wrong!"
+                    //  _transacList.value = emptyList()
+                }
+
+
+            }
+        }
+    }
     fun loadTransacHistory(page:Int) {
       //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
        // Log.e("checktloa","viewmodrel api  $page")

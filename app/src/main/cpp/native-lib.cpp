@@ -34,7 +34,11 @@ Java_com_oxad_fitox_retrofit_ApiHelper_gDatamembUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "getmemberdata";
     return env->NewStringUTF(baseURL.c_str());
 }
-
+JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_gOldDatamembUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "getoldmembdata";
+    return env->NewStringUTF(baseURL.c_str());
+}
 JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_vcoachUrl(JNIEnv *env, jclass clazz) {
 std::string baseURL = "getdumbellworkout";
