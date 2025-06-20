@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -42,6 +43,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,6 +77,7 @@ import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.utils.DarkBackgroundView
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -721,61 +724,84 @@ color = Color.White,
     fun PaginatedTransactionListScreen() {
         var transactions by remember { mutableStateOf(listOf<Transaction>()) }
         var isLoading by remember { mutableStateOf(true) }
+        var isSearching by remember { mutableStateOf(false) }
+
         var page by remember { mutableStateOf(1) }
+        var searchQuery by remember { mutableStateOf("") } // State for search input
+        var filteredTransactions by remember { mutableStateOf(listOf<Transaction>()) }
         val listState = rememberLazyListState()
-        // Observe transactions from the ViewModel
-
+val context = LocalContext.current
+        // Initial transactions load and pagination
         LaunchedEffect(page) {
-
-
-          //  Log.e("checktloa","loadTransacHistory $page")
-//delay(2000)
             mainViewModel.loadTransacHistory(page)
-//Log.e("checkatra","A page: $page")
-
         }
 
         LaunchedEffect(Unit) {
-
             mainViewModel.transacList.collect { transac ->
-              //  Log.e("chejkaf","collect ${Gson().toJson(transac)}")
-                // Log.e("chejkaf","Before B ${Gson().toJson(transactions)}")
-
                 transactions = transactions + transac // Append new items
-              //  Log.e("chejkaf","collect add ${Gson().toJson(transactions)}")
-if(transactions.isNotEmpty()) {
-    isLoading = false
-}
-// Update loading state after items are added
-                // Log.e("chejkaf","After A ${Gson().toJson(transac)}")
-                // Log.e("chejkaf","After B ${Gson().toJson(transactions)}")
-
+                filteredTransactions = transactions // Update filtered list
+                if (transactions.isNotEmpty()) {
+                    isLoading = false
+                }
             }
         }
+
         // Detect scrolling to the bottom of the list
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
-                    if (lastVisibleItemIndex != null) {
-                        Log.e("checktloa","lastindex: : ${transactions.lastIndex} isLoading: $isLoading totalpage: ${mainViewModel.totalTransacPage}")
-//Log.e("checktloa","A $isLoading")
+                    if (lastVisibleItemIndex != null && !isSearching) {
                         if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
-                         //   Log.e("checktloa","B $isLoading")
                             isLoading = true
                             page++
-                          //  Log.e("checktloa","page added $page")
-
                         }
                     }
                 }
         }
 
-
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("Transaction History") }
-                )
+                Column {
+                    TopAppBar(
+                        title = { Text("Transaction History") }
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { query -> searchQuery = query },
+                            modifier = Modifier.weight(1f), // Take up available width
+                            placeholder = { Text("Search by ID") }
+                        )
+                        Button(
+                            onClick = {
+                                if (searchQuery.length < 8) {
+                                   Utils.showToast(
+                                        context,
+                                        "Enter a valid ID",
+                                    )
+                                } else {
+                                    transactions = emptyList()
+                                    mainViewModel.loadTransacHistoryMember(searchQuery,context)
+                                    isSearching = true
+                                }
+                                // Filter transactions based on the search query
+                                /*  filteredTransactions = if (searchQuery.isNotEmpty()) {
+                                      transactions.filter { it.id.contains(searchQuery, ignoreCase = true) }
+                                  } else {
+                                      transactions
+                                  }*/
+                            }
+                        ) {
+                            Text("Search")
+                        }
+                    }
+                }
             }
         ) { padding ->
 
@@ -786,7 +812,7 @@ if(transactions.isNotEmpty()) {
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(transactions) { transaction ->
+                items(filteredTransactions) { transaction ->
                     TransactionItem(transaction)
                 }
                 item {
@@ -795,8 +821,6 @@ if(transactions.isNotEmpty()) {
                     }
                 }
             }
-
-
         }
     }
 

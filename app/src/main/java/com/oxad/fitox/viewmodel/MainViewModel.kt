@@ -1,5 +1,6 @@
 package com.oxad.fitox.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -272,6 +273,35 @@ class MainViewModel() : ViewModel() {
             }
         }
     }
+    fun loadTransacHistoryMember(userid:String,context: Context) {
+        //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        // Log.e("checktloa","viewmodrel api  $page")
+            // Log.e("caaca","Apicall")
+
+            viewModelScope.launch {
+
+                val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, -1,userid)
+                result.onSuccess { response ->
+
+                    if (response.success) {
+                        _transacList.value = response.result
+                        totalTransacPage = response.total_pages
+                        //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
+                    }else{
+                        _transacList.value = emptyList()
+                        Utils.showToast(context,response.message)
+                    }
+                }
+                result.onFailure { exception ->
+                    exception.message ?: "Something went wrong!"
+                    //  _transacList.value = emptyList()
+                }
+
+
+            }
+
+    }
     fun loadTransacHistory(page:Int) {
       //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
        // Log.e("checktloa","viewmodrel api  $page")
@@ -284,7 +314,7 @@ if(page in 1..totalTransacPage) {
 
     viewModelScope.launch {
 
-        val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page)
+        val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page,"11")
         result.onSuccess { response ->
 
             if (response.success) {

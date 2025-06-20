@@ -100,8 +100,8 @@ interface ApiService {
         @Url url: String,
 
         @Query("gymid") gymid: Int,
-        @Query("page") page: Int
-
+        @Query("page") page: Int,
+@Query("memid") memberId:String
     ): GetMyTransacHist
     @GET // Adjust this to match your backend endpoint
     suspend fun getmytrainer(
