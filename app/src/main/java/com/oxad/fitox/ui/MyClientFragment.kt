@@ -105,6 +105,8 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     ): View {
         binding = FragmentMyClientBinding.inflate(inflater, container, false)
         typeIs = arguments?.getInt("type")
+        //Log.e("adfasdf","onCreateView $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
+
         if(typeIs == 0){
             initUi()
         }else{
@@ -116,6 +118,9 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
 
     }
 private var oldDtacurrentPage = 1
+    private var collectStart = false
+    private var omit =  false
+
     private fun initUiOldData() {
         binding.downloadiv.setOnClickListener{
 
@@ -144,11 +149,17 @@ private var oldDtacurrentPage = 1
             oldDtacurrentPage++ // Increment after successful fetch
         }
         activity?.let {
-            memberAdapter = MemberAdapter(
-                requireContext(),
-                this,
-                mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active
-            )
+            if (::memberAdapter.isInitialized) {
+              //  Log.e("adfasdf", "memadapterA $memberAdapter")
+            } else {
+                memberAdapter = MemberAdapter(
+                    requireContext(),
+                    this,
+                    444
+                )
+            }
+
+            //   Log.e("adfasdf","memadapterB $memberAdapter")
 
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -162,25 +173,26 @@ private var oldDtacurrentPage = 1
                         // Load next page
                         //Log.e("adfasdf","Yes2 $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
 
-                        if (oldDtacurrentPage < mainViewModel.totalOldDataPage) {
+                        if (oldDtacurrentPage <= mainViewModel.totalOldDataPage) {
                             mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
                                 oldDtacurrentPage++ // Increment after successful fetch
-                            }                        }
+                            }
+                        }
                     }
                 }
             })
             binding.swipeRefreshLayout.setOnRefreshListener {
-                if(context!=null) {
+                if (context != null) {
                     if (isNetworkAvailable(requireContext())) {
                         oldDtacurrentPage = 1
                         mainViewModel.totalOldDataPage = 1
-                       memberListSet = emptyList()
+                        memberListSet = emptyList()
                         oldmemberListSet.clear()
                         mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
                             oldDtacurrentPage++ // Increment after successful fetch
                         }
                     } else {
-                        Utils.showToast(requireContext(),"No Network Connection")
+                        Utils.showToast(requireContext(), "No Network Connection")
                         // No internet connection
                     }
 
@@ -194,9 +206,10 @@ private var oldDtacurrentPage = 1
             binding.searchView.setOnClickListener {
                 binding.searchView.isIconified = false
             }
-            binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            binding.searchView.setOnQueryTextListener(object :
+                androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    Log.e("dacjkax", "yes onQueryTextSubmit - $query")
+                    //  Log.e("dacjkax", "yes onQueryTextSubmit - $query")
                     isSearching = true
 
                     // Filter the list based on the query
@@ -212,6 +225,8 @@ private var oldDtacurrentPage = 1
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     // Optionally, handle real-time filtering as the text changes
+                    //  Log.e("dacjkax", "yes onQueryTextChange - ")
+
                     val filteredList = oldmemberListSet.filter {
                         it.name.contains(newText ?: "", ignoreCase = true)
                     }
@@ -220,28 +235,45 @@ private var oldDtacurrentPage = 1
                     return true
                 }
             })
-            viewLifecycleOwner.lifecycleScope.launch {
-                mainViewModel.oldDataList.collect { members ->
-                    // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
-                    memberListSet = members
-                    oldmemberListSet =
-                        (oldmemberListSet + members).toMutableList() // Creates a new list combining the existing and new members
-                    //Log.e("adfasdf","Yes3")
+            if (collectStart) {
+                omit = true
+            }
+            collectStart = true
+                viewLifecycleOwner.lifecycleScope.launch {
+                   // Log.e("jadfxz", "Collect start $collectStart")
+                    mainViewModel.oldDataList.collect { members ->
+                        if(omit){
+                            omit = false
+                            return@collect
+                        }
 
-                    if (members.isEmpty()) {
-                     //   Log.e("adfasdf","Yes4")
+                        // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
+                        /* val newMembers = members.filterNot { member ->
+                        oldmemberListSet.any { it.userid == member.userid } // Compare using a unique identifier
+                    }*/
+                       /* Log.e(
+                            "adfasdf",
+                            "YesAA $oldDtacurrentPage ${mainViewModel.totalOldDataPage}"
+                        )*/
+                        memberListSet = members
+                        oldmemberListSet =
+                            (oldmemberListSet + members).toMutableList() // Creates a new list combining the existing and new members
+                        // Log.e("adfasdf","Yes3")
 
-                        memberAdapter.submitList(emptyList()) // Clear adapter
-                    } else {
-                        //Log.e("adfasdf","Yes5")
-                        binding.swipeRefreshLayout.isRefreshing = false
-                        memberAdapter.submitListAdd(members)
+                        if (members.isEmpty()) {
+                            // Log.e("adfasdf","Yes4")
+
+                            memberAdapter.submitList(emptyList()) // Clear adapter
+                        } else {
+                            //  Log.e("adfasdf","Yes5")
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            memberAdapter.submitListAdd(members)
+                        }
                     }
                 }
-            }
+
         }
     }
-
     private fun initUi() {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE

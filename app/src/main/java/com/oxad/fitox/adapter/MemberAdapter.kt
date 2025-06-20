@@ -55,14 +55,6 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         member.let {
             holder.bind(it,position)
         }
-        if(isActive == 3){
-            holder.dietscheduletv.visibility = VISIBLE
-            holder.sendwtsapp_tv.visibility = VISIBLE
-
-        }else{
-            holder.dietscheduletv.visibility = GONE
-            holder.sendwtsapp_tv.visibility = GONE
-        }
         if(isDateExpired(member.renewal_date)){
             holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
             typeOfMember = 3
@@ -75,13 +67,32 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         }
 
         if(member.due_amount!! >0){
-    holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
             typeOfMember = 4
             holder.dueTextView.visibility = VISIBLE
-}else{
+        }else{
             holder.dueTextView.visibility = GONE
 
         }
+        if(isActive == 3){
+            holder.dietscheduletv.visibility = VISIBLE
+            holder.sendwtsapp_tv.visibility = VISIBLE
+
+        }else if(isActive == 444){
+            holder.dietscheduletv.visibility = GONE
+            holder.sendwtsapp_tv.visibility = GONE
+            holder.renewTextView.visibility = GONE
+            holder.updateTextView.visibility = GONE
+            holder.markAttend_tv.visibility = GONE
+            holder.dueTextView.visibility = GONE
+
+
+        }else
+        {
+            holder.dietscheduletv.visibility = GONE
+            holder.sendwtsapp_tv.visibility = GONE
+        }
+
         holder.rootLlView.setOnClickListener {
             member.isExpanded = !member.isExpanded
             notifyItemChanged(position) // Refresh item view
