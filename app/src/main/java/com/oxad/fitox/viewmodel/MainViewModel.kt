@@ -12,6 +12,7 @@ import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.MemberDao
 import com.oxad.fitox.database.WorkoutDao
 import com.oxad.fitox.datastore.DataStoreManager
+import com.oxad.fitox.model.DashboardData
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.Product
@@ -67,6 +68,37 @@ class MainViewModel() : ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
     val isExpanded: StateFlow<Boolean> = _isExpanded
+    private val _dashboardState = MutableStateFlow<DashboardData?>(null)
+    val dashboardState: StateFlow<DashboardData?> = _dashboardState
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    fun fetchDashboardData() {
+        viewModelScope.launch {
+            try {
+                val result = apiRepoVM.fetchDashboardData(a_keyIs,gymResult[currentGymSelected].GymId)
+                result.onSuccess { response ->
+                    if(response.success) {
+                        _dashboardState.value = response.result
+
+                    }else{
+                        _error.value = response.error ?: "Error fetching data"
+
+                    }
+                }
+                result.onFailure { exception ->
+                    _error.value = "Error fetching data"
+
+
+                }
+
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Network Error. Failed to fetch data"
+            }
+        }
+    }
+
     fun setApiRepo(apiRepository: ApiRepository){
         apiRepoVM = apiRepository
     }

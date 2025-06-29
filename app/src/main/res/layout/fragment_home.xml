@@ -91,14 +91,14 @@ app:layout_constraintTop_toTopOf="parent"
 android:alpha="0.8"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_70sdp"
-                android:background="@drawable/rounded_rect_grad"
+                android:background="@drawable/rounded_rect_grad9"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="My Clients"
+                android:text="Active Clients"
                 android:paddingHorizontal="@dimen/_20sdp"
 
                 android:textColor="@color/white"
@@ -210,6 +210,83 @@ android:alpha="0.8"
           </RelativeLayout>
   -->
         <RelativeLayout
+            android:id="@+id/transac_rl"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:layout_marginTop="@dimen/_10sdp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_70sdp"
+                android:background="@drawable/rounded_rect_grad"
+                android:alpha="0.8"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Transaction History"
+                android:paddingHorizontal="@dimen/_20sdp"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:layout_centerVertical="true"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                >
+
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/dash_rl"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:layout_marginTop="@dimen/_10sdp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_70sdp"
+                android:background="@drawable/rounded_rect_grad5"
+                android:alpha="0.8"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Dashboard"
+                android:paddingHorizontal="@dimen/_20sdp"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:layout_centerVertical="true"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                >
+
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/searchfilter_rl"
 
             android:layout_width="match_parent"
@@ -286,45 +363,6 @@ android:alpha="0.8"
             </LinearLayout>
 
         </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/inactive_rl"
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="2dp"
-            android:layout_marginTop="@dimen/_10sdp">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_70sdp"
-                android:background="@drawable/rounded_rect_grad8"
-                android:alpha="0.8"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Inactive Clients"
-                android:paddingHorizontal="@dimen/_20sdp"
-
-                android:textColor="@color/white"
-                android:textSize="@dimen/_15ssp"
-                android:layout_centerVertical="true"
-                />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                >
-
-
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
         <RelativeLayout
             android:id="@+id/product_add"
 
@@ -406,6 +444,45 @@ android:alpha="0.8"
             </LinearLayout>
 
         </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/inactive_rl"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:layout_marginTop="@dimen/_10sdp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_70sdp"
+                android:background="@drawable/rounded_rect_grad8"
+                android:alpha="0.8"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Inactive Clients"
+                android:paddingHorizontal="@dimen/_20sdp"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:layout_centerVertical="true"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                >
+
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 

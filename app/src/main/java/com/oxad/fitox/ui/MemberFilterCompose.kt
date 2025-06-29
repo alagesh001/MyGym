@@ -34,12 +34,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,6 +52,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -130,12 +136,34 @@ class MemberFilterCompose : Fragment() {
                         "goal" -> GoalListScreen()
                         "transac" -> PaginatedTransactionListScreen()
                         "attendance" -> attendanceFilterScreen()
-
+                        "dashboard" -> DashboardScreen()
 
                     }
                 }
 
             }
+        }
+    }
+    @Composable
+    fun DashboardScreen() {
+        val dashboardState by mainViewModel.dashboardState.collectAsState()
+        val errorMessage by mainViewModel.error.collectAsState()
+
+        if (errorMessage != null) {
+            Text("Error: $errorMessage", color = Color.Red)
+        } else if (dashboardState != null) {
+            DashboardGrid(
+                thisWeekCollection = dashboardState!!.weekAmount,
+                thisMonthCollection = dashboardState!!.monthAmount,
+                totalDuePending = dashboardState!!.total_due,
+                newMembersThisMonth = dashboardState!!.typeOneCount.toString(),
+                expiredMembersThisMonth = dashboardState!!.expiredMembersCount.toString(),
+                todayAttendance = dashboardState!!.attendanceToday.toString(),
+                onRefresh = { mainViewModel.fetchDashboardData() }
+            )
+        } else {
+            mainViewModel.fetchDashboardData()
+            CircularProgressIndicator() // Show loading indicator
         }
     }
     @Composable
@@ -848,7 +876,119 @@ val context = LocalContext.current
             }
         }
     }
+    @Composable
+    fun DashboardGrid(
+        thisWeekCollection: String,
+        thisMonthCollection: String,
+        totalDuePending: String,
+        newMembersThisMonth: String,
+        expiredMembersThisMonth: String,
+        todayAttendance: String,
+        onRefresh: () -> Unit // Lambda function for refresh action
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Dashboard",
+                    style = MaterialTheme.typography.headlineLarge
+                )
+                IconButton(onClick = { onRefresh() }) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh, // Material Design refresh icon
+                        contentDescription = "Refresh Dashboard"
+                    )
+                }
+            }
 
+            // Tiled grid
+            Grid(
+                modifier = Modifier.fillMaxWidth(),
+                data = listOf(
+                    "This Week Collection" to thisWeekCollection,
+                    "This Month Collection" to thisMonthCollection,
+                    "Total Due Pending" to totalDuePending,
+                    "New Members This Month" to newMembersThisMonth,
+                    "Expired Members This Month" to expiredMembersThisMonth,
+                    "Today's Attendance" to todayAttendance
+                )
+            )
+        }
+    }
+
+    @Composable
+    fun Grid(
+        modifier: Modifier = Modifier,
+        data: List<Pair<String, String>>
+    ) {
+        val gridSize = 2 // Number of columns
+
+        Column(modifier = modifier) {
+            data.chunked(gridSize).forEach { row ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    row.forEach { (title, value) ->
+                        GridTile(
+                            modifier = Modifier.weight(1f),
+                            title = title,
+                            value = value
+                        )
+                    }
+
+                    // Fill the empty space if the row is not complete
+                    if (row.size < gridSize) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun GridTile(
+        modifier: Modifier = Modifier,
+        title: String,
+        value: String
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            modifier = modifier.height(120.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 24.sp),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.align(Alignment.End)
+                )
+            }
+        }
+    }
 
     @Composable
     fun PreviewPaginatedTransactionList() {
@@ -856,13 +996,23 @@ val context = LocalContext.current
             PaginatedTransactionListScreen()
         }
     }
+
     @Preview(showBackground = true)
     @Composable
     fun PreviewProfileScreen() {
         // ProfileScreen()
      //   PreviewPaginatedTransactionList()
         //ChangePasswordDialog(){
+        DashboardGrid(
+            thisWeekCollection = "₹12,500",
+            thisMonthCollection = "₹50,000",
+            totalDuePending = "₹5,200",
+            newMembersThisMonth = "25",
+            expiredMembersThisMonth = "5",
+            todayAttendance = "40",
+                    onRefresh = {  }
 
+        )
 
     }
 }
