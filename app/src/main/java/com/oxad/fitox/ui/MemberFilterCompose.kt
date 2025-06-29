@@ -70,6 +70,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -889,40 +890,58 @@ val context = LocalContext.current
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(16.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(vertical = 16.dp)
+                    .padding(8.dp), // Inner padding
+                verticalAlignment = Alignment.CenterVertically, // Align content vertically
+                horizontalArrangement = Arrangement.SpaceBetween // Place items at opposite ends
             ) {
                 Text(
                     text = "Dashboard",
-                    style = MaterialTheme.typography.headlineLarge
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp
+                    ),
+                    color = colorResource(id = R.color.black), // Text color
+                    modifier = Modifier.padding(start = 8.dp) // Add padding for the text
                 )
-                IconButton(onClick = { onRefresh() }) {
+
+                IconButton(
+                    onClick = { onRefresh() },
+                    modifier = Modifier.padding(end = 8.dp) // Add some padding to the end
+                ) {
                     Icon(
-                        imageVector = Icons.Default.Refresh, // Material Design refresh icon
-                        contentDescription = "Refresh Dashboard"
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh Dashboard",
+                        tint = Color.Black // Match icon color with text
                     )
                 }
             }
 
-            // Tiled grid
-            Grid(
-                modifier = Modifier.fillMaxWidth(),
-                data = listOf(
-                    "This Week Collection" to thisWeekCollection,
-                    "This Month Collection" to thisMonthCollection,
-                    "Total Due Pending" to totalDuePending,
-                    "New Members This Month" to newMembersThisMonth,
-                    "Expired Members This Month" to expiredMembersThisMonth,
-                    "Today's Attendance" to todayAttendance
-                )
-            )
+            // Scrollable grid
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+            ) {
+                item {
+                    Grid(
+                        modifier = Modifier.fillMaxWidth(),
+                        data = listOf(
+                            "This Week Collection" to thisWeekCollection,
+                            "This Month Collection" to thisMonthCollection,
+                            "Total Due Pending" to totalDuePending,
+                            "New Members This Month" to newMembersThisMonth,
+                            "Expired Members This Month" to expiredMembersThisMonth,
+                            "Today's Attendance" to todayAttendance
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -964,9 +983,18 @@ val context = LocalContext.current
         title: String,
         value: String
     ) {
+        // Define colors
+        val darkGreen = Color(0xFF006400) // Dark green
+        val valueColor = if (title.contains("Due", ignoreCase = true) || value.toDoubleOrNull() ?: 0.0 < 0) {
+            Color.Red
+        } else {
+            Color.Green
+        }
+
         Card(
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(4.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.Black), // Black background
             modifier = modifier.height(120.dp)
         ) {
             Column(
@@ -978,18 +1006,17 @@ val context = LocalContext.current
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color.White // Ensure contrast with black background
                 )
                 Text(
                     text = value,
                     style = MaterialTheme.typography.headlineSmall.copy(fontSize = 24.sp),
-                    color = MaterialTheme.colorScheme.primary,
+                    color = valueColor,
                     modifier = Modifier.align(Alignment.End)
                 )
             }
         }
     }
-
     @Composable
     fun PreviewPaginatedTransactionList() {
         MaterialTheme {
