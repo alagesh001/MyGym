@@ -149,10 +149,10 @@ class MemberFilterCompose : Fragment() {
     fun DashboardScreen() {
         val dashboardState by mainViewModel.dashboardState.collectAsState()
         val errorMessage by mainViewModel.error.collectAsState()
-
         if (errorMessage != null) {
             Text("Error: $errorMessage", color = Color.Red)
-        } else if (dashboardState != null) {
+        }
+        if (dashboardState != null) {
             DashboardGrid(
                 thisWeekCollection = dashboardState!!.weekAmount,
                 thisMonthCollection = dashboardState!!.monthAmount,
@@ -164,7 +164,7 @@ class MemberFilterCompose : Fragment() {
             )
         } else {
             mainViewModel.fetchDashboardData()
-            CircularProgressIndicator() // Show loading indicator
+           // CircularProgressIndicator() // Show loading indicator
         }
     }
     @Composable

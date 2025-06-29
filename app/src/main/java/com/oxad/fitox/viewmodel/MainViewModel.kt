@@ -81,14 +81,14 @@ class MainViewModel() : ViewModel() {
                 result.onSuccess { response ->
                     if(response.success) {
                         _dashboardState.value = response.result
-
+                        _error.value = response.error
                     }else{
                         _error.value = response.error ?: "Error fetching data"
 
                     }
                 }
                 result.onFailure { exception ->
-                    _error.value = "Error fetching data"
+                    _error.value = "Network Error. Check your internet connection"
 
 
                 }
