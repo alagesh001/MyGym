@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import com.oxad.fitox.model.AdminContUpdateModel
 import com.oxad.fitox.model.CustResponse
+import com.oxad.fitox.model.DashDataModel
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -78,6 +79,17 @@ class ApiRepository(contextA: Context) {
         return result
 
     }
+    suspend fun fetchDashboardData(aKeyIs: String,gymId: Int): Result<DashDataModel> {
+         showLoading();
+        val result =
+            safeApiCall { RetrofitClient.instance.getDashData(ApiHelper.dashDataUrl(),aKeyIs,gymId) }
+
+          hideLoading()
+        return result
+
+    }
+
+
     suspend fun getProducts(gymId: Int): Result<ProductResponse> {
       //  showLoading();
         val result =
