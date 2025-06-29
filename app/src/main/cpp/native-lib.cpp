@@ -45,6 +45,11 @@ std::string baseURL = "getdumbellworkout";
 return env->NewStringUTF(baseURL.c_str());
 }
 JNIEXPORT jstring JNICALL
+Java_com_oxad_fitox_retrofit_ApiHelper_dashDataUrl(JNIEnv *env, jclass clazz) {
+    std::string baseURL = "getdashdata";
+    return env->NewStringUTF(baseURL.c_str());
+}
+JNIEXPORT jstring JNICALL
 Java_com_oxad_fitox_retrofit_ApiHelper_getProductUrl(JNIEnv *env, jclass clazz) {
     std::string baseURL = "getmyproducts";
     return env->NewStringUTF(baseURL.c_str());
