@@ -206,31 +206,21 @@ private var oldDtacurrentPage = 1
             binding.searchView.setOnClickListener {
                 binding.searchView.isIconified = false
             }
-            binding.searchView.setOnQueryTextListener(object :
-                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener  {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    //  Log.e("dacjkax", "yes onQueryTextSubmit - $query")
-                    isSearching = true
-
-                    // Filter the list based on the query
                     val filteredList = oldmemberListSet.filter {
-                        it.name.contains(query ?: "", ignoreCase = true)
+                        val q = query?.trim() ?: ""
+                        it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
                     }
-
-                    // Update the adapter with the filtered list
                     memberAdapter.submitList(filteredList)
-
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    // Optionally, handle real-time filtering as the text changes
-                    //  Log.e("dacjkax", "yes onQueryTextChange - ")
-
                     val filteredList = oldmemberListSet.filter {
-                        it.name.contains(newText ?: "", ignoreCase = true)
+                        val q = newText?.trim() ?: ""
+                        it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
                     }
-
                     memberAdapter.submitList(filteredList)
                     return true
                 }
@@ -395,7 +385,7 @@ activity?.let {
     binding.searchView.setOnClickListener {
         binding.searchView.isIconified = false
     }
-    binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+    /*binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
            // Log.e("dacjkax", "yes onQueryTextSubmit - $query")
             isSearching = true
@@ -417,6 +407,27 @@ activity?.let {
                 it.name.contains(newText ?: "", ignoreCase = true)
             }
 
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+    })*/
+    binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener  {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            isSearching = true
+
+            val filteredList = memberListSet.filter {
+                val q = query?.trim() ?: ""
+                it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+            }
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            val filteredList = memberListSet.filter {
+                val q = newText?.trim() ?: ""
+                it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+            }
             memberAdapter.submitList(filteredList)
             return true
         }

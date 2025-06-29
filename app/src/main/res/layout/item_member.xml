@@ -106,6 +106,13 @@ android:fontFamily="sans-serif-black"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     />
+                <ImageView
+                    android:id="@+id/ivCopyuid"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/copyicn2s"
+                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -129,6 +136,13 @@ android:fontFamily="sans-serif-black"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                      />
+                <ImageView
+                    android:id="@+id/ivCopyumob"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/copyicn2s"
+                    />
             </LinearLayout>
 
             <LinearLayout

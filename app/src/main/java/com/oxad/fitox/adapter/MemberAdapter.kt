@@ -1,5 +1,7 @@
 package com.oxad.fitox.adapter
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -92,7 +95,19 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
             holder.dietscheduletv.visibility = GONE
             holder.sendwtsapp_tv.visibility = GONE
         }
+        holder.ivCopyuid.setOnClickListener {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("User ID", holder.uidTextView.text.toString())
+            clipboard.setPrimaryClip(clip)
+            Utils.showToast(context, "Copied: ${ holder.uidTextView.text}")
+        }
+        holder.ivCopyumob.setOnClickListener {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("User ID",  holder.mobileTextView.text.toString())
+            clipboard.setPrimaryClip(clip)
+            Utils.showToast(context, "Copied: ${ holder.mobileTextView.text}")
 
+        }
         holder.rootLlView.setOnClickListener {
             member.isExpanded = !member.isExpanded
             notifyItemChanged(position) // Refresh item view
@@ -131,10 +146,12 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rootLlView: LinearLayout = view.findViewById(R.id.rootView)
         val selectView: LinearLayout = view.findViewById(R.id.card_bg)
-        private val uidTextView: TextView = view.findViewById(R.id.tvUserid)
+        val uidTextView: TextView = view.findViewById(R.id.tvUserid)
+         val ivCopyuid = view.findViewById<ImageView>(R.id.ivCopyuid)
+         val ivCopyumob = view.findViewById<ImageView>(R.id.ivCopyumob)
 
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
-        private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
+        val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
         private val goalTextView: TextView = view.findViewById(R.id.tvGoal)
         private val tvAttendCount: TextView = view.findViewById(R.id.tvAttendCount)
         private val tvlastAttend: TextView = view.findViewById(R.id.tvlastAttend)
