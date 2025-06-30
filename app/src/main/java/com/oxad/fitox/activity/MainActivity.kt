@@ -24,6 +24,7 @@ import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
 import com.oxad.fitox.model.LoginResult
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -66,6 +67,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun initUi(){
+        lifecycleScope.launch {
+            mainViewModel.logoutState.collect { shouldLogout ->
+                if (shouldLogout) {
+                    logout()
+                    mainViewModel.resetLogoutState() // Reset after logout
+                }
+            }
+        }
         this.let {
             Glide.with(it)
                 .load(R.drawable.aaa)
@@ -117,6 +126,7 @@ class MainActivity : AppCompatActivity() {
     private fun logout() {
         //  Log.e("chadjfadf","Yesss")
         this@MainActivity.let {
+            Utils.showToast(this@MainActivity,"You are Logged out.")
             lifecycleScope.launch {
                 mainViewModel.dataStoreManagerVM.clearUserData()
                 AppDatabase.clearDatabase(application)

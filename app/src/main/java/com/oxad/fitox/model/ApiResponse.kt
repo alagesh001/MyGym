@@ -65,6 +65,7 @@ data class MyMemberListModel(
 
 data class MemberResponse(
     val success: Boolean,
+    val logoutkey:Int,
     @SerializedName("total_records") val totalRecords: Int,
     @SerializedName("total_pages") val totalPages: Int,
     @SerializedName("current_page") val currentPage: Int,
@@ -271,7 +272,8 @@ data class LoginResult(
     val renewaldate: String,
     val mob: String,
     val admin_cont: String,
-    val is_active: Int
+    val is_active: Int,
+    val logout_c: Int
 
 ) :Parcelable {
     constructor(parcel: Parcel) : this(
@@ -283,10 +285,12 @@ data class LoginResult(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        parcel.readInt(),
         parcel.readInt()
 
 
-        ) {
+
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -299,6 +303,8 @@ data class LoginResult(
         parcel.writeString(mob)
         parcel.writeString(admin_cont)
         parcel.writeInt(is_active)
+        parcel.writeInt(logout_c)
+
 
     }
 

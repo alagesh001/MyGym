@@ -2,6 +2,8 @@ package com.oxad.fitox.viewmodel
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -73,7 +75,18 @@ class MainViewModel() : ViewModel() {
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
+    private val _logoutState = MutableStateFlow(false)
+    val logoutState: StateFlow<Boolean> = _logoutState
 
+    // Function to trigger logout
+    fun triggerLogout() {
+        _logoutState.value = true
+    }
+
+    // Reset the state after observing
+    fun resetLogoutState() {
+        _logoutState.value = false
+    }
     fun fetchDashboardData() {
         viewModelScope.launch {
             try {
@@ -385,6 +398,13 @@ if(page in 1..totalTransacPage) {
 
 
                     if (response.success) {
+                        if(response.logoutkey == gymResult[currentGymSelected].logout_c){
+                            //Log.e("asdfasdfxcz","logoutkey Matched")
+                        }else{
+                            triggerLogout()
+                            return@launch
+                            //Log.e("asdfasdfxcz","Logout Now -> logoutkey MisMatch")
+                        }
                         _memberList.value = (_memberList.value ?: emptyList()) + response.result
                        // Log.e("chadka","abcd AAA "+ Gson().toJson( _memberList.value))
 
