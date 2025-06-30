@@ -64,7 +64,9 @@ import java.io.FileOutputStream
 import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -859,6 +861,13 @@ when(type){
 
             result.onSuccess { response ->
                 activity?.let {
+                   if(response.first_mark) {
+                       val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+                           timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+                       }
+                       val currentDateTime = dateFormat.format(Date())
+                       mainViewModel.markAttendanceUpdate(userid.toInt(),currentDateTime)
+                   }
                     showAttendanceDialog(requireContext(),response.success,response.a_count,response.message)
                 }
               /*  if(response.success){

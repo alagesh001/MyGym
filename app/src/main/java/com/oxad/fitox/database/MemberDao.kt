@@ -24,7 +24,13 @@ interface MemberDao {
     suspend fun clearMembers(gymId: Int)
     @Query("SELECT * FROM members WHERE name LIKE '%' || :name || '%' AND gymid = :gymId")
     fun searchMembersByName(name: String,gymId: Int): LiveData<List<Member>>
-
+    @Query("""
+        UPDATE members 
+        SET attendance_count = attendance_count + 1, 
+            last_attend = :currentDateTime 
+        WHERE userid = :userId
+    """)
+    suspend fun incrementAttendanceAndUpdateLastAttend(userId: Int, currentDateTime: String)
 
 }
 @Dao
