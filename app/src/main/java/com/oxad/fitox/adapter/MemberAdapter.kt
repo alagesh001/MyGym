@@ -1,5 +1,7 @@
 package com.oxad.fitox.adapter
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.oxad.fitox.R
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -36,34 +39,73 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
 
         notifyDataSetChanged()
     }
+    fun submitListAdd(newList: List<Member>,) {
+        // Log.e("chadksaa","cachedMembers adfsasdf "+ Gson().toJson(newList))
+
+        members.addAll(newList)
+
+        notifyDataSetChanged()
+    }
     override fun getItemCount(): Int = members.size
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
         val member = members[position]
+        var typeOfMember = 1
+        //1 Active
+        //2 Close to expiry
+        //3 Expired
+        //4 Due to be paid
         member.let {
             holder.bind(it,position)
+        }
+        if(isDateExpired(member.renewal_date)){
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
+            typeOfMember = 3
+        }else if(isDateCloseToExpiry(member.renewal_date)){
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
+            typeOfMember = 2
+        }else{
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green_list)
+            typeOfMember = 1
+        }
+
+        if(member.due_amount!! >0){
+            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
+            typeOfMember = 4
+            holder.dueTextView.visibility = VISIBLE
+        }else{
+            holder.dueTextView.visibility = GONE
+
         }
         if(isActive == 3){
             holder.dietscheduletv.visibility = VISIBLE
             holder.sendwtsapp_tv.visibility = VISIBLE
 
-        }else{
+        }else if(isActive == 444){
+            holder.dietscheduletv.visibility = GONE
+            holder.sendwtsapp_tv.visibility = GONE
+            holder.renewTextView.visibility = GONE
+            holder.updateTextView.visibility = GONE
+            holder.markAttend_tv.visibility = GONE
+            holder.dueTextView.visibility = GONE
+
+
+        }else
+        {
             holder.dietscheduletv.visibility = GONE
             holder.sendwtsapp_tv.visibility = GONE
         }
-        if(isDateExpired(member.renewal_date)){
-            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
-        }else if(isDateCloseToExpiry(member.renewal_date)){
-            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.yellow)
-        }else{
-            holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.green_list)
+        holder.ivCopyuid.setOnClickListener {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("User ID", holder.uidTextView.text.toString())
+            clipboard.setPrimaryClip(clip)
+            Utils.showToast(context, "Copied: ${ holder.uidTextView.text}")
         }
-
-        if(member.due_amount!! >0){
-    holder.selectView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.tertiary_color)
-holder.dueTextView.visibility = VISIBLE
-}else{
-            holder.dueTextView.visibility = GONE
+        holder.ivCopyumob.setOnClickListener {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("User ID",  holder.mobileTextView.text.toString())
+            clipboard.setPrimaryClip(clip)
+            Utils.showToast(context, "Copied: ${ holder.mobileTextView.text}")
 
         }
         holder.rootLlView.setOnClickListener {
@@ -94,7 +136,7 @@ holder.dueTextView.visibility = VISIBLE
             listener.oncallClick(member.mobile)
         }
         holder.wtsappbtn_iv.setOnClickListener {
-            listener.onWhatsappClick(member.mobile)
+            listener.onWhatsappClick(member.mobile,member.name,member.renewal_date,member.due_amount,typeOfMember)
         }
         holder.markAttend_tv.setOnClickListener {
             listener.onMarkAttendClick(member.userid)
@@ -104,9 +146,12 @@ holder.dueTextView.visibility = VISIBLE
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rootLlView: LinearLayout = view.findViewById(R.id.rootView)
         val selectView: LinearLayout = view.findViewById(R.id.card_bg)
+        val uidTextView: TextView = view.findViewById(R.id.tvUserid)
+         val ivCopyuid = view.findViewById<ImageView>(R.id.ivCopyuid)
+         val ivCopyumob = view.findViewById<ImageView>(R.id.ivCopyumob)
 
         private val nameTextView: TextView = view.findViewById(R.id.tvName)
-        private val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
+        val mobileTextView: TextView = view.findViewById(R.id.tvMobile)
         private val goalTextView: TextView = view.findViewById(R.id.tvGoal)
         private val tvAttendCount: TextView = view.findViewById(R.id.tvAttendCount)
         private val tvlastAttend: TextView = view.findViewById(R.id.tvlastAttend)
@@ -125,6 +170,7 @@ holder.dueTextView.visibility = VISIBLE
         val markAttend_tv: TextView = itemView.findViewById(R.id.markAttend_tv)
 
         fun bind(member: Member,position: Int) {
+            uidTextView.text = member.userid.toString() // Incrementing number
             numberTextView.text = (position + 1).toString() // Incrementing number
             nameTextView.text = member.name
             mobileTextView.text = member.mobile.toString()
@@ -187,7 +233,7 @@ holder.dueTextView.visibility = VISIBLE
 
         fun onWhatsappSend(member:Member)
         fun onDietSchedule(userid:Long)
-        fun onWhatsappClick(mobile:Long)
+        fun onWhatsappClick(mobile:Long,userName: String, expiryDate: String, dueAmount: Int,type:Int)
         fun oncallClick(mobile:Long)
         fun onMarkAttendClick(userid:Long)
 

@@ -3,18 +3,21 @@ package com.oxad.fitox.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,7 +34,7 @@ import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
+/*@Composable
 fun PaginatedTransactionListScreen(  mainVM: MainViewModel) {
     var transactions by remember { mutableStateOf(listOf<Transaction>()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -111,7 +115,99 @@ fun PaginatedTransactionListScreen(  mainVM: MainViewModel) {
 
 
     }
+}*/
+@Composable
+fun PaginatedTransactionListScreen(mainVM: MainViewModel) {
+    var transactions by remember { mutableStateOf(listOf<Transaction>()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var page by remember { mutableStateOf(1) }
+    var searchQuery by remember { mutableStateOf("") } // State for search input
+    var filteredTransactions by remember { mutableStateOf(listOf<Transaction>()) }
+    val listState = rememberLazyListState()
+
+    // Initial transactions load and pagination
+    LaunchedEffect(page) {
+        mainVM.loadTransacHistory(page)
+    }
+
+    LaunchedEffect(Unit) {
+        mainVM.transacList.collect { transac ->
+            transactions = transactions + transac // Append new items
+            filteredTransactions = transactions // Update filtered list
+            if (transactions.isNotEmpty()) {
+                isLoading = false
+            }
+        }
+    }
+
+    // Detect scrolling to the bottom of the list
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleItemIndex ->
+                if (lastVisibleItemIndex != null) {
+                    if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainVM.totalTransacPage) {
+                        isLoading = true
+                        page++
+                    }
+                }
+            }
+    }
+
+    Scaffold(
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = { Text("Transaction History") }
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { query -> searchQuery = query },
+                        modifier = Modifier.weight(1f), // Take up available width
+                        placeholder = { Text("Search by ID") }
+                    )
+                    Button(
+                        onClick = {
+                            // Filter transactions based on the search query
+                          /*  filteredTransactions = if (searchQuery.isNotEmpty()) {
+                                transactions.filter { it.id.contains(searchQuery, ignoreCase = true) }
+                            } else {
+                                transactions
+                            }*/
+                        }
+                    ) {
+                        Text("Search")
+                    }
+                }
+            }
+        }
+    ) { padding ->
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(filteredTransactions) { transaction ->
+                TransactionItem(transaction)
+            }
+            item {
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                }
+            }
+        }
+    }
 }
+
 
 @Composable
 fun TransactionItem(transaction: Transaction) {

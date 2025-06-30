@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import com.oxad.fitox.model.AdminContUpdateModel
 import com.oxad.fitox.model.CustResponse
+import com.oxad.fitox.model.DashDataModel
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -50,6 +51,16 @@ class ApiRepository(contextA: Context) {
 
         progressDialog?.dismiss()
     }
+
+    suspend fun getOldMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
+        ///  showLoading();
+        val result =
+            safeApiCall {
+                RetrofitClient.instance.getmymembers(ApiHelper.gOldDatamembUrl(),aKeyIs,gymId, page)
+            }
+        //  hideLoading()
+        return result
+    }
         suspend fun getMembers(gymId: Int, page: Int,aKeyIs:String): Result<MemberResponse> {
          ///  showLoading();
             val result =
@@ -68,6 +79,17 @@ class ApiRepository(contextA: Context) {
         return result
 
     }
+    suspend fun fetchDashboardData(aKeyIs: String,gymId: Int): Result<DashDataModel> {
+         showLoading();
+        val result =
+            safeApiCall { RetrofitClient.instance.getDashData(ApiHelper.dashDataUrl(),aKeyIs,gymId) }
+
+          hideLoading()
+        return result
+
+    }
+
+
     suspend fun getProducts(gymId: Int): Result<ProductResponse> {
       //  showLoading();
         val result =
@@ -390,11 +412,12 @@ class ApiRepository(contextA: Context) {
 
 
     }
-    suspend fun getTransacHist(gymId: Int, page: Int): Result<GetMyTransacHist> {
+
+    suspend fun getTransacHist(gymId: Int, page: Int , memberId:String): Result<GetMyTransacHist> {
         //showLoading();
         val result =
             safeApiCall {
-                RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page)
+                RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page,memberId)
             }
         //    hideLoading()
         return result

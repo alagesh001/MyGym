@@ -84,7 +84,36 @@ android:fontFamily="sans-serif-black"
             android:orientation="vertical"
 
             >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@drawable/baseline_verified_user_24"
+                    android:backgroundTint="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvUserid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="Id"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    />
+                <ImageView
+                    android:id="@+id/ivCopyuid"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/copyicn2s"
+                    />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,6 +136,13 @@ android:fontFamily="sans-serif-black"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                      />
+                <ImageView
+                    android:id="@+id/ivCopyumob"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/copyicn2s"
+                    />
             </LinearLayout>
 
             <LinearLayout

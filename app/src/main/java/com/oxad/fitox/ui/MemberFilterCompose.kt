@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -33,18 +34,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +70,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,6 +84,7 @@ import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.utils.DarkBackgroundView
+import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -127,12 +137,34 @@ class MemberFilterCompose : Fragment() {
                         "goal" -> GoalListScreen()
                         "transac" -> PaginatedTransactionListScreen()
                         "attendance" -> attendanceFilterScreen()
-
+                        "dashboard" -> DashboardScreen()
 
                     }
                 }
 
             }
+        }
+    }
+    @Composable
+    fun DashboardScreen() {
+        val dashboardState by mainViewModel.dashboardState.collectAsState()
+        val errorMessage by mainViewModel.error.collectAsState()
+        if (errorMessage != null) {
+            Text("Error: $errorMessage", color = Color.Red)
+        }
+        if (dashboardState != null) {
+            DashboardGrid(
+                thisWeekCollection = dashboardState!!.weekAmount,
+                thisMonthCollection = dashboardState!!.monthAmount,
+                totalDuePending = dashboardState!!.total_due,
+                newMembersThisMonth = dashboardState!!.typeOneCount.toString(),
+                expiredMembersThisMonth = dashboardState!!.expiredMembersCount.toString(),
+                todayAttendance = dashboardState!!.attendanceToday.toString(),
+                onRefresh = { mainViewModel.fetchDashboardData() }
+            )
+        } else {
+            mainViewModel.fetchDashboardData()
+           // CircularProgressIndicator() // Show loading indicator
         }
     }
     @Composable
@@ -721,61 +753,84 @@ color = Color.White,
     fun PaginatedTransactionListScreen() {
         var transactions by remember { mutableStateOf(listOf<Transaction>()) }
         var isLoading by remember { mutableStateOf(true) }
+        var isSearching by remember { mutableStateOf(false) }
+
         var page by remember { mutableStateOf(1) }
+        var searchQuery by remember { mutableStateOf("") } // State for search input
+        var filteredTransactions by remember { mutableStateOf(listOf<Transaction>()) }
         val listState = rememberLazyListState()
-        // Observe transactions from the ViewModel
-
+val context = LocalContext.current
+        // Initial transactions load and pagination
         LaunchedEffect(page) {
-
-
-          //  Log.e("checktloa","loadTransacHistory $page")
-//delay(2000)
             mainViewModel.loadTransacHistory(page)
-//Log.e("checkatra","A page: $page")
-
         }
 
         LaunchedEffect(Unit) {
-
             mainViewModel.transacList.collect { transac ->
-              //  Log.e("chejkaf","collect ${Gson().toJson(transac)}")
-                // Log.e("chejkaf","Before B ${Gson().toJson(transactions)}")
-
                 transactions = transactions + transac // Append new items
-              //  Log.e("chejkaf","collect add ${Gson().toJson(transactions)}")
-if(transactions.isNotEmpty()) {
-    isLoading = false
-}
-// Update loading state after items are added
-                // Log.e("chejkaf","After A ${Gson().toJson(transac)}")
-                // Log.e("chejkaf","After B ${Gson().toJson(transactions)}")
-
+                filteredTransactions = transactions // Update filtered list
+                if (transactions.isNotEmpty()) {
+                    isLoading = false
+                }
             }
         }
+
         // Detect scrolling to the bottom of the list
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
-                    if (lastVisibleItemIndex != null) {
-                        Log.e("checktloa","lastindex: : ${transactions.lastIndex} isLoading: $isLoading totalpage: ${mainViewModel.totalTransacPage}")
-//Log.e("checktloa","A $isLoading")
+                    if (lastVisibleItemIndex != null && !isSearching) {
                         if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
-                         //   Log.e("checktloa","B $isLoading")
                             isLoading = true
                             page++
-                          //  Log.e("checktloa","page added $page")
-
                         }
                     }
                 }
         }
 
-
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("Transaction History") }
-                )
+                Column {
+                    TopAppBar(
+                        title = { Text("Transaction History") }
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { query -> searchQuery = query },
+                            modifier = Modifier.weight(1f), // Take up available width
+                            placeholder = { Text("Search by ID") }
+                        )
+                        Button(
+                            onClick = {
+                                if (searchQuery.length < 8) {
+                                   Utils.showToast(
+                                        context,
+                                        "Enter a valid ID",
+                                    )
+                                } else {
+                                    transactions = emptyList()
+                                    mainViewModel.loadTransacHistoryMember(searchQuery,context)
+                                    isSearching = true
+                                }
+                                // Filter transactions based on the search query
+                                /*  filteredTransactions = if (searchQuery.isNotEmpty()) {
+                                      transactions.filter { it.id.contains(searchQuery, ignoreCase = true) }
+                                  } else {
+                                      transactions
+                                  }*/
+                            }
+                        ) {
+                            Text("Search")
+                        }
+                    }
+                }
             }
         ) { padding ->
 
@@ -786,7 +841,7 @@ if(transactions.isNotEmpty()) {
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(transactions) { transaction ->
+                items(filteredTransactions) { transaction ->
                     TransactionItem(transaction)
                 }
                 item {
@@ -795,8 +850,6 @@ if(transactions.isNotEmpty()) {
                     }
                 }
             }
-
-
         }
     }
 
@@ -824,21 +877,169 @@ if(transactions.isNotEmpty()) {
             }
         }
     }
+    @Composable
+    fun DashboardGrid(
+        thisWeekCollection: String,
+        thisMonthCollection: String,
+        totalDuePending: String,
+        newMembersThisMonth: String,
+        expiredMembersThisMonth: String,
+        todayAttendance: String,
+        onRefresh: () -> Unit // Lambda function for refresh action
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .padding(8.dp), // Inner padding
+                verticalAlignment = Alignment.CenterVertically, // Align content vertically
+                horizontalArrangement = Arrangement.SpaceBetween // Place items at opposite ends
+            ) {
+                Text(
+                    text = "Dashboard",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp
+                    ),
+                    color = colorResource(id = R.color.black), // Text color
+                    modifier = Modifier.padding(start = 8.dp) // Add padding for the text
+                )
 
+                IconButton(
+                    onClick = { onRefresh() },
+                    modifier = Modifier.padding(end = 8.dp) // Add some padding to the end
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh Dashboard",
+                        tint = Color.Black // Match icon color with text
+                    )
+                }
+            }
 
+            // Scrollable grid
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+            ) {
+                item {
+                    Grid(
+                        modifier = Modifier.fillMaxWidth(),
+                        data = listOf(
+                            "This Week Collection" to thisWeekCollection,
+                            "This Month Collection" to thisMonthCollection,
+                            "Total Due Pending" to totalDuePending,
+                            "New Members This Month" to newMembersThisMonth,
+                            "Expired Members This Month" to expiredMembersThisMonth,
+                            "Today's Attendance" to todayAttendance
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun Grid(
+        modifier: Modifier = Modifier,
+        data: List<Pair<String, String>>
+    ) {
+        val gridSize = 2 // Number of columns
+
+        Column(modifier = modifier) {
+            data.chunked(gridSize).forEach { row ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    row.forEach { (title, value) ->
+                        GridTile(
+                            modifier = Modifier.weight(1f),
+                            title = title,
+                            value = value
+                        )
+                    }
+
+                    // Fill the empty space if the row is not complete
+                    if (row.size < gridSize) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun GridTile(
+        modifier: Modifier = Modifier,
+        title: String,
+        value: String
+    ) {
+        // Define colors
+        val darkGreen = Color(0xFF006400) // Dark green
+        val valueColor = if (title.contains("Due", ignoreCase = true) || value.toDoubleOrNull() ?: 0.0 < 0) {
+            Color.Red
+        } else {
+            Color.Green
+        }
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.Black), // Black background
+            modifier = modifier.height(120.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White // Ensure contrast with black background
+                )
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 24.sp),
+                    color = valueColor,
+                    modifier = Modifier.align(Alignment.End)
+                )
+            }
+        }
+    }
     @Composable
     fun PreviewPaginatedTransactionList() {
         MaterialTheme {
             PaginatedTransactionListScreen()
         }
     }
+
     @Preview(showBackground = true)
     @Composable
     fun PreviewProfileScreen() {
         // ProfileScreen()
      //   PreviewPaginatedTransactionList()
         //ChangePasswordDialog(){
+        DashboardGrid(
+            thisWeekCollection = "₹12,500",
+            thisMonthCollection = "₹50,000",
+            totalDuePending = "₹5,200",
+            newMembersThisMonth = "25",
+            expiredMembersThisMonth = "5",
+            todayAttendance = "40",
+                    onRefresh = {  }
 
+        )
 
     }
 }

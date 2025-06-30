@@ -1,5 +1,6 @@
 package com.oxad.fitox.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,7 @@ import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.MemberDao
 import com.oxad.fitox.database.WorkoutDao
 import com.oxad.fitox.datastore.DataStoreManager
+import com.oxad.fitox.model.DashboardData
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.model.Member
 import com.oxad.fitox.model.Product
@@ -36,6 +38,11 @@ class MainViewModel() : ViewModel() {
     var totalTransacPage = 1
     private val _transacList = MutableStateFlow<List<Transaction>>(emptyList())
     val transacList: StateFlow<List<Transaction>> = _transacList
+
+    var totalOldDataPage = 1
+    private val _olddataList = MutableStateFlow<List<Member>>(emptyList())
+    val oldDataList: StateFlow<List<Member>> = _olddataList
+
     lateinit var memberDao: MemberDao
     lateinit var workoutDao: WorkoutDao
     var gymCoachOpenedFirsttime = false
@@ -61,6 +68,37 @@ class MainViewModel() : ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isExpanded = MutableStateFlow(false)
     val isExpanded: StateFlow<Boolean> = _isExpanded
+    private val _dashboardState = MutableStateFlow<DashboardData?>(null)
+    val dashboardState: StateFlow<DashboardData?> = _dashboardState
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    fun fetchDashboardData() {
+        viewModelScope.launch {
+            try {
+                val result = apiRepoVM.fetchDashboardData(a_keyIs,gymResult[currentGymSelected].GymId)
+                result.onSuccess { response ->
+                    if(response.success) {
+                        _dashboardState.value = response.result
+                        _error.value = response.error
+                    }else{
+                        _error.value = response.error ?: "Error fetching data"
+
+                    }
+                }
+                result.onFailure { exception ->
+                    _error.value = "Network Error. Check your internet connection"
+
+
+                }
+
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Network Error. Failed to fetch data"
+            }
+        }
+    }
+
     fun setApiRepo(apiRepository: ApiRepository){
         apiRepoVM = apiRepository
     }
@@ -228,6 +266,74 @@ class MainViewModel() : ViewModel() {
 
 
 }
+
+    fun loadOldMemberHistory(page:Int) {
+        //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        // Log.e("checktloa","viewmodrel api  $page")
+       // Log.e("adfasdf","API page $page")
+
+        if(page == 1){
+            _olddataList.value = emptyList()
+        }
+        if(page in 1..totalOldDataPage) {
+            // Log.e("caaca","Apicall")
+
+            viewModelScope.launch {
+
+                val result =apiRepoVM.getOldMembers(gymResult[currentGymSelected].GymId,page,a_keyIs)
+                result.onSuccess { response ->
+
+                    if (response.success) {
+                     //   Log.e("adfasdf","Success page $page")
+
+                        _olddataList.value = response.result
+                        totalOldDataPage = response.totalPages
+                       // Log.e("adfasdf","Total page $totalOldDataPage")
+
+                        //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
+                    }else{
+                        _olddataList.value = emptyList()
+                    }
+                }
+                result.onFailure { exception ->
+                    exception.message ?: "Something went wrong!"
+                    //  _transacList.value = emptyList()
+                }
+
+
+            }
+        }
+    }
+    fun loadTransacHistoryMember(userid:String,context: Context) {
+        //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        // Log.e("checktloa","viewmodrel api  $page")
+            // Log.e("caaca","Apicall")
+
+            viewModelScope.launch {
+
+                val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, -1,userid)
+                result.onSuccess { response ->
+
+                    if (response.success) {
+                        _transacList.value = response.result
+                        totalTransacPage = response.total_pages
+                        //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
+                    }else{
+                        _transacList.value = emptyList()
+                        Utils.showToast(context,response.message)
+                    }
+                }
+                result.onFailure { exception ->
+                    exception.message ?: "Something went wrong!"
+                    //  _transacList.value = emptyList()
+                }
+
+
+            }
+
+    }
     fun loadTransacHistory(page:Int) {
       //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
        // Log.e("checktloa","viewmodrel api  $page")
@@ -240,7 +346,7 @@ if(page in 1..totalTransacPage) {
 
     viewModelScope.launch {
 
-        val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page)
+        val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page,"11")
         result.onSuccess { response ->
 
             if (response.success) {

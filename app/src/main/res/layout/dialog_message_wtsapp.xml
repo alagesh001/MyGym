@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/btn_share_expiry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-black"
+        android:visibility="gone"
+        android:background="@drawable/roun_rad_rect"
+        android:backgroundTint="@color/red"
+        android:text="Send Expiry Message" />
+
+    <TextView
+        android:id="@+id/btn_share_renewal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Renewal Reminder"
+        android:padding="@dimen/_10sdp"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:visibility="gone"
+
+        android:fontFamily="sans-serif-black"
+        android:background="@drawable/roun_rad_rect"
+        android:backgroundTint="@color/yellow"
+        android:layout_marginTop="10dp" />
+    <TextView
+        android:id="@+id/btn_share_due"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Due Amount Reminder"
+        android:padding="@dimen/_10sdp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-black"
+        android:background="@drawable/roun_rad_rect"
+        android:backgroundTint="@color/gray_dahomerk"
+        android:layout_marginTop="10dp" />
+    <TextView
+        android:id="@+id/btn_share_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Custom Message"
+        android:padding="@dimen/_10sdp"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-black"
+        android:background="@drawable/roun_rad_rect"
+        android:backgroundTint="@color/green"
+        android:layout_marginTop="10dp" />
+</LinearLayout>

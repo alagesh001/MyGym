@@ -3,6 +3,7 @@ package com.oxad.fitox.ui
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -29,10 +30,12 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.util.Util
 import com.google.gson.Gson
 import com.oxad.fitox.R
@@ -46,6 +49,7 @@ import com.oxad.fitox.model.Member
 import com.oxad.fitox.utils.Utils
 
 import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.StateFlow
@@ -54,6 +58,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -77,7 +85,11 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var memberSearchAdapter: MemberSearchAdapter
     private lateinit var memberListSet: List<Member>
-private var isSearching:Boolean = false
+    private var oldmemberListSet: MutableList<Member> = mutableListOf()
+
+    private var typeIs: Int? = 0
+
+    private var isSearching:Boolean = false
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,15 +104,179 @@ private var isSearching:Boolean = false
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyClientBinding.inflate(inflater, container, false)
-        initUi()
+        typeIs = arguments?.getInt("type")
+        //Log.e("adfasdf","onCreateView $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
+
+        if(typeIs == 0){
+            initUi()
+        }else{
+            initUiOldData()
+        }
+
         return binding.root
 
 
+    }
+private var oldDtacurrentPage = 1
+    private var collectStart = false
+    private var omit =  false
+
+    private fun initUiOldData() {
+        binding.downloadiv.setOnClickListener{
+
+                activity?.let {
+                    exportWithLoadingAndShare(requireContext(),oldmemberListSet)
+
+                }
+
+        }
+        binding.nameSort.setOnClickListener {
+                val sortedMembers =
+                    oldmemberListSet.sortedBy { it.name.lowercase(Locale.ROOT) } // Ensures case-insensitive sorting
+
+                memberAdapter.submitList(sortedMembers)
+
+
+        }
+        binding.expirySort.setOnClickListener {
+                val sortedMembers = oldmemberListSet.sortedBy { it.renewal_date }
+
+                // Submit the sorted list to the adapter
+                memberAdapter.submitList(sortedMembers)
+
+        }
+        mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+            oldDtacurrentPage++ // Increment after successful fetch
+        }
+        activity?.let {
+            if (::memberAdapter.isInitialized) {
+              //  Log.e("adfasdf", "memadapterA $memberAdapter")
+            } else {
+                memberAdapter = MemberAdapter(
+                    requireContext(),
+                    this,
+                    444
+                )
+            }
+
+            //   Log.e("adfasdf","memadapterB $memberAdapter")
+
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+
+            binding.recyclerView.adapter = memberAdapter
+            binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    //Log.e("adfasdf","Yes1")
+                    if (layoutManager.findLastCompletelyVisibleItemPosition() == memberAdapter.itemCount - 1) {
+                        // Load next page
+                        //Log.e("adfasdf","Yes2 $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
+
+                        if (oldDtacurrentPage <= mainViewModel.totalOldDataPage) {
+                            mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+                                oldDtacurrentPage++ // Increment after successful fetch
+                            }
+                        }
+                    }
+                }
+            })
+            binding.swipeRefreshLayout.setOnRefreshListener {
+                if (context != null) {
+                    if (isNetworkAvailable(requireContext())) {
+                        oldDtacurrentPage = 1
+                        mainViewModel.totalOldDataPage = 1
+                        memberListSet = emptyList()
+                        oldmemberListSet.clear()
+                        mainViewModel.loadOldMemberHistory(oldDtacurrentPage).also {
+                            oldDtacurrentPage++ // Increment after successful fetch
+                        }
+                    } else {
+                        Utils.showToast(requireContext(), "No Network Connection")
+                        // No internet connection
+                    }
+
+                }
+                // val memList = emptyList<Member>()
+                // memberAdapter.submitList(memList)
+
+            }
+
+            mainViewModel.searchMembers("")
+            binding.searchView.setOnClickListener {
+                binding.searchView.isIconified = false
+            }
+            binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener  {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    val filteredList = oldmemberListSet.filter {
+                        val q = query?.trim() ?: ""
+                        it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+                    }
+                    memberAdapter.submitList(filteredList)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    val filteredList = oldmemberListSet.filter {
+                        val q = newText?.trim() ?: ""
+                        it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+                    }
+                    memberAdapter.submitList(filteredList)
+                    return true
+                }
+            })
+            if (collectStart) {
+                omit = true
+            }
+            collectStart = true
+                viewLifecycleOwner.lifecycleScope.launch {
+                   // Log.e("jadfxz", "Collect start $collectStart")
+                    mainViewModel.oldDataList.collect { members ->
+                        if(omit){
+                            omit = false
+                            return@collect
+                        }
+
+                        // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
+                        /* val newMembers = members.filterNot { member ->
+                        oldmemberListSet.any { it.userid == member.userid } // Compare using a unique identifier
+                    }*/
+                       /* Log.e(
+                            "adfasdf",
+                            "YesAA $oldDtacurrentPage ${mainViewModel.totalOldDataPage}"
+                        )*/
+                        memberListSet = members
+                        oldmemberListSet =
+                            (oldmemberListSet + members).toMutableList() // Creates a new list combining the existing and new members
+                        // Log.e("adfasdf","Yes3")
+
+                        if (members.isEmpty()) {
+                            // Log.e("adfasdf","Yes4")
+
+                            memberAdapter.submitList(emptyList()) // Clear adapter
+                        } else {
+                            //  Log.e("adfasdf","Yes5")
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            memberAdapter.submitListAdd(members)
+                        }
+                    }
+                }
+
+        }
     }
     private fun initUi() {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE
         //  binding.refreshTv.visibility = GONE
+        binding.downloadiv.setOnClickListener{
+
+                if (::memberListSet.isInitialized) {
+                    activity?.let {
+                        exportWithLoadingAndShare(requireContext(),memberListSet)
+
+                }
+            }
+        }
         binding.expirySort.setOnClickListener {
             if (::memberListSet.isInitialized) {
                 val sortedMembers = memberListSet.sortedBy { it.renewal_date }
@@ -209,7 +385,54 @@ activity?.let {
     binding.searchView.setOnClickListener {
         binding.searchView.isIconified = false
     }
-    binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+    /*binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+           // Log.e("dacjkax", "yes onQueryTextSubmit - $query")
+            isSearching = true
+
+            // Filter the list based on the query
+            val filteredList = memberListSet.filter {
+                it.name.contains(query ?: "", ignoreCase = true)
+            }
+
+            // Update the adapter with the filtered list
+            memberAdapter.submitList(filteredList)
+
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            // Optionally, handle real-time filtering as the text changes
+            val filteredList = memberListSet.filter {
+                it.name.contains(newText ?: "", ignoreCase = true)
+            }
+
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+    })*/
+    binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener  {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            isSearching = true
+
+            val filteredList = memberListSet.filter {
+                val q = query?.trim() ?: ""
+                it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+            }
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            val filteredList = memberListSet.filter {
+                val q = newText?.trim() ?: ""
+                it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
+            }
+            memberAdapter.submitList(filteredList)
+            return true
+        }
+    })
+    /*binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
             Log.e("dacjkax","yes onQueryTextSubmit - $query")
             isSearching  = true
@@ -225,13 +448,188 @@ activity?.let {
             mainViewModel.searchMembers(newText?:"")
             return true
         }
-    })
+    })*/
 
 }
 
         }
 
 
+    fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
+        val dialog = ProgressDialog(context).apply {
+            setMessage("Exporting CSV file...")
+            setCancelable(false)
+            show()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Define file path
+                val file = File(context.getExternalFilesDir(null), "gym_members.csv")
+                // Export data to CSV
+                exportUsersToCsv(file, users)
+
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Toast.makeText(context, "Export complete!", Toast.LENGTH_SHORT).show()
+                    // Share the CSV file
+                    shareCsvFile(context, file)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Log.e("CSVExportError", e.message.orEmpty())
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun exportUsersToCsv(file: File, users: List<Member>) {
+        // Create FileWriter and BufferedWriter
+        BufferedWriter(FileWriter(file)).use { writer ->
+            // Write header row
+            writer.write(
+                listOf(
+                    "ID", "Mobile", "Name", "Renewal Date", "Email", "User ID", "Referral ID",
+                    "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
+                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
+                ).joinToString(",") + "\n"
+            )
+
+            // Write data rows
+            users.forEachIndexed { index, user ->
+                writer.write(
+                    listOf(
+                        (index + 1).toString(),
+                        user.mobile,
+                        user.name,
+                        user.renewal_date,
+                        user.email,
+                        user.userid.toString(),
+                        user.referral_id ?: "",
+                        user.height.toString(),
+                        user.weight.toString(),
+                        user.dob,
+                        user.coachid.toString(),
+                        user.goal.toString(),
+                        user.gender ?: "Male",
+                        user.referred_by ?: "",
+                        user.due_amount.toString(),
+                        user.attendance_count.toString(),
+                        user.last_attend,
+                        user.gymid.toString()
+                    ).joinToString(",") + "\n"
+                )
+            }
+        }
+    }
+
+    private fun shareCsvFile(context: Context, file: File) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/csv"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Open or Share CSV File"))
+    }
+
+
+
+    /*    private fun exportWithLoadingAndShare(context: Context, users: List<Member>) {
+        val dialog = ProgressDialog(context).apply {
+            setMessage("Exporting Excel file...")
+            setCancelable(false)
+            show()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Export the Excel file
+                val file = File(context.getExternalFilesDir(null), "my_gym_members.xlsx")
+                exportUsersToExcel(context, users)
+
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Toast.makeText(context, "Export complete!", Toast.LENGTH_SHORT).show()
+                    shareExcelFile(context, file)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Log.e("sdafsv",""+e.message)
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    private fun exportUsersToExcel(context: Context, users: List<Member>) {
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Gym Members")
+
+        // Header row
+        val header = sheet.createRow(0)
+        val headers = listOf(
+            "ID", "Mobile", "Name", "Renewal Date", "Email", "User ID", "Referral ID",
+            "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
+            "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
+        )
+
+        headers.forEachIndexed { index, title ->
+            header.createCell(index).setCellValue(title)
+        }
+
+        // Data rows
+        users.forEachIndexed { index, user ->
+            val row = sheet.createRow(index + 1)
+            row.createCell(0).setCellValue((index + 1).toDouble()) // Excel ID starting from 1
+            row.createCell(1).setCellValue(user.mobile.toDouble())
+            row.createCell(2).setCellValue(user.name)
+            row.createCell(3).setCellValue(user.renewal_date)
+            row.createCell(4).setCellValue(user.email)
+            row.createCell(5).setCellValue(user.userid.toDouble())
+            row.createCell(6).setCellValue(user.referral_id ?: "")
+            row.createCell(7).setCellValue(user.height.toDouble())
+            row.createCell(8).setCellValue(user.weight.toDouble())
+            row.createCell(9).setCellValue(user.dob)
+            row.createCell(10).setCellValue(user.coachid.toDouble())
+            row.createCell(11).setCellValue(user.goal.toDouble())
+            row.createCell(12).setCellValue(user.gender ?: "Male")
+            row.createCell(13).setCellValue(user.referred_by ?: "")
+            row.createCell(14).setCellValue(user.due_amount.toDouble())
+            row.createCell(15).setCellValue(user.attendance_count.toDouble())
+            row.createCell(16).setCellValue(user.last_attend)
+            row.createCell(17).setCellValue(user.gymid.toDouble())
+        }
+
+        val file = File(context.getExternalFilesDir(null), "my_gym_members.xlsx")
+        FileOutputStream(file).use { outputStream ->
+            workbook.write(outputStream)
+        }
+        workbook.close()
+    }
+    fun shareExcelFile(context: Context, file: File) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Open or Share Excel File"))
+    }*/
     companion object {
 
         @JvmStatic
@@ -362,10 +760,58 @@ activity?.let {
 
         showDateTimePickerDialog(userid)
     }
+    private fun showShareDialog(context: Context, mobile:String, userName: String, expiryDate: String,dueAmount: String,type: Int) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_message_wtsapp, null)
 
-    override fun onWhatsappClick(mobile: Long) {
-        sendWhatsAppMessage("", "91" + mobile.toString().replace(" ", ""))
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Share Options")
+            .setView(dialogView)
+            .setNegativeButton("Cancel", null)
+            .create()
+when(type){
+    1 ->{
+        dialogView.findViewById<TextView>(R.id.btn_share_custom).visibility = VISIBLE
+    }
+        2 ->{
+            dialogView.findViewById<TextView>(R.id.btn_share_renewal).visibility = VISIBLE
 
+        }
+            3->{
+                dialogView.findViewById<TextView>(R.id.btn_share_expiry).visibility = VISIBLE
+
+            }
+                4->{
+                    dialogView.findViewById<TextView>(R.id.btn_share_due).visibility = VISIBLE
+
+                }
+
+}
+        dialogView.findViewById<TextView>(R.id.btn_share_renewal).setOnClickListener {
+            val msg = "Hello $userName, your gym membership is expiring on $expiryDate. Please renew soon!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialogView.findViewById<TextView>(R.id.btn_share_expiry).setOnClickListener {
+            val msg = "Hi $userName, your gym membership expired on $expiryDate. Renew now to continue your fitness journey!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+        dialogView.findViewById<TextView>(R.id.btn_share_due).setOnClickListener {
+            val msg = "Hi $userName, you have ₹$dueAmount pending for your gym membership. Kindly clear your dues to avoid interruption."
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialogView.findViewById<TextView>(R.id.btn_share_custom).setOnClickListener {
+            val msg = "Hey $userName, don’t miss your next session. Stay fit!"
+            sendWhatsAppMessage(msg, "91" + mobile.replace(" ", ""))
+        }
+
+        dialog.show()
+    }
+
+    override fun onWhatsappClick(mobile: Long,userName: String, expiryDate: String,dueAmount: Int,type:Int) {
+       activity?.let {
+           showShareDialog(requireContext(),mobile.toString(),userName,expiryDate,dueAmount.toString(),type)
+       }
     }
 
     override fun oncallClick(mobile: Long) {

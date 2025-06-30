@@ -23,8 +23,8 @@ android {
         applicationId = "com.oxad.fitox"
         minSdk = 26
         targetSdk = 35
-        versionCode = 18
-        versionName = "1.8.6.1"
+        versionCode = 22
+        versionName = "1.8.8.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -77,6 +77,9 @@ dependencies {
     implementation ("androidx.compose.material:material-icons-extended:<version>")
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")// Latest stable version
+  /*  implementation ("org.apache.poi:poi:5.2.3")
+    implementation ("org.apache.poi:poi-ooxml:5.2.3")*/
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

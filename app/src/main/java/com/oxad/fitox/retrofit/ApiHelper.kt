@@ -11,8 +11,10 @@ object ApiHelper {
     external fun lkeyFetch(): String
     external fun enterInMemberUrl(): String
 
+    external fun gOldDatamembUrl(): String
     external fun gDatamembUrl(): String
     external fun vcoachUrl(): String
+    external fun dashDataUrl(): String
     external fun transCheckUrl(): String
     external fun gtDataUrl(): String
     external fun guTableUrl(): String

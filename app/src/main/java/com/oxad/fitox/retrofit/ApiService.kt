@@ -3,6 +3,7 @@ package com.oxad.fitox.retrofit
 import com.oxad.fitox.model.AdminContUpdateModel
 import com.oxad.fitox.model.AdminLoginModel
 import com.oxad.fitox.model.CustResponse
+import com.oxad.fitox.model.DashDataModel
 import com.oxad.fitox.model.GetMyTrainersResponse
 import com.oxad.fitox.model.GetMyTransacHist
 import com.oxad.fitox.model.GymGuideResponse
@@ -93,7 +94,12 @@ interface ApiService {
 
                                     @Query("userid") userid: Long
     ): CustResponse
+    @GET
+    suspend fun getDashData(        @Url url: String,
+                                    @Header("x-api-key") apiKey: String,
 
+                                    @Query("gymid") gymid: Int
+    ): DashDataModel
 
 
     @GET // Adjust this to match your backend endpoint
@@ -101,8 +107,8 @@ interface ApiService {
         @Url url: String,
 
         @Query("gymid") gymid: Int,
-        @Query("page") page: Int
-
+        @Query("page") page: Int,
+@Query("memid") memberId:String
     ): GetMyTransacHist
     @GET // Adjust this to match your backend endpoint
     suspend fun getmytrainer(

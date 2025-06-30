@@ -12,6 +12,8 @@ data class ApiResponse(val s:String)
 data class UserRegisterModel(
     val success: Boolean,
     val message: String,
+    val error: Int= 0,
+
     val isAdmin: Int,
     val mobile: Long = 0,
     val userid: Long,
@@ -22,6 +24,20 @@ data class UserRegisterModel(
 
 
 
+)
+data class DashDataModel(
+    val success: Boolean,
+    val result: DashboardData?,
+    val error: String?
+)
+
+data class DashboardData(
+    val weekAmount: String,
+    val monthAmount: String,
+    val typeOneCount: Int,
+    val expiredMembersCount: Int,
+    val attendanceToday: Int,
+    val total_due: String
 )
 data class MarkAttendModel(
     val success: Boolean,

@@ -337,9 +337,26 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     
     Thank you for choosing us!
 """.trimIndent()
+        val confirmationMessage2 = """
+    Payment Confirmation
+    ---------------------
+    We have received your payment of ₹${binding.amountPaidInput.text} for a new registration on $formattedDateTime.
+    
+    Plan Duration: ${binding.paidmonthsInput.text} months
+  
+    Referral Program:
+    Use this referral ID $nmRefId to refer your friends and earn discounts!
+    
+    Thank you for choosing us!
+""".trimIndent()
         viewLifecycleOwner.lifecycleScope.launch {
             val fullmsg = when(type){
-                0-> confirmationMessage
+                0-> {if(mainViewModel.gymResult[mainViewModel.currentGymSelected].is_active == 3) {
+                    confirmationMessage
+                }else{
+                    confirmationMessage2
+                }
+                }
                     1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
                     2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${formattedDateTime}."
                 else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
@@ -709,6 +726,9 @@ private var isLoading = false
                    if(context !=null) {
                        Utils.showToast(requireContext(), response.message)
                    }
+if(response.error == 12){
+    showShareDialogUpgrade(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId.toString(),"8595509389")
+}
                }
             }
 
@@ -735,7 +755,40 @@ private var isLoading = false
             }
     }
 
+    private fun showShareDialogUpgrade(gymId:String,mobIs:String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Upgrade")
+            .setMessage("Kindly contact admin to upgrade.")
+            .setCancelable(false)
+            .setPositiveButton("Contact") { dialog, _ ->
+                shareInWhatsappUpgrade(gymId,mobIs)
+            }
+            .setNegativeButton("Cancel")  {dialog, _ ->
+                dialog.dismiss()
+                //findNavController().popBackStack()
+            }
+            .show()
+    }
+    private fun shareInWhatsappUpgrade(gymId:String,mobIs:String){
+        val currentDateTime = LocalDateTime.now()
 
+// Format the date and time
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
+        val confirmationMessage = "Hi Fitox Team, Gymid - $gymId, I would like to upgrade my Fitox account."
+        sendWhatsAppMessageUpgrade(confirmationMessage, "91$mobIs")
+    }
+    private fun sendWhatsAppMessageUpgrade(message: String, phoneNumber: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = ("https://wa.me/$phoneNumber?text=" + Uri.encode(message)).toUri()
+            startActivity(intent)
+        } catch (e: Exception) {
+            activity?.let { Toast.makeText(requireContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show()}
+        }
+        // findNavController().popBackStack()
+
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         //Log.e("chadkaa","destroy")
