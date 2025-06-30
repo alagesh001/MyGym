@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
     private fun logout() {
         //  Log.e("chadjfadf","Yesss")
         this@MainActivity.let {
-            Utils.showToast(this@MainActivity,"You are Logged out.")
+            Utils.showToast(this@MainActivity,"You are Logged out. Kindly re-login.")
             lifecycleScope.launch {
                 mainViewModel.dataStoreManagerVM.clearUserData()
                 AppDatabase.clearDatabase(application)
