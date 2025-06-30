@@ -40,6 +40,7 @@ data class DashboardData(
 )
 data class MarkAttendModel(
     val success: Boolean,
+    val first_mark: Boolean = false,
     val message: String,
     val a_count: String =""
 )

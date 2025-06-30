@@ -418,7 +418,16 @@ if(page in 1..totalTransacPage) {
 
         }
     }
+    fun markAttendanceUpdate(userid: Int,currentDateTime: String){
+        viewModelScope.launch {
 
+            memberDao.incrementAttendanceAndUpdateLastAttend(userid, currentDateTime)
+            val cachedMembers = memberDao.getAllMembers(gymResult[currentGymSelected].GymId)
+            if (cachedMembers.isNotEmpty()) {
+                _memberList.value = cachedMembers // Return updated data
+            }
+        }
+    }
     fun refreshMembers() {
         viewModelScope.launch {
             memberDao.clearMembers(gymResult[currentGymSelected].GymId)
