@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.util.Util
 import com.google.gson.Gson
 import com.oxad.fitox.R
+import com.oxad.fitox.adapter.Admin_filter_adapter
 import com.oxad.fitox.adapter.MemberAdapter
 import com.oxad.fitox.adapter.MemberSearchAdapter
 import com.oxad.fitox.adapter.RenewalAdapter
@@ -46,6 +47,7 @@ import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.databinding.FragmentMyClientBinding
 import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.Member
+import com.oxad.fitox.model.TrainerModel
 import com.oxad.fitox.utils.Utils
 
 import com.oxad.fitox.viewmodel.MainViewModel
@@ -56,6 +58,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedWriter
@@ -265,10 +269,63 @@ private var oldDtacurrentPage = 1
 
         }
     }
-    private fun initUi() {
+    var filteredMembers: List<Member> = emptyList()
+    lateinit var admin_adapter:Admin_filter_adapter
+
+        private fun initUi() {
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE
         //  binding.refreshTv.visibility = GONE
+        lifecycleScope.launch {
+            mainViewModel.trainerList
+                .filter { it.isNotEmpty() } // 👈 Only pass non-empty lists
+                .first() // 👈 Collect only the first non-empty list
+                .let { trainers ->
+
+                    // Add "All" option
+                    val allOption = TrainerModel(
+                        coachid = -1, // Dummy ID for "All"
+                        name = "All",
+                        mob = "",
+                        role = "",
+                        password = ""
+                    )
+
+                    val updatedList = listOf(allOption) + trainers
+
+                    admin_adapter = Admin_filter_adapter(
+                        trainerList = updatedList,
+                        selectedId = -1 // 👈 Default select "All"
+                    ) { trainer ->
+
+                        if (trainer.coachid == -1L) {
+                            // ✅ Show all members when "All" is selected
+                            if (::memberListSet.isInitialized) {
+
+                                memberAdapter.submitList(memberListSet)
+                                filteredMembers = memberListSet
+                            }
+                        } else {
+                            // ✅ Filter members by selected trainer’s coachid
+                            if (::memberListSet.isInitialized) {
+                                filteredMembers = memberListSet.filter { it.coachid == trainer.coachid }
+
+                                // Submit filtered list to the adapter
+                                memberAdapter.submitList(filteredMembers)
+                            }
+                        }
+                    }
+
+                    binding.adminRecyclerView.layoutManager = LinearLayoutManager(
+                        context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                    binding.adminRecyclerView.adapter = admin_adapter
+                }
+        }
+
+
         binding.downloadiv.setOnClickListener{
 
                 if (::memberListSet.isInitialized) {
@@ -280,7 +337,7 @@ private var oldDtacurrentPage = 1
         }
         binding.expirySort.setOnClickListener {
             if (::memberListSet.isInitialized) {
-                val sortedMembers = memberListSet.sortedBy { it.renewal_date }
+                val sortedMembers = filteredMembers.sortedBy { it.renewal_date }
 
                 // Submit the sorted list to the adapter
                 memberAdapter.submitList(sortedMembers)
@@ -290,7 +347,7 @@ private var oldDtacurrentPage = 1
         binding.nameSort.setOnClickListener {
             if (::memberListSet.isInitialized) {
                 val sortedMembers =
-                    memberListSet.sortedBy { it.name.lowercase(Locale.ROOT) } // Ensures case-insensitive sorting
+                    filteredMembers.sortedBy { it.name.lowercase(Locale.ROOT) } // Ensures case-insensitive sorting
 
                 memberAdapter.submitList(sortedMembers)
             }
@@ -329,6 +386,9 @@ activity?.let {
         mainViewModel.memberList.collect { members ->
            // Log.e("chadksaa", "cachedMembers  RamCollectinggggggggggggg")
             memberListSet = members
+            filteredMembers = memberListSet
+
+            admin_adapter.selectAll()
 
             if (members.isEmpty()) {
                 memberAdapter.submitList(emptyList()) // Clear adapter
@@ -416,7 +476,7 @@ activity?.let {
         override fun onQueryTextSubmit(query: String?): Boolean {
             isSearching = true
 
-            val filteredList = memberListSet.filter {
+            val filteredList = filteredMembers.filter {
                 val q = query?.trim() ?: ""
                 it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
             }
@@ -425,7 +485,7 @@ activity?.let {
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
-            val filteredList = memberListSet.filter {
+            val filteredList = filteredMembers.filter {
                 val q = newText?.trim() ?: ""
                 it.name.contains(q, ignoreCase = true) || it.mobile.toString().contains(q)
             }
