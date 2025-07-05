@@ -61,7 +61,17 @@ android:layout_alignParentEnd="true"
         android:layout_weight="1"
         android:src="@drawable/download_icn"/>
 </LinearLayout>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/adminRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/searchViewLay"
+tools:itemCount="5"
+            tools:listitem="@layout/item_admin"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:scrollbars="horizontal" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSearch"
             android:layout_width="match_parent"
@@ -80,7 +90,7 @@ android:layout_alignParentEnd="true"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_below="@+id/searchViewLay"
+            android:layout_below="@+id/adminRecyclerView"
             android:padding="@dimen/_10sdp"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"

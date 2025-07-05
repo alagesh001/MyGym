@@ -445,6 +445,18 @@ if(dueAmount <0){
               //  Log.e("chadka",""+ binding.spinnerTypeGender.selectedItem.toString())
                 if(isLoading){return}
                 isLoading = true
+                if (binding.etDateOfBirth.text.isEmpty()) {
+                    binding.etDateOfBirth.setText("2000-01-01")
+                }
+                if (binding.weightInput.text.isEmpty()) {
+                    binding.weightInput.setText("0") // default weight
+                }
+                if (binding.heightInput.text.isEmpty()) {
+                    binding.heightInput.setText("0") // default height
+                }
+                if (binding.emailInput.text.isEmpty()) {
+                    binding.emailInput.setText("NA") // default height
+                }
                 if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
                     && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
 
