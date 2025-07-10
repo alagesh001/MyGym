@@ -281,6 +281,30 @@ private var oldDtacurrentPage = 1
 //apiManager.getmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId)
         // binding.circularProgressBar.visibility = VISIBLE
         //  binding.refreshTv.visibility = GONE
+            admin_adapter = Admin_filter_adapter(
+                trainerList = emptyList(),
+                selectedId = -1
+            ) { trainer ->
+                if (trainer.coachid == -1L) {
+                    // Show all members
+                    if (::memberListSet.isInitialized) {
+                        memberAdapter.submitList(memberListSet)
+                        filteredMembers = memberListSet
+                    }
+                } else {
+                    // Filter by coachid
+                    if (::memberListSet.isInitialized) {
+                        filteredMembers = memberListSet.filter { it.coachid == trainer.coachid }
+                        memberAdapter.submitList(filteredMembers)
+                    }
+                }
+            }
+            binding.adminRecyclerView.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            binding.adminRecyclerView.adapter = admin_adapter
         lifecycleScope.launch {
             mainViewModel.trainerList
                 .filter { it.isNotEmpty() } // 👈 Only pass non-empty lists
@@ -297,36 +321,9 @@ private var oldDtacurrentPage = 1
                     )
 
                     val updatedList = listOf(allOption) + trainers
+                    admin_adapter.updateList(updatedList)
 
-                    admin_adapter = Admin_filter_adapter(
-                        trainerList = updatedList,
-                        selectedId = -1 // 👈 Default select "All"
-                    ) { trainer ->
 
-                        if (trainer.coachid == -1L) {
-                            // ✅ Show all members when "All" is selected
-                            if (::memberListSet.isInitialized) {
-
-                                memberAdapter.submitList(memberListSet)
-                                filteredMembers = memberListSet
-                            }
-                        } else {
-                            // ✅ Filter members by selected trainer’s coachid
-                            if (::memberListSet.isInitialized) {
-                                filteredMembers = memberListSet.filter { it.coachid == trainer.coachid }
-
-                                // Submit filtered list to the adapter
-                                memberAdapter.submitList(filteredMembers)
-                            }
-                        }
-                    }
-
-                    binding.adminRecyclerView.layoutManager = LinearLayoutManager(
-                        context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    )
-                    binding.adminRecyclerView.adapter = admin_adapter
                 }
         }
 
