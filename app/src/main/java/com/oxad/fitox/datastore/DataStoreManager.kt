@@ -39,9 +39,37 @@ class DataStoreManager(private val context: Context) {
         private const val AES_MODE = "AES/GCM/NoPadding"
         private const val SECRET_KEY_ALIAS = "encrypted_key"
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        val WHATSAPP_SHARE_KEY = booleanPreferencesKey("whatsapp_share")
+        val EXPORT_MODE_KEY = stringPreferencesKey("export_mode") // "Full" or "Mini"
+    }
+    suspend fun saveWhatsappShareOpt(isEnabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[WHATSAPP_SHARE_KEY] = isEnabled
+        }
+    }
+    val whatsappShareFlow: Flow<Boolean> = context.dataStore.data
+        .map { prefs ->
+            prefs[WHATSAPP_SHARE_KEY] ?: true // default true
+        }
 
+    suspend fun saveExportMode( mode: String) {
+        context.dataStore.edit { preferences ->
+            preferences[EXPORT_MODE_KEY] = mode
+        }
+    }
+    val exportModeFlow: Flow<String> = context.dataStore.data
+        .map { prefs ->
+            prefs[EXPORT_MODE_KEY] ?: "Full" // default Full
+        }
+   /* val Flow<Boolean> = context.dataStore.data
+    .map { preferences ->
+        preferences[WHATSAPP_SHARE_KEY] ?: true // default = true
     }
 
+    val Flow<String> = context.dataStore.data
+    .map { preferences ->
+        preferences[EXPORT_MODE_KEY] ?: "Full" // default = Full
+    }*/
     fun LoginResult.toByteArray(): ByteArray {
         val parcel = Parcel.obtain()
         this.writeToParcel(parcel, 0)

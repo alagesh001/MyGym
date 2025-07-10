@@ -80,6 +80,7 @@ data class MemberResponse(
 data class Member(
     val mobile: Long,
     val name: String,
+    val joiningdate: String,
     val renewal_date: String,
     val email: String,
     @PrimaryKey val userid: Long,
@@ -103,6 +104,7 @@ data class Member(
         parcel.readLong(),
         parcel.readString() ?: "",
 
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
 
         parcel.readString() ?: "",
@@ -129,6 +131,7 @@ data class Member(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(mobile)
         parcel.writeString(name)
+        parcel.writeString(joiningdate)
         parcel.writeString(renewal_date)
         parcel.writeString(email)
         parcel.writeLong(userid)

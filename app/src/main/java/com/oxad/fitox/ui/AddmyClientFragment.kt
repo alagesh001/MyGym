@@ -46,6 +46,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 import androidx.core.net.toUri
+import com.oxad.fitox.datastore.DataStoreManager
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,10 +125,21 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         }
     }
    private  lateinit var datePreSet:Calendar
+    private var whatsappShare = false
 
     private   var dobPreSet:Calendar ? = null
    private var trainerData:List<TrainerModel> ? =null
     private fun initUi(){
+        val currentDate = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        lifecycleScope.launch {
+            activity?.let {
+                whatsappShare = mainViewModel.getWhatsappShareOnce(DataStoreManager((requireContext())))
+            }
+        }
+// Set default date in SQL format
+        binding.etFromDate.setText(dateFormat.format(currentDate.time))
+
         binding.totalAmountInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // Not needed
@@ -212,7 +224,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     binding.editLl.visibility = GONE
                     binding.paidmonthsInput.visibility = GONE
                     binding.paidmonthsLabel.visibility = GONE
-                    binding.datePicker.visibility = GONE
+                   // binding.datePicker.visibility = GONE
                     binding.frmDateTv.visibility = GONE
                     binding.deleteButton.visibility = GONE
                     binding.duePayButton.visibility = VISIBLE
@@ -283,7 +295,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 }
             }
         }
-        val datePicker: DatePicker =  binding.datePicker
+       /* val datePicker: DatePicker =  binding.datePicker
 
 
         // Set listener for when the user changes the date
@@ -292,26 +304,33 @@ class AddmyClientFragment : Fragment(),OnClickListener {
         datePicker.init(datePreSet.get(Calendar.YEAR), datePreSet.get(Calendar.MONTH), datePreSet.get(Calendar.DAY_OF_MONTH)) { _, _, _, _ ->
             updateDateText(datePicker,  binding.textViewSelectedDate)
         }
-        updateDateText(datePicker,  binding.textViewSelectedDate)
+        updateDateText(datePicker,  binding.textViewSelectedDate)*/
         setclicklistener()
 
 
 
 
     }
+
     // new - 0, renew - 1, duepay - 2
     private fun showShareDialog(type:Int,mobIs:String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Share")
-            .setMessage("Do you want to share this on WhatsApp?")
-            .setCancelable(false)
-            .setPositiveButton("Share") { _, _ ->
-                shareInWhatsapp(type,mobIs)
-            }
-            .setNegativeButton("Cancel")  { _, _ ->
-                findNavController().popBackStack()
-            }
-            .show()
+        if(!whatsappShare){
+            findNavController().popBackStack()
+
+        }else{
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Share")
+                .setMessage("Do you want to share this on WhatsApp?")
+                .setCancelable(false)
+                .setPositiveButton("Share") { _, _ ->
+                    shareInWhatsapp(type,mobIs)
+                }
+                .setNegativeButton("Cancel")  { _, _ ->
+                    findNavController().popBackStack()
+                }
+                .show()
+        }
+
     }
     private fun shareInWhatsapp(type:Int,mobIs:String){
         val currentDateTime = LocalDateTime.now()
@@ -421,6 +440,8 @@ if(dueAmount <0){
         binding.renewButton.setOnClickListener(this)
         binding.deleteButton.setOnClickListener(this)
         binding.etDateOfBirth.setOnClickListener(this)
+        binding.etFromDate.setOnClickListener(this)
+
         binding.duePayButton.setOnClickListener(this)
 
 
@@ -428,6 +449,7 @@ if(dueAmount <0){
     override fun onClick(p0: View?) {
 
         when (p0) {
+            binding.etFromDate -> showDatePickerDialog(binding.etFromDate)
             binding.etDateOfBirth ->    showDatePickerDialog(binding.etDateOfBirth)
             binding.duePayButton ->{
                 if(isLoading){return}
@@ -457,7 +479,7 @@ if(dueAmount <0){
                 if (binding.emailInput.text.isEmpty()) {
                     binding.emailInput.setText("NA") // default height
                 }
-                if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && dateIs != "" && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
+                if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && binding.etFromDate.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
                     && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
 
                     dataAdd(false)
@@ -487,7 +509,7 @@ if(dueAmount <0){
             binding.renewButton -> {
                 if(isLoading){return}
                 isLoading = true
-            if ( dateIs != "" && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
+            if ( binding.etFromDate.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
                 dataAdd(true)
             } else {
                 isLoading = false
@@ -668,7 +690,7 @@ private var isLoading = false
                         mainViewModel.apiRepoVM.addmymembers(
                             binding.nameInput.text.toString(),binding.emailInput.text.toString(),
                             mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
-                            binding.paidmonthsInput.text.toString().toInt(),dateIs,
+                            binding.paidmonthsInput.text.toString().toInt(),binding.etFromDate.text.toString(),
                             binding.etDateOfBirth.text.toString(),
                             binding.heightInput.text.toString().toFloat(),
                             binding.weightInput.text.toString().toFloat(),
@@ -683,7 +705,7 @@ private var isLoading = false
             }else{
                 if(isRenew == true){
                     memberData?.userid?.let {
-                        mainViewModel.apiRepoVM.renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),dateIs,
+                        mainViewModel.apiRepoVM.renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),binding.etFromDate.text.toString(),
                             it,  binding.amountPaidInput.text.toString().trim().toInt(),
                             dueAmount,mainViewModel.a_keyIs
                         )
