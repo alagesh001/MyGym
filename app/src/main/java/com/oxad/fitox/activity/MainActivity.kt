@@ -23,6 +23,7 @@ import com.oxad.fitox.R
 import com.oxad.fitox.database.ApiRepository
 import com.oxad.fitox.database.AppDatabase
 import com.oxad.fitox.databinding.ActivityMainBinding
+import com.oxad.fitox.datastore.DataStoreManager
 import com.oxad.fitox.model.LoginResult
 import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initUi(){
         lifecycleScope.launch {
+            mainViewModel.settingOptionFetchSet(DataStoreManager(this@MainActivity))
             mainViewModel.logoutState.collect { shouldLogout ->
                 if (shouldLogout) {
                     logout()

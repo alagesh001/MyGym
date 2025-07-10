@@ -106,7 +106,10 @@ class MainViewModel() : ViewModel() {
             }
         }
     }*/
-
+  suspend fun settingOptionFetchSet(dataStoreManager: DataStoreManager){
+      _whatsappShare.value =  dataStoreManager.whatsappShareFlow.first()
+      _exportMode.value = dataStoreManager.exportModeFlow.first()
+  }
     fun saveWhatsappShareOpt(dataStoreManager: DataStoreManager, enabled: Boolean) {
         _whatsappShare.value = enabled // 👈 update StateFlow immediately
         viewModelScope.launch {

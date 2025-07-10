@@ -54,4 +54,8 @@ private val onClick: (TrainerModel) -> Unit
             notifyDataSetChanged()
         }
     override fun getItemCount(): Int = trainerList.size
+        fun updateList(newList: List<TrainerModel>) {
+            this.trainerList = newList
+            notifyDataSetChanged()
+        }
 }
