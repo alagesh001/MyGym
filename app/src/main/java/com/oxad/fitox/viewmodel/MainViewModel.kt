@@ -27,6 +27,7 @@ import com.oxad.fitox.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -77,7 +78,49 @@ class MainViewModel() : ViewModel() {
     val error: StateFlow<String?> = _error
     private val _logoutState = MutableStateFlow(false)
     val logoutState: StateFlow<Boolean> = _logoutState
+    private val _whatsappShare = MutableStateFlow(true)
+    val whatsappShare: StateFlow<Boolean> = _whatsappShare
 
+    private val _exportMode = MutableStateFlow("Full")
+    val exportMode: StateFlow<String> = _exportMode
+    suspend fun getWhatsappShareOnce(dataStoreManager: DataStoreManager): Boolean {
+        return dataStoreManager.whatsappShareFlow.first()
+    }
+
+    suspend fun getExportModeOnce(dataStoreManager: DataStoreManager): String {
+        return dataStoreManager.exportModeFlow.first()
+    }
+  /*  fun collectSettingOption(dataStoreManager: DataStoreManager) {
+        // Observe WhatsApp Share from DataStore
+        dataStoreManagerVM = dataStoreManager
+        viewModelScope.launch {
+            dataStoreManagerVM.whatsappShareFlow.collect { value ->
+                _whatsappShare.value = value
+            }
+        }
+
+        // Observe Export Mode from DataStore
+        viewModelScope.launch {
+            dataStoreManager.exportModeFlow.collect { mode ->
+                _exportMode.value = mode
+            }
+        }
+    }*/
+
+    fun saveWhatsappShareOpt(dataStoreManager: DataStoreManager, enabled: Boolean) {
+        _whatsappShare.value = enabled // 👈 update StateFlow immediately
+        viewModelScope.launch {
+            dataStoreManager.saveWhatsappShareOpt(enabled)
+        }
+    }
+
+    // Save Export Mode
+    fun saveExportMode(dataStoreManager: DataStoreManager, mode: String) {
+        _exportMode.value = mode // 👈 update StateFlow immediately
+        viewModelScope.launch {
+            dataStoreManager.saveExportMode(mode)
+        }
+    }
     // Function to trigger logout
     fun triggerLogout() {
         _logoutState.value = true

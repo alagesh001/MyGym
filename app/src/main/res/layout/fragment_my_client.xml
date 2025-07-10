@@ -54,12 +54,13 @@ android:layout_alignParentEnd="true"
             android:background="@drawable/roun_rad_rect"
             app:theme="@style/SearchViewTheme"
             />
+
     <ImageView
         android:id="@+id/downloadiv"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
         android:layout_weight="1"
-        android:src="@drawable/download_icn"/>
+        android:src="@drawable/download_icn" />
 </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/adminRecyclerView"

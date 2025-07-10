@@ -22,16 +22,17 @@ android:layout_gravity="center"
 
 
     <!-- Name Field -->
-    <TextView
-        android:id="@+id/name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name*"
-        android:textColor="@color/primary_color"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name*"
+            android:textColor="@android:color/holo_red_dark"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
-    <EditText
+
+        <EditText
         android:id="@+id/name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +56,7 @@ android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Mobile*"
                 android:textSize="16sp"
-                android:textColor="@color/primary_color"
+                android:textColor="@android:color/holo_red_dark"
 
                 android:textStyle="bold" />
 
@@ -79,7 +80,7 @@ android:layout_gravity="center"
                 android:textSize="16sp"
                 android:textColor="@color/primary_color"
 
-                android:textStyle="bold" />
+                 />
 
             <EditText
                 android:id="@+id/email_input"
@@ -95,7 +96,6 @@ android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Referral Id (Optional)"
-                android:textStyle="bold"
                 android:textColor="@color/primary_color"
 
                 android:textSize="16sp" />
@@ -115,9 +115,9 @@ android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Date of birth"
                 android:textSize="16sp"
-                android:textColor="@color/primary_color"
+                android:textColor="@color/primary_color"/>
 
-                android:textStyle="bold" />
+
 
             <EditText
                 android:id="@+id/etDateOfBirth"
@@ -137,7 +137,7 @@ android:layout_gravity="center"
                 android:textSize="16sp"
                 android:textColor="@color/primary_color"
 
-                android:textStyle="bold" />
+              />
 
             <EditText
                 android:id="@+id/height_input"
@@ -157,7 +157,7 @@ android:layout_gravity="center"
                 android:textSize="16sp"
                 android:textColor="@color/primary_color"
 
-                android:textStyle="bold" />
+              />
 
             <EditText
                 android:id="@+id/weight_input"
@@ -184,11 +184,11 @@ android:layout_gravity="center"
                         android:id="@+id/goaltv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Goal*"
+                        android:text="Goal"
                         android:textSize="16sp"
-                        android:textColor="@color/primary_color"
+                        android:textColor="@color/black"
 
-                        android:textStyle="bold" />
+                        />
 
                     <Spinner
                         android:id="@+id/spinner_type"
@@ -209,11 +209,11 @@ android:layout_gravity="center"
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Gender*"
+                        android:text="Gender"
                         android:textSize="16sp"
-                        android:textColor="@color/primary_color"
+                        android:textColor="@color/black"
 
-                        android:textStyle="bold" />
+                 />
 
                     <Spinner
                         android:id="@+id/spinner_type_gender"
@@ -230,9 +230,9 @@ android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="Admin*"
+                android:text="Admin"
                 android:textSize="16sp"
-                android:textColor="@color/primary_color"
+                android:textColor="@color/black"
 
                 android:textStyle="bold" />
 
@@ -264,7 +264,7 @@ android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:text="Paid Months*"
         android:textStyle="bold"
-        android:textColor="@color/primary_color"
+        android:textColor="@android:color/holo_red_dark"
 
         android:textSize="16sp" />
 
@@ -281,42 +281,52 @@ android:layout_gravity="center"
         android:id="@+id/frm_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="From Date*"
-        android:textStyle="bold"
-        android:textColor="@color/primary_color"
+        android:text="From Date"
+        android:textColor="@color/black"
 
         android:textSize="16sp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="5dp">
+            <EditText
+                android:id="@+id/etFromDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
 
-        <DatePicker
-            android:id="@+id/datePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:datePickerMode="spinner"
-            android:theme="@style/CustomDatePickerTheme"
-            android:calendarViewShown="false"/>
-        <TextView
-            android:id="@+id/textViewSelectedDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:visibility="gone"
-            android:text="" />
-    </LinearLayout>
+                android:focusable="false" />
+
+            <!--
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="5dp">
+
+                    <DatePicker
+                        android:id="@+id/datePicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:datePickerMode="spinner"
+                        android:theme="@style/CustomDatePickerTheme"
+                        android:calendarViewShown="false"/>
+                    <TextView
+                        android:id="@+id/textViewSelectedDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:visibility="gone"
+                        android:text="" />
+                </LinearLayout>
+            -->
             <TextView
                 android:id="@+id/total_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Amount to be paid*"
                 android:textStyle="bold"
-                android:textColor="@color/primary_color"
+                android:textColor="@android:color/holo_red_dark"
 
                 android:textSize="16sp" />
 
@@ -335,7 +345,7 @@ android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:text="Amount paid*"
                 android:textStyle="bold"
-                android:textColor="@color/primary_color"
+                android:textColor="@android:color/holo_red_dark"
 
                 android:textSize="16sp" />
 

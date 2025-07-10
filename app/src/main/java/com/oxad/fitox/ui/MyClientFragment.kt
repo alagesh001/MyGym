@@ -103,6 +103,7 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    private var exportdataoption = "Full"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,7 +112,11 @@ class MyClientFragment : Fragment(),MemberAdapter.MemberAdapterListener {
         binding = FragmentMyClientBinding.inflate(inflater, container, false)
         typeIs = arguments?.getInt("type")
         //Log.e("adfasdf","onCreateView $oldDtacurrentPage ${mainViewModel.totalOldDataPage}")
-
+        lifecycleScope.launch {
+            activity?.let {
+                exportdataoption = mainViewModel.getExportModeOnce(DataStoreManager((requireContext())))
+            }
+        }
         if(typeIs == 0){
             initUi()
         }else{
@@ -528,7 +533,11 @@ activity?.let {
                 // Define file path
                 val file = File(context.getExternalFilesDir(null), "gym_members.csv")
                 // Export data to CSV
-                exportUsersToCsv(file, users)
+                when(exportdataoption){
+                    "Full" ->  exportUsersToCsv(file, users)
+                    "Mini" -> exportUsersToCsvMini(file, users)
+                }
+
 
                 withContext(Dispatchers.Main) {
                     dialog.dismiss()
@@ -552,7 +561,7 @@ activity?.let {
             // Write header row
             writer.write(
                 listOf(
-                    "ID", "Mobile", "Name", "Renewal Date", "Email", "User ID", "Referral ID",
+                    "ID", "Mobile", "Name", "Joining Date","Renewal Date", "Email", "User ID", "Referral ID",
                     "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
                     "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
                 ).joinToString(",") + "\n"
@@ -565,6 +574,7 @@ activity?.let {
                         (index + 1).toString(),
                         user.mobile,
                         user.name,
+                        user.joiningdate,
                         user.renewal_date,
                         user.email,
                         user.userid.toString(),
@@ -585,7 +595,26 @@ activity?.let {
             }
         }
     }
+    private fun exportUsersToCsvMini(file: File, users: List<Member>) {
+        BufferedWriter(FileWriter(file)).use { writer ->
+            // Write header row
+            writer.write(listOf("Index", "Name", "Mobile", "Joining Date", "Expiry", "Remarks").joinToString(",") + "\n")
 
+            // Write data rows
+            users.forEachIndexed { index, user ->
+                writer.write(
+                    listOf(
+                        (index + 1).toString(),          // Index (starts at 1)
+                        user.name,                // Name
+                        user.mobile,              // Mobile
+                        user.joiningdate,
+                        user.renewal_date,        // Expiry
+                        ""                              // Remarks (blank for now)
+                    ).joinToString(",") + "\n"
+                )
+            }
+        }
+    }
     private fun shareCsvFile(context: Context, file: File) {
         val uri = FileProvider.getUriForFile(
             context,

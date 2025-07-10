@@ -81,6 +81,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
@@ -263,11 +266,12 @@ activity?.let {
         var name = viewModel.gymResult[viewModel.currentGymSelected].GymName
         var location = viewModel.gymResult[viewModel.currentGymSelected].Location
        var mobile = viewModel.gymResult[viewModel.currentGymSelected].mob
-       val plan = "Annual Plan - Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
+       val plan = "Expires on ${viewModel.gymResult[viewModel.currentGymSelected].renewaldate}" // Static for now, can be fetched dynamically
         var showChangePasswordDialog by remember { mutableStateOf(false) }
        var contactSupport by remember { mutableStateOf(false) }
        var admin_contact by remember { mutableStateOf(viewModel.gymResult[viewModel.currentGymSelected].admin_cont) }
-
+       val whatsappShare by viewModel.whatsappShare.collectAsState()
+       val exportMode by viewModel.exportMode.collectAsState()
        val mobIs = 8148602102
        val context = LocalContext.current
         val primefontcolor =  Color(context.getColor(R.color.primary_color))
@@ -280,6 +284,7 @@ activity?.let {
        val keyboardController = LocalSoftwareKeyboardController.current
        val focusRequester = remember { FocusRequester() }
        val focusManager = LocalFocusManager.current
+       val dataStoreManager = DataStoreManager(context)
         Column(
             modifier = Modifier
 
@@ -381,19 +386,86 @@ if(isEditingNumber){
     keyboardController?.hide()
     focusManager.clearFocus(force = true)
 }
+            val secondaryColor = Color(context.getColor(R.color.primary_color))
+
             Text(
-                text = "Active Plan:",
-                fontSize = 16.sp,
-                color = primefontcolor,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(top = 16.dp)
+                    text = "Active Plan:",
+            fontSize = 16.sp,
+            color = primefontcolor,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(top = 16.dp)
             )
             Text(
                 text = plan,
                 fontSize = 18.sp,
                 color = terfontcolor,
-                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
+
+
+            // Export Data with Full/Mini Buttons to the Right
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                        .padding(top = 16.dp)
+            ) {
+                Text(
+                    text = "Export Data:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Row(
+                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
+
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { viewModel.saveExportMode(dataStoreManager, "Full") },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (exportMode == "Full") secondaryColor else Color.Gray,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Full")
+                    }
+
+                    Button(
+                        onClick = { viewModel.saveExportMode(dataStoreManager, "Mini") },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (exportMode == "Mini") secondaryColor else Color.Gray,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Mini")
+                    }
+                }
+
+            }
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 24.dp)
+            ) {
+                Text(
+                    text = "WhatsApp Share:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Switch(
+                    modifier = Modifier.padding(top = 8.dp),
+
+                    checked = whatsappShare,
+                    onCheckedChange = { viewModel.saveWhatsappShareOpt(dataStoreManager, it) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = secondaryColor,
+                        checkedTrackColor = secondaryColor.copy(alpha = 0.5f),
+                        uncheckedThumbColor = Color.LightGray,
+                        uncheckedTrackColor = Color.Gray
+                    )
+                )
+            }
+
             var showDialog by remember { mutableStateOf(false) }
             var bitmapFile: Bitmap? = null
             Button(
