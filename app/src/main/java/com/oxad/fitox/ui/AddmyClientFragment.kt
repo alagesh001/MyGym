@@ -137,6 +137,41 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                 whatsappShare = mainViewModel.getWhatsappShareOnce(DataStoreManager((requireContext())))
             }
         }
+
+// Default state
+        binding.paidmonthsInput.isEnabled = true
+        binding.paiddaysInput.isEnabled = false
+        binding.paidmonthsInput.visibility = VISIBLE
+        binding.paiddaysInput.visibility = GONE
+        binding.paiddaysLabel.visibility = GONE
+        binding.paidmonthsLabel.visibility = VISIBLE
+
+
+        binding.optionMonths.setOnCheckedChangeListener { _, isChecked ->
+            binding.paidmonthsInput.isEnabled = isChecked
+
+
+            if (!isChecked) {
+                binding.paidmonthsInput.text.clear()
+                binding.paidmonthsInput.visibility = GONE
+                binding.paiddaysInput.visibility = VISIBLE
+                binding.paiddaysLabel.visibility = VISIBLE
+                binding.paidmonthsLabel.visibility = GONE
+            }
+        }
+
+        binding.optionDays.setOnCheckedChangeListener { _, isChecked ->
+            binding.paiddaysInput.isEnabled = isChecked
+
+
+            if (!isChecked) {
+                binding.paiddaysInput.text.clear()
+                binding.paiddaysInput.visibility = GONE
+                binding.paidmonthsInput.visibility = VISIBLE
+                binding.paiddaysLabel.visibility = GONE
+                binding.paidmonthsLabel.visibility = VISIBLE
+            }
+        }
 // Set default date in SQL format
         binding.etFromDate.setText(dateFormat.format(currentDate.time))
 
@@ -222,8 +257,11 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     binding.totalAmountInput.text = memberData?.due_amount.toString().toEditable()
                     binding.renewLl.visibility = VISIBLE
                     binding.editLl.visibility = GONE
+                    binding.paidOptionGroup.visibility = GONE
                     binding.paidmonthsInput.visibility = GONE
                     binding.paidmonthsLabel.visibility = GONE
+                    binding.paiddaysInput.visibility = GONE
+                    binding.paiddaysLabel.visibility = GONE
                    // binding.datePicker.visibility = GONE
                     binding.frmDateTv.visibility = GONE
                     binding.deleteButton.visibility = GONE
@@ -334,7 +372,13 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     }
     private fun shareInWhatsapp(type:Int,mobIs:String){
         val currentDateTime = LocalDateTime.now()
-
+        val durationText = if (binding.paidmonthsInput.text.toString().isNotBlank()) {
+            "Plan Duration: ${binding.paidmonthsInput.text} months"
+        } else if (binding.paiddaysInput.text.toString().isNotBlank()) {
+            "Plan Duration: ${binding.paiddaysInput.text} days"
+        }else {
+            "Plan Duration: Not specified"
+        }
 // Format the date and time
         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
         val formattedDateTime = currentDateTime.format(formatter)
@@ -343,7 +387,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     ---------------------
     We have received your payment of ₹${binding.amountPaidInput.text} for a new registration on $formattedDateTime.
     
-    Plan Duration: ${binding.paidmonthsInput.text} months
+    ${durationText}
     
     Your Login Credentials:
     - User ID: $nmUid
@@ -361,7 +405,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
     ---------------------
     We have received your payment of ₹${binding.amountPaidInput.text} for a new registration on $formattedDateTime.
     
-    Plan Duration: ${binding.paidmonthsInput.text} months
+    ${durationText}
   
     Referral Program:
     Use this referral ID $nmRefId to refer your friends and earn discounts!
@@ -376,7 +420,7 @@ class AddmyClientFragment : Fragment(),OnClickListener {
                     confirmationMessage2
                 }
                 }
-                    1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the duration of ${binding.paidmonthsInput.text} months. Thank you!"
+                    1->"We have received your payment of ₹${binding.amountPaidInput.text} for Renewal on $formattedDateTime for the ${durationText}. Thank you!"
                     2->"We have received your payment of ₹${binding.amountPaidInput.text} for due payment on ${formattedDateTime}."
                 else -> {"We have received your payment of ₹${binding.amountPaidInput.text}"}
             }
@@ -480,7 +524,7 @@ if(dueAmount <0){
                     binding.emailInput.setText("NA") // default height
                 }
                 if ( binding.etDateOfBirth.text.isNotEmpty() && binding.weightInput.text.isNotEmpty() && binding.heightInput.text.isNotEmpty() && binding.nameInput.text.isNotEmpty() && binding.etFromDate.text.isNotEmpty()  && binding.emailInput.text.isNotEmpty() && binding.mobInput.text.isNotEmpty()
-                    && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
+                    && (binding.paidmonthsInput.text.isNotEmpty() || binding.paiddaysInput.text.isNotEmpty()) && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty() ) {
 
                     dataAdd(false)
                 } else {
@@ -509,7 +553,7 @@ if(dueAmount <0){
             binding.renewButton -> {
                 if(isLoading){return}
                 isLoading = true
-            if ( binding.etFromDate.text.isNotEmpty() && binding.paidmonthsInput.text.isNotEmpty() && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
+            if ( binding.etFromDate.text.isNotEmpty() && (binding.paidmonthsInput.text.isNotEmpty() || binding.paiddaysInput.text.isNotEmpty()) && binding.amountPaidInput.text.isNotEmpty() && binding.totalAmountInput.text.isNotEmpty()) {
                 dataAdd(true)
             } else {
                 isLoading = false
@@ -683,14 +727,15 @@ private var isLoading = false
         return
     }
         lifecycleScope.launch {
-
+            val paidMonths = binding.paidmonthsInput.text.toString().takeIf { it.isNotBlank() }?.toInt()
+            val paidDays = binding.paiddaysInput.text.toString().takeIf { it.isNotBlank() }?.toInt()
             val result = if(!isUpdate){
                 trainerData?.get(binding.spinnerTypeTrainer.selectedItemPosition)?.coachid
                     ?.let {
                         mainViewModel.apiRepoVM.addmymembers(
                             binding.nameInput.text.toString(),binding.emailInput.text.toString(),
                             mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.mobInput.text.toString().toLong(),
-                            binding.paidmonthsInput.text.toString().toInt(),binding.etFromDate.text.toString(),
+                            paidMonths, paidDays,binding.etFromDate.text.toString(),
                             binding.etDateOfBirth.text.toString(),
                             binding.heightInput.text.toString().toFloat(),
                             binding.weightInput.text.toString().toFloat(),
@@ -705,7 +750,7 @@ private var isLoading = false
             }else{
                 if(isRenew == true){
                     memberData?.userid?.let {
-                        mainViewModel.apiRepoVM.renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,binding.paidmonthsInput.text.toString().toInt(),binding.etFromDate.text.toString(),
+                        mainViewModel.apiRepoVM.renewmymembers(mainViewModel.gymResult[mainViewModel.currentGymSelected].GymId,paidMonths,paidDays,binding.etFromDate.text.toString(),
                             it,  binding.amountPaidInput.text.toString().trim().toInt(),
                             dueAmount,mainViewModel.a_keyIs
                         )

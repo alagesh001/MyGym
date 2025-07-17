@@ -96,6 +96,8 @@ data class Member(
     val due_amount: Int = 0,
     val attendance_count: Int = 0,
     val last_attend: String,
+    val memb_entry_date: String="",
+
     val gymid: Int
 
 
@@ -123,6 +125,8 @@ data class Member(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString() ?: "",
+        parcel.readString() ?: "",
+
         parcel.readInt()
 
         ) {
@@ -147,6 +151,8 @@ data class Member(
         parcel.writeInt(due_amount)
         parcel.writeInt(attendance_count)
         parcel.writeString(last_attend)
+        parcel.writeString(memb_entry_date)
+
         parcel.writeInt(gymid)
 
 

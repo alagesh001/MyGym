@@ -154,11 +154,11 @@ class ApiRepository(contextA: Context) {
 
 
     }
-    suspend fun renewmymembers( gymid: Int,paidmonths:Int,date:String,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
+    suspend fun renewmymembers( gymid: Int,paidmonths:Int?,paiddays:Int?,date:String,userid:Long,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
         showLoading();
         val result =
             safeApiCall {
-                RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),aKeyIs,gymid,paidmonths,date,userid, 1,amount_paid,due_amount)        }
+                RetrofitClient.instance.renewmymember(ApiHelper.guTableUrl(),aKeyIs,gymid,paidmonths,paiddays,date,userid, 1,amount_paid,due_amount)        }
             hideLoading()
         return result
 
@@ -209,7 +209,7 @@ class ApiRepository(contextA: Context) {
 
 
     }
-    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
+    suspend fun addmymembers(name:String,email:String, gymid: Int,mob:Long,paidmonths:Int?,paiddays:Int?,date:String,dob:String,height:Float,weight:Float,goal:Int,trainerId:Long,gender:String,referredBy:String,amount_paid:Int,due_amount:Int,aKeyIs:String): Result<UserRegisterModel> {
         showLoading();
         val result =
             safeApiCall {
@@ -219,6 +219,7 @@ class ApiRepository(contextA: Context) {
                     gymid,
                     mob,
                     paidmonths,
+                    paiddays,
                     date,
                     dob,
                     height,
