@@ -560,7 +560,7 @@ activity?.let {
                 listOf(
                     "ID", "Mobile", "Name", "Joining Date","Renewal Date", "Email", "User ID", "Referral ID",
                     "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
-                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID"
+                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID","Entry Date","Remarks"
                 ).joinToString(",") + "\n"
             )
 
@@ -586,7 +586,9 @@ activity?.let {
                         user.due_amount.toString(),
                         user.attendance_count.toString(),
                         user.last_attend,
-                        user.gymid.toString()
+                        user.gymid.toString(),
+                        if (user.memb_entry_date.isNullOrBlank()) "Inactive" else user.memb_entry_date,
+                        ""
                     ).joinToString(",") + "\n"
                 )
             }
@@ -595,7 +597,7 @@ activity?.let {
     private fun exportUsersToCsvMini(file: File, users: List<Member>) {
         BufferedWriter(FileWriter(file)).use { writer ->
             // Write header row
-            writer.write(listOf("Index", "Name", "Mobile", "Joining Date", "Expiry", "Remarks").joinToString(",") + "\n")
+            writer.write(listOf("Index", "Name", "Mobile", "Joining Date", "Expiry","Entry Date", "Remarks").joinToString(",") + "\n")
 
             // Write data rows
             users.forEachIndexed { index, user ->
@@ -605,7 +607,8 @@ activity?.let {
                         user.name,                // Name
                         user.mobile,              // Mobile
                         user.joiningdate,
-                        user.renewal_date,        // Expiry
+                        user.renewal_date,
+                        if (user.memb_entry_date.isNullOrBlank()) "Inactive" else user.memb_entry_date,
                         ""                              // Remarks (blank for now)
                     ).joinToString(",") + "\n"
                 )

@@ -171,7 +171,32 @@ android:fontFamily="sans-serif-black"
 
                     />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@drawable/calendar_icn"
+                    android:backgroundTint="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvjoinDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="Join Date"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+
+
+
+                    />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

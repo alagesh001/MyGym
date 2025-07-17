@@ -122,7 +122,7 @@ class Login : AppCompatActivity(),ApiInterface,OnClickListener {
 
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
-    private fun backpressInit(){
+    fun backpressInit(){
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
               if(isRegisterLay){

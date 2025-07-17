@@ -168,6 +168,7 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
         val callbtn_iv: ImageView = itemView.findViewById(R.id.call_btn)
         val wtsappbtn_iv: ImageView = itemView.findViewById(R.id.wtapp_btn)
         val markAttend_tv: TextView = itemView.findViewById(R.id.markAttend_tv)
+        val joindate_tv: TextView = itemView.findViewById(R.id.tvjoinDate)
 
         fun bind(member: Member,position: Int) {
             uidTextView.text = member.userid.toString() // Incrementing number
@@ -176,6 +177,8 @@ class MemberAdapter(private val context: Context, private val listener: MemberAd
             mobileTextView.text = member.mobile.toString()
             tvAttendCount.text = "Attendance - ${member.attendance_count}"
             tvlastAttend.text = "Last marked ${member.last_attend}"
+            joindate_tv.text = "Join Date ${member.joiningdate ?: "NA"}"
+
             goalTextView.text =  when(member.goal){
                 1 -> "Weight Loss"
                 2 -> "Weight Gain"

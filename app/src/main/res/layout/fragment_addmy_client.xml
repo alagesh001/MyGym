@@ -257,7 +257,26 @@ android:layout_gravity="center"
 
         android:visibility="visible"
         >
+            <RadioGroup
+                android:id="@+id/paid_option_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
+                <RadioButton
+                    android:id="@+id/option_months"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Months" />
+
+                <RadioButton
+                    android:id="@+id/option_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:text="Days" />
+            </RadioGroup>
     <TextView
         android:id="@+id/paidmonths_label"
         android:layout_width="wrap_content"
@@ -277,6 +296,24 @@ android:layout_gravity="center"
 
         android:hint="Enter Number of Paid Months"
         android:inputType="number" />
+            <TextView
+                android:id="@+id/paiddays_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paid Days*"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_red_dark"
+
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/paiddays_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="#ADADAD"
+                android:hint="Enter Number of Paid Days"
+                android:inputType="number" />
     <TextView
         android:id="@+id/frm_date_tv"
         android:layout_width="wrap_content"
