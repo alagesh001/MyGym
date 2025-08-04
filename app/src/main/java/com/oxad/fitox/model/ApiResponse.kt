@@ -91,6 +91,7 @@ data class Member(
     val dob: String,
     val coachid: Long,
     val goal: Int = 1,
+    val t_type: Int = 1,
     val gender: String? = "Male",
     val referred_by: String? = "",
     val due_amount: Int = 0,
@@ -120,9 +121,12 @@ data class Member(
 
         parcel.readLong(),
         parcel.readInt(),
+        parcel.readInt(),
+
         parcel.readString(),
         parcel.readString() ?: "",
         parcel.readInt(),
+
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -146,6 +150,7 @@ data class Member(
         parcel.writeString(dob)
         parcel.writeLong(coachid)
         parcel.writeInt(goal)
+        parcel.writeInt(t_type)
         parcel.writeString(gender)
         parcel.writeString(referred_by)
         parcel.writeInt(due_amount)

@@ -558,14 +558,19 @@ activity?.let {
             // Write header row
             writer.write(
                 listOf(
-                    "ID", "Mobile", "Name", "Joining Date","Renewal Date", "Email", "User ID", "Referral ID",
+                    "ID", "Mobile", "Name", "From Date","Expiry Date", "Email", "User ID", "Referral ID",
                     "Height", "Weight", "DOB", "AdminId", "Goal", "Gender", "Referred By",
-                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID","Entry Date","Remarks"
+                    "Due Amount", "Attendance Count", "Last Attend", "Gym ID","Entry Date","Type","Remarks"
                 ).joinToString(",") + "\n"
             )
 
             // Write data rows
             users.forEachIndexed { index, user ->
+                val typeLabel = when (user.t_type) {
+                    1 -> "NEW"
+                    2 -> "RENEW"
+                    else -> "UNKNOWN"
+                }
                 writer.write(
                     listOf(
                         (index + 1).toString(),
@@ -588,6 +593,7 @@ activity?.let {
                         user.last_attend,
                         user.gymid.toString(),
                         if (user.memb_entry_date.isNullOrBlank()) "Inactive" else user.memb_entry_date,
+                        typeLabel,
                         ""
                     ).joinToString(",") + "\n"
                 )
@@ -597,10 +603,14 @@ activity?.let {
     private fun exportUsersToCsvMini(file: File, users: List<Member>) {
         BufferedWriter(FileWriter(file)).use { writer ->
             // Write header row
-            writer.write(listOf("Index", "Name", "Mobile", "Joining Date", "Expiry","Entry Date", "Remarks").joinToString(",") + "\n")
-
+            writer.write(listOf("Index", "Name", "Mobile", "From Date", "Expiry Date","Entry Date", "Type", "Remarks").joinToString(",") + "\n")
             // Write data rows
             users.forEachIndexed { index, user ->
+                val typeLabel = when (user.t_type) {
+                    1 -> "NEW"
+                    2 -> "RENEW"
+                    else -> "UNKNOWN"
+                }
                 writer.write(
                     listOf(
                         (index + 1).toString(),          // Index (starts at 1)
@@ -609,6 +619,7 @@ activity?.let {
                         user.joiningdate,
                         user.renewal_date,
                         if (user.memb_entry_date.isNullOrBlank()) "Inactive" else user.memb_entry_date,
+                        typeLabel,
                         ""                              // Remarks (blank for now)
                     ).joinToString(",") + "\n"
                 )
