@@ -37,17 +37,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDefaults.dateFormatter
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -89,11 +95,14 @@ import com.oxad.fitox.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -748,21 +757,47 @@ color = Color.White,
             }
         }
     }
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun PaginatedTransactionListScreen() {
         var transactions by remember { mutableStateOf(listOf<Transaction>()) }
         var isLoading by remember { mutableStateOf(true) }
         var isSearching by remember { mutableStateOf(false) }
+        var isDateSearching by remember { mutableStateOf(false) }
 
+        var dateQuery by remember { mutableStateOf("") }
+        val dateFormatter = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
         var page by remember { mutableStateOf(1) }
+        var pageDate by remember { mutableStateOf(1) }
         var searchQuery by remember { mutableStateOf("") } // State for search input
         var filteredTransactions by remember { mutableStateOf(listOf<Transaction>()) }
         val listState = rememberLazyListState()
 val context = LocalContext.current
-        // Initial transactions load and pagination
+        // Initial transactions load and pagination\
+
+        val calendar = Calendar.getInstance()
+
+        val datePickerDialog =
+            android.app.DatePickerDialog(
+                context,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    dateQuery = dateFormatter.format(calendar.time) // this is correct
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+
         LaunchedEffect(page) {
-            mainViewModel.loadTransacHistory(page)
+            if(isDateSearching){
+                mainViewModel.loadTransacHistoryDate(page,dateQuery, context)
+
+            }else{
+                mainViewModel.loadTransacHistory(page)
+
+            }
         }
 
         LaunchedEffect(Unit) {
@@ -779,10 +814,17 @@ val context = LocalContext.current
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
-                    if (lastVisibleItemIndex != null && !isSearching) {
+                    Log.e("acdasd","YessA $page")
+                    if (lastVisibleItemIndex != null && (!isSearching || isDateSearching)) {
+                        Log.e("acdasd","YessB $page")
+
                         if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
+                            Log.e("acdasd","YessC $page")
+
                             isLoading = true
-                            page++
+                                page++
+
+
                         }
                     }
                 }
@@ -807,6 +849,7 @@ val context = LocalContext.current
                             modifier = Modifier.weight(1f), // Take up available width
                             placeholder = { Text("Search by ID") }
                         )
+
                         Button(
                             onClick = {
                                 if (searchQuery.length < 8) {
@@ -818,6 +861,8 @@ val context = LocalContext.current
                                     transactions = emptyList()
                                     mainViewModel.loadTransacHistoryMember(searchQuery,context)
                                     isSearching = true
+                                    isDateSearching = false
+
                                 }
                                 // Filter transactions based on the search query
                                 /*  filteredTransactions = if (searchQuery.isNotEmpty()) {
@@ -829,7 +874,44 @@ val context = LocalContext.current
                         ) {
                             Text("Search")
                         }
+
                     }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(onClick = { datePickerDialog.show() }) {
+                            Text(if (dateQuery.isEmpty()) "Select Date" else dateQuery)
+                        }
+
+                        IconButton(onClick = {
+                            // Trigger search based on selected date
+                            if (dateQuery.isEmpty()) {
+                                Utils.showToast(context, "Please select a date")
+                            } else {
+                                transactions = emptyList()
+                                isSearching = true
+                                isDateSearching = true
+                                page = 1
+                                mainViewModel.loadTransacHistoryDate(page,dateQuery, context)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search Icon"
+                            )
+                        }
+
+                        if (dateQuery.isNotEmpty()) {
+                            TextButton(onClick = { dateQuery = "" }) {
+                                Text("Clear Date")
+                            }
+                        }
+                    }
+
                 }
             }
         ) { padding ->

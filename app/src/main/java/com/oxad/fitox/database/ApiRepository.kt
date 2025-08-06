@@ -414,11 +414,11 @@ class ApiRepository(contextA: Context) {
 
     }
 
-    suspend fun getTransacHist(gymId: Int, page: Int , memberId:String): Result<GetMyTransacHist> {
+    suspend fun getTransacHist(gymId: Int, page: Int , memberId:String,date: String="1"): Result<GetMyTransacHist> {
         //showLoading();
         val result =
             safeApiCall {
-                RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page,memberId)
+                RetrofitClient.instance.getTransacHist(ApiHelper.transCheckUrl(),gymId, page,memberId,date)
             }
         //    hideLoading()
         return result

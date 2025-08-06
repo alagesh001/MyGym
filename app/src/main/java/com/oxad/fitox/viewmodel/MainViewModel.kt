@@ -39,6 +39,8 @@ class MainViewModel() : ViewModel() {
     private val _memberList = MutableStateFlow<List<Member>>(emptyList())
     val memberList: StateFlow<List<Member>> = _memberList
     var totalTransacPage = 1
+    var totalDateTransacPage = 1
+
     private val _transacList = MutableStateFlow<List<Transaction>>(emptyList())
     val transacList: StateFlow<List<Transaction>> = _transacList
 
@@ -363,6 +365,35 @@ class MainViewModel() : ViewModel() {
 
             }
         }
+    }
+    fun loadTransacHistoryDate(page:Int=1,date:String,context: Context) {
+        //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
+        // Log.e("checktloa","viewmodrel api  $page")
+        // Log.e("caaca","Apicall")
+
+        viewModelScope.launch {
+
+            val result = apiRepoVM.getTransacHist(gymResult[currentGymSelected].GymId, page,"-22",date)
+            result.onSuccess { response ->
+
+                if (response.success) {
+                    _transacList.value = response.result
+                    totalTransacPage = response.total_pages
+                    //  Log.e("chejkaf","Apicall resp ${Gson().toJson(_transacList.value )}")
+
+                }else{
+                    _transacList.value = emptyList()
+                    Utils.showToast(context,response.message)
+                }
+            }
+            result.onFailure { exception ->
+                exception.message ?: "Something went wrong!"
+                //  _transacList.value = emptyList()
+            }
+
+
+        }
+
     }
     fun loadTransacHistoryMember(userid:String,context: Context) {
         //  Log.e("caaca","A page check $page totalpage: $totalTransacPage")
