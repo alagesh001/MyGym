@@ -1,5 +1,8 @@
 package com.oxad.fitox.ui
 
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -72,6 +75,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -82,6 +86,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import com.google.gson.Gson
 import com.oxad.fitox.R
@@ -92,9 +97,15 @@ import com.oxad.fitox.model.Transaction
 import com.oxad.fitox.utils.DarkBackgroundView
 import com.oxad.fitox.utils.Utils
 import com.oxad.fitox.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -153,6 +164,78 @@ class MemberFilterCompose : Fragment() {
 
             }
         }
+    }
+    fun exportWithLoadingAndShare(context: Context, users: List<Transaction>) {
+        val dialog = ProgressDialog(context).apply {
+            setMessage("Exporting CSV file...")
+            setCancelable(false)
+            show()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Define file path
+                val file = File(context.getExternalFilesDir(null), "gym_transac.csv")
+                // Export data to CSV
+             exportUsersToCsvMini(file, users)
+
+
+
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Toast.makeText(context, "Export complete!", Toast.LENGTH_SHORT).show()
+                    // Share the CSV file
+                    shareCsvFile(context, file)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    dialog.dismiss()
+                    Log.e("CSVExportError", e.message.orEmpty())
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    private fun exportUsersToCsvMini(file: File, users: List<Transaction>) {
+        BufferedWriter(FileWriter(file)).use { writer ->
+            // Write header row
+            writer.write(listOf("Index", "Name", "Amount", "Date", "Type", "Remarks").joinToString(",") + "\n")
+            // Write data rows
+            users.forEachIndexed { index, user ->
+                val typeLabel = when (user.type) {
+                    0 -> "DELETE"
+                    1 -> "NEW"
+                    2 -> "RENEW"
+                    3 -> "DUE"
+                    else -> "UNKNOWN"
+                }
+                writer.write(
+                    listOf(
+                        (index + 1).toString(),          // Index (starts at 1)
+                        user.name,                // Name
+                        user.amount,              // Mobile
+                        user.date,
+                        typeLabel,
+                        ""                              // Remarks (blank for now)
+                    ).joinToString(",") + "\n"
+                )
+            }
+        }
+    }
+    private fun shareCsvFile(context: Context, file: File) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/csv"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Open or Share CSV File"))
     }
     @Composable
     fun DashboardScreen() {
@@ -814,15 +897,14 @@ val context = LocalContext.current
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
-                    Log.e("acdasd","YessA $page")
+                    //Log.e("acdasd","YessA $page")
                     if (lastVisibleItemIndex != null && (!isSearching || isDateSearching)) {
-                        Log.e("acdasd","YessB $page")
+                       // Log.e("acdasd","YessB $page")
 
                         if (lastVisibleItemIndex >= transactions.lastIndex && !isLoading && page < mainViewModel.totalTransacPage) {
-                            Log.e("acdasd","YessC $page")
-
+                           // Log.e("acdasd","YessC $page")
                             isLoading = true
-                                page++
+                            page++
 
 
                         }
@@ -834,8 +916,23 @@ val context = LocalContext.current
             topBar = {
                 Column {
                     TopAppBar(
-                        title = { Text("Transaction History") }
+                        title = { Text("Transaction History") },
+                        actions = {
+                            IconButton(onClick = {
+                                exportWithLoadingAndShare(context,transactions)                            },
+                            modifier = Modifier.padding(top = 8.dp,end = 8.dp) // 👈 Margin top
+                            )
+                            {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.download_icn), // replace with your drawable
+                                    contentDescription = "Icon Button",
+                                    tint = Color.Unspecified // 👈 This disables tinting
+
+                                )
+                            }
+                        }
                     )
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
